@@ -1,0 +1,3 @@
+[submodule "lib/turbolib"]
+	path = lib/turbolib
+	url = git@github.com:Turbo-Torque/TurboLib.git
