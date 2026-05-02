@@ -1,0 +1,14 @@
+#pragma once
+
+#include "units/voltage.h"
+
+namespace IntakeConstants {
+inline constexpr int kIntakeRotaryMotorPort = 13;
+inline constexpr int kIntakeRollerMotorRightPort = 14;
+inline constexpr int kIntakeRollerMotorLeftPort = 15;
+
+inline constexpr double kRotaryUpPosition = 0.0;
+inline constexpr double kRotaryDownPosition = 24.6;
+
+inline constexpr units::volt_t kIntakeVoltage = 10_V;
+} // namespace IntakeConstants
