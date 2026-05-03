@@ -5,10 +5,17 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
+#include "frc/DataLogManager.h"
+#include "frc/DriverStation.h"
 
-Robot::Robot() {}
+Robot::Robot() {
+  frc::DataLogManager::Start();
+  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+}
 
-void Robot::RobotPeriodic() { frc2::CommandScheduler::GetInstance().Run(); }
+void Robot::RobotPeriodic() {
+  frc2::CommandScheduler::GetInstance().Run();
+}
 
 void Robot::DisabledInit() {}
 
@@ -38,12 +45,16 @@ void Robot::TeleopPeriodic() {}
 
 void Robot::TeleopExit() {}
 
-void Robot::TestInit() { frc2::CommandScheduler::GetInstance().CancelAll(); }
+void Robot::TestInit() {
+  frc2::CommandScheduler::GetInstance().CancelAll();
+}
 
 void Robot::TestPeriodic() {}
 
 void Robot::TestExit() {}
 
 #ifndef RUNNING_FRC_TESTS
-int main() { return frc::StartRobot<Robot>(); }
+int main() {
+  return frc::StartRobot<Robot>();
+}
 #endif

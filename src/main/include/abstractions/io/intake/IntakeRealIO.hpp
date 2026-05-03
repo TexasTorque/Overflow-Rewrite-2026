@@ -11,41 +11,35 @@
 #include "units/voltage.h"
 
 class IntakeRealIO : public IntakeIO {
-public:
+ public:
   IntakeRealIO() {
     ConfigureRotaryMotor();
     ConfigureRollerRightMotor();
     ConfigureRollerLeftMotor();
   }
 
-  void UpdateInputs(IntakeIOInputs &inputs) override {
-    inputs.rollerVoltage = units::volt_t{rollerMotorRight.GetAppliedOutput() *
-                                         rollerMotorRight.GetBusVoltage()};
+  void UpdateInputs(IntakeIOInputs& inputs) override {
+    inputs.rollerVoltage = units::volt_t{rollerMotorRight.GetAppliedOutput() * rollerMotorRight.GetBusVoltage()};
     inputs.rollerCurrent = units::ampere_t{rollerMotorRight.GetOutputCurrent()};
     inputs.pivotPosition = rotaryMotor.GetEncoder().GetPosition();
     inputs.pivotSetpoint = rotaryMotor.GetClosedLoopController().GetSetpoint();
   }
 
-  void SetIntakeVoltage(units::volt_t voltage) override {
-    rollerMotorRight.SetVoltage(voltage);
-  }
+  void SetIntakeVoltage(units::volt_t voltage) override { rollerMotorRight.SetVoltage(voltage); }
+
   void SetIntakePivotSetpoint(double setpoint) override {
-    rotaryMotor.GetClosedLoopController().SetSetpoint(
-        setpoint, rev::spark::SparkLowLevel::ControlType::kPosition);
+    rotaryMotor.GetClosedLoopController().SetSetpoint(setpoint, rev::spark::SparkLowLevel::ControlType::kPosition);
   }
 
-private:
-  rev::spark::SparkMax rotaryMotor{
-      IntakeConstants::kIntakeRotaryMotorPort,
-      rev::spark::SparkLowLevel::MotorType::kBrushless};
+ private:
+  rev::spark::SparkMax rotaryMotor{IntakeConstants::kIntakeRotaryMotorPort,
+                                   rev::spark::SparkLowLevel::MotorType::kBrushless};
 
-  rev::spark::SparkMax rollerMotorRight{
-      IntakeConstants::kIntakeRollerMotorRightPort,
-      rev::spark::SparkLowLevel::MotorType::kBrushless};
+  rev::spark::SparkMax rollerMotorRight{IntakeConstants::kIntakeRollerMotorRightPort,
+                                        rev::spark::SparkLowLevel::MotorType::kBrushless};
 
-  rev::spark::SparkMax rollerMotorLeft{
-      IntakeConstants::kIntakeRollerMotorLeftPort,
-      rev::spark::SparkLowLevel::MotorType::kBrushless};
+  rev::spark::SparkMax rollerMotorLeft{IntakeConstants::kIntakeRollerMotorLeftPort,
+                                       rev::spark::SparkLowLevel::MotorType::kBrushless};
 
   void ConfigureRotaryMotor() {
     rev::spark::SparkMaxConfig config;
@@ -57,8 +51,7 @@ private:
 
     config.closedLoop.Pid(1.5, 0, 0);
 
-    rotaryMotor.Configure(config, rev::ResetMode::kResetSafeParameters,
-                          rev::PersistMode::kPersistParameters);
+    rotaryMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
 
   void ConfigureRollerRightMotor() {
@@ -67,8 +60,7 @@ private:
     config.SmartCurrentLimit(40);
     config.VoltageCompensation(12);
 
-    rollerMotorRight.Configure(config, rev::ResetMode::kResetSafeParameters,
-                               rev::PersistMode::kPersistParameters);
+    rollerMotorRight.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
 
   void ConfigureRollerLeftMotor() {
@@ -78,7 +70,6 @@ private:
     config.Follow(IntakeConstants::kIntakeRollerMotorRightPort, true);
     config.VoltageCompensation(12);
 
-    rollerMotorLeft.Configure(config, rev::ResetMode::kResetSafeParameters,
-                              rev::PersistMode::kPersistParameters);
+    rollerMotorLeft.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
 };
