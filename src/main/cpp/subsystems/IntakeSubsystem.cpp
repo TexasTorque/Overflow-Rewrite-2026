@@ -16,6 +16,15 @@ frc2::CommandPtr IntakeSubsystem::RunIntakeCommand() {
       .WithName("Run Intake");
 }
 
+void IntakeSubsystem::SetState(const IntakeStateEnum& newState) {
+  m_state.Set(newState);
+  m_state.Apply();
+}
+
+void IntakeSubsystem::Clean() {
+  SetState(IntakeStateEnum::Stow);
+}
+
 void IntakeSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
   m_logger.UpdateTelemetry(m_inputs, GetState());

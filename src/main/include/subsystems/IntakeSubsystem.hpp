@@ -15,10 +15,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
   frc2::CommandPtr RunIntakeCommand();
 
-  void SetState(const IntakeStateEnum& newState) {
-    m_state.Set(newState);
-    m_state.Apply();
-  }
+  void SetState(const IntakeStateEnum& newState);
+  void Clean();
 
   IntakeStateEnum GetState() const { return m_state.Get(); }
 

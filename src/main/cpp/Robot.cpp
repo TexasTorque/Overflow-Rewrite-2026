@@ -46,7 +46,10 @@ void Robot::TeleopInit() {
 
 void Robot::TeleopPeriodic() {}
 
-void Robot::TeleopExit() {}
+void Robot::TeleopExit() {
+  auto& intakeSubsystem = m_container.GetIntakeSubsystem();
+  intakeSubsystem.Clean();
+}
 
 void Robot::TestInit() {
   frc2::CommandScheduler::GetInstance().CancelAll();
