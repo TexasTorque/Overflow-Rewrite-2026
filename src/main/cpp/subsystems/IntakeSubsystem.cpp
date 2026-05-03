@@ -5,8 +5,8 @@
 #include "frc2/command/Commands.h"
 
 IntakeSubsystem::IntakeSubsystem(std::unique_ptr<IntakeIO> io)
-    : io(std::move(io)),
-      state(IntakeStateEnum::Stow, [this](const IntakeStateEnum& newState) { ApplyState(newState); }) {
+    : m_io(std::move(io)),
+      m_state(IntakeStateEnum::Stow, [this](const IntakeStateEnum& newState) { ApplyState(newState); }) {
   SetName("IntakeSubsystem");
 }
 
@@ -17,19 +17,19 @@ frc2::CommandPtr IntakeSubsystem::RunIntakeCommand() {
 }
 
 void IntakeSubsystem::Periodic() {
-  io->UpdateInputs(inputs);
-  logger.UpdateTelemetry(inputs, GetState());
+  m_io->UpdateInputs(m_inputs);
+  m_logger.UpdateTelemetry(m_inputs, GetState());
 }
 
 void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {
   switch (newState) {
     case IntakeStateEnum::Stow:
-      io->SetIntakeVoltage(0_V);
-      io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
+      m_io->SetIntakeVoltage(0_V);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
       break;
     case IntakeStateEnum::Intake:
-      io->SetIntakeVoltage(IntakeConstants::kIntakeVoltage);
-      io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
+      m_io->SetIntakeVoltage(IntakeConstants::kIntakeVoltage);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
       break;
   }
 }

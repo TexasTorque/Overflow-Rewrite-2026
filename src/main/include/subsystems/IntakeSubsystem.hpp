@@ -9,23 +9,24 @@
 
 class IntakeSubsystem : public frc2::SubsystemBase {
  public:
-  IntakeSubsystem(std::unique_ptr<IntakeIO> intakeIO);
+  IntakeSubsystem(std::unique_ptr<IntakeIO> io);
 
   void Periodic() override;
 
   frc2::CommandPtr RunIntakeCommand();
 
   void SetState(const IntakeStateEnum& newState) {
-    state.Set(newState);
-    state.Apply();
+    m_state.Set(newState);
+    m_state.Apply();
   }
-  IntakeStateEnum GetState() const { return state.Get(); }
+
+  IntakeStateEnum GetState() const { return m_state.Get(); }
 
  private:
-  std::unique_ptr<IntakeIO> io;
-  IntakeLogging logger;
-  IntakeIOInputs inputs;
-  IntakeState state;
+  std::unique_ptr<IntakeIO> m_io;
+  IntakeLogging m_logger;
+  IntakeIOInputs m_inputs;
+  IntakeState m_state;
 
   void ApplyState(const IntakeStateEnum& newState);
 };

@@ -11,7 +11,7 @@
 
 #include <frc2/command/Commands.h>
 
-RobotContainer::RobotContainer() : intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()) {
+RobotContainer::RobotContainer() : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()) {
   ConfigureBindings();
   ConfigureIntakeBindings();
 }
@@ -19,7 +19,7 @@ RobotContainer::RobotContainer() : intakeSubsystem(turbolib::utils::MakeIO<Intak
 void RobotContainer::ConfigureBindings() {}
 
 void RobotContainer::ConfigureIntakeBindings() {
-  operatorController.A().ToggleOnTrue(intakeSubsystem.RunIntakeCommand());
+  m_operatorController.A().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
 }
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {

@@ -6,22 +6,22 @@
 class IntakeSimIO : public IntakeIO {
  public:
   void UpdateInputs(IntakeIOInputs& inputs) override {
-    pivotPosition += pivotController.Calculate(pivotPosition, pivotSetpoint) * 0.02;
+    m_pivotPosition += m_pivotController.Calculate(m_pivotPosition, m_pivotSetpoint) * 0.02;
 
-    inputs.rollerVoltage = rollerVoltage;
-    inputs.pivotPosition = pivotPosition;
-    inputs.pivotSetpoint = pivotSetpoint;
+    inputs.rollerVoltage = m_rollerVoltage;
+    inputs.pivotPosition = m_pivotPosition;
+    inputs.pivotSetpoint = m_pivotSetpoint;
   }
 
-  void SetIntakeVoltage(units::volt_t voltage) override { rollerVoltage = voltage; }
+  void SetIntakeVoltage(units::volt_t voltage) override { m_rollerVoltage = voltage; }
 
-  void SetIntakePivotSetpoint(double setpoint) override { pivotSetpoint = setpoint; }
+  void SetIntakePivotSetpoint(double setpoint) override { m_pivotSetpoint = setpoint; }
 
  private:
-  units::volt_t rollerVoltage{0_V};
+  units::volt_t m_rollerVoltage{0_V};
 
-  frc::PIDController pivotController{10.0, 0.0, 0.0};
+  frc::PIDController m_pivotController{10.0, 0.0, 0.0};
 
-  double pivotSetpoint{0.0};
-  double pivotPosition{0.0};
+  double m_pivotSetpoint{0.0};
+  double m_pivotPosition{0.0};
 };

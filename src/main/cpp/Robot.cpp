@@ -39,6 +39,9 @@ void Robot::TeleopInit() {
   if (m_autonomousCommand) {
     m_autonomousCommand->Cancel();
   }
+
+  auto& intakeSubsystem = m_container.GetIntakeSubsystem();
+  intakeSubsystem.SetState(intakeSubsystem.GetState());
 }
 
 void Robot::TeleopPeriodic() {}
