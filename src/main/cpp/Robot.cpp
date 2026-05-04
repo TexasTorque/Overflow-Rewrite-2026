@@ -5,16 +5,31 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
-#include "frc/DataLogManager.h"
-#include "frc/DriverStation.h"
+#include <telemetrykit/TelemetryKit.h>
+#include <memory>
+#include "frc/RobotBase.h"
+#include "telemetrykit/core/Logger.h"
+#include "telemetrykit/receiver/NetworkTablesReceiver.h"
+#include "telemetrykit/receiver/WPILogWriter.h"
 
 Robot::Robot() {
-  frc::DataLogManager::Start();
-  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+  auto& logger = tkit::Logger::GetInstance();
+
+  logger.AddReceiver(std::make_unique<tkit::NetworkTablesReceiver>());
+
+  if (frc::RobotBase::IsReal()) {
+    logger.AddReceiver(std::make_unique<tkit::WPILogWriter>());
+  } else {
+    logger.AddReceiver(std::make_unique<tkit::WPILogWriter>("logs"));
+  }
+
+  logger.Start();
 }
 
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+
+  tkit::Logger::GetInstance().Periodic();
 }
 
 void Robot::DisabledInit() {}

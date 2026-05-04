@@ -5,18 +5,14 @@
 
 enum class IntakeStateEnum { Intake, Stow };
 
-namespace std {
-inline std::string to_string(IntakeStateEnum state) {
+inline constexpr std::string stateToString(IntakeStateEnum state) {
   switch (state) {
-    case IntakeStateEnum::Intake:
-      return "Intake";
     case IntakeStateEnum::Stow:
       return "Stow";
-    default:
-      return "Unknown";
+    case IntakeStateEnum::Intake:
+      return "Intake";
   }
 }
-}  // namespace std
 
 class IntakeState : public TurboState<IntakeStateEnum> {
  public:
