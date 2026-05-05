@@ -5,7 +5,9 @@
 
 HopperSubsystem::HopperSubsystem(std::unique_ptr<HopperIO> io)
     : m_io(std::move(io)),
-      m_state(HopperStateEnum::Off, [this](const HopperStateEnum& newState) { ApplyState(newState); }) {}
+      m_state(HopperStateEnum::Off, [this](const HopperStateEnum& newState) { ApplyState(newState); }) {
+  SetName("HopperSubsystem");
+}
 
 void HopperSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
@@ -14,12 +16,14 @@ void HopperSubsystem::Periodic() {
 
 frc2::CommandPtr HopperSubsystem::RunHopperCommand() {
   return frc2::cmd::StartEnd([this] { SetState(HopperStateEnum::Intake); }, [this] { SetState(HopperStateEnum::Off); },
-                             {this});
+                             {this})
+      .WithName("Run Hopper");
 }
 
 frc2::CommandPtr HopperSubsystem::RunOuttakeCommand() {
   return frc2::cmd::StartEnd([this] { SetState(HopperStateEnum::Outtake); }, [this] { SetState(HopperStateEnum::Off); },
-                             {this});
+                             {this})
+      .WithName("Hopper Outtake");
 }
 
 void HopperSubsystem::SetState(const HopperStateEnum& newState) {

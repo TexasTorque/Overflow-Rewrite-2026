@@ -21,3 +21,11 @@ inline constexpr int kHopperMotorPort = 16;
 inline constexpr units::volt_t kIntakeVoltage = -10_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
 }  // namespace HopperConstants
+
+namespace GateConstants {
+inline constexpr int kGateRightMotorPort = 18;
+inline constexpr int kGateLeftMotorPort = 17;
+
+inline constexpr units::volt_t kGateVoltage = 10_V;
+inline constexpr units::volt_t kOuttakeVoltage = -10_V;
+}  // namespace GateConstants
