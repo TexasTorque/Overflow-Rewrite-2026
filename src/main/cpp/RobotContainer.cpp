@@ -9,6 +9,7 @@
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "abstractions/io/intake/IntakeRealIO.hpp"
 #include "abstractions/io/intake/IntakeSimIO.hpp"
+#include "factory/CommandFactory.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
 
@@ -22,10 +23,13 @@ RobotContainer::RobotContainer()
   ConfigureHopperBindings();
 }
 
-void RobotContainer::ConfigureBindings() {}
+void RobotContainer::ConfigureBindings() {
+  m_operatorController.POVUp().WhileTrue(CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem));
+  m_operatorController.A().WhileTrue(CommandFactory::PassThroughCommand(m_intakeSubsystem, m_hopperSubsystem));
+}
 
 void RobotContainer::ConfigureIntakeBindings() {
-  m_operatorController.A().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
+  m_operatorController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
 }
 
 void RobotContainer::ConfigureHopperBindings() {}

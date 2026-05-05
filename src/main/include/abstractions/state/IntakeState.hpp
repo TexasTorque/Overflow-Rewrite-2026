@@ -3,7 +3,7 @@
 #include "turbolib/state/TurboState.hpp"
 #include <string>
 
-enum class IntakeStateEnum { Intake, Stow, Outtake };
+enum class IntakeStateEnum { Intake, Stow, Outtake, SlowZero };
 
 inline constexpr std::string stateToString(IntakeStateEnum state) {
   switch (state) {
@@ -13,6 +13,8 @@ inline constexpr std::string stateToString(IntakeStateEnum state) {
       return "Intake";
     case IntakeStateEnum::Outtake:
       return "Outtake";
+    case IntakeStateEnum::SlowZero:
+      return "Slow Zero";
   }
 }
 

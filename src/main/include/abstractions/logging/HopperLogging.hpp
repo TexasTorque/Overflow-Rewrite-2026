@@ -1,6 +1,6 @@
+#include <telemetrykit/core/Units.h>
 #include "abstractions/io/hopper/HopperIO.hpp"
 #include "abstractions/state/HopperState.hpp"
-#include "telemetrykit/core/Logger.h"
 
 class HopperLogging {
  public:
@@ -8,6 +8,6 @@ class HopperLogging {
     tkit::RecordOutput("HopperSubsystem/Voltage", inputs.hopperVoltage);
     tkit::RecordOutput("HopperSubsystem/RequestedVoltage", inputs.voltageRequest);
 
-    tkit::RecordOutput("IntakeSubsystem/State", stateToString(state));
+    tkit::RecordOutput("HopperSubsystem/State", stateToString(state));
   }
 };
