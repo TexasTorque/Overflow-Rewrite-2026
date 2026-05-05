@@ -2,6 +2,7 @@
 
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "constants/constants.hpp"
+#include "rev/ClosedLoopTypes.h"
 #include "rev/ConfigureTypes.h"
 #include "rev/SparkBase.h"
 #include "rev/SparkLowLevel.h"
@@ -27,8 +28,9 @@ class IntakeRealIO : public IntakeIO {
 
   void SetIntakeVoltage(units::volt_t voltage) override { m_rollerMotorRight.SetVoltage(voltage); }
 
-  void SetIntakePivotSetpoint(double setpoint) override {
-    m_rotaryMotor.GetClosedLoopController().SetSetpoint(setpoint, rev::spark::SparkLowLevel::ControlType::kPosition);
+  void SetIntakePivotSetpoint(double setpoint, bool slow = false) override {
+    m_rotaryMotor.GetClosedLoopController().SetSetpoint(setpoint, rev::spark::SparkLowLevel::ControlType::kPosition,
+                                                        slow ? rev::spark::kSlot1 : rev::spark::kSlot0);
   }
 
  private:
@@ -49,7 +51,8 @@ class IntakeRealIO : public IntakeIO {
     config.Inverted(true);
     config.VoltageCompensation(12);
 
-    config.closedLoop.Pid(1.5, 0, 0);
+    config.closedLoop.Pid(1.5, 0, 0, rev::spark::kSlot0);
+    config.closedLoop.Pid(0.75, 0, 0, rev::spark::kSlot1);
 
     m_rotaryMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }

@@ -16,6 +16,17 @@ frc2::CommandPtr IntakeSubsystem::RunIntakeCommand() {
       .WithName("Run Intake");
 }
 
+frc2::CommandPtr IntakeSubsystem::RunOuttakeCommand() {
+  return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::Outtake); },
+                             [this] { SetState(IntakeStateEnum::Stow); }, {this})
+      .WithName("Run Outtake");
+}
+
+frc2::CommandPtr IntakeSubsystem::SlowZeroCommand() {
+  return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::SlowZero); },
+                             [this] { SetState(IntakeStateEnum::Stow); }, {this});
+}
+
 void IntakeSubsystem::SetState(const IntakeStateEnum& newState) {
   m_state.Set(newState);
   m_state.Apply();
@@ -40,5 +51,12 @@ void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {
       m_io->SetIntakeVoltage(IntakeConstants::kIntakeVoltage);
       m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
       break;
+    case IntakeStateEnum::Outtake:
+      m_io->SetIntakeVoltage(IntakeConstants::kOuttakeVoltage);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
+      break;
+    case IntakeStateEnum::SlowZero:
+      m_io->SetIntakeVoltage(0_V);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotarySlowZeroPosition, true);
   }
 }

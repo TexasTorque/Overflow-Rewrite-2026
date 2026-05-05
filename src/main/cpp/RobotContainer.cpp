@@ -3,24 +3,36 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "RobotContainer.h"
+#include "abstractions/io/hopper/HopperIO.hpp"
+#include "abstractions/io/hopper/HopperRealIO.hpp"
+#include "abstractions/io/hopper/HopperSimIO.hpp"
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "abstractions/io/intake/IntakeRealIO.hpp"
 #include "abstractions/io/intake/IntakeSimIO.hpp"
+#include "factory/CommandFactory.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
 
 #include <frc2/command/Commands.h>
 
-RobotContainer::RobotContainer() : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()) {
+RobotContainer::RobotContainer()
+    : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()),
+      m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()) {
   ConfigureBindings();
   ConfigureIntakeBindings();
+  ConfigureHopperBindings();
 }
 
-void RobotContainer::ConfigureBindings() {}
+void RobotContainer::ConfigureBindings() {
+  m_operatorController.POVUp().WhileTrue(CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem));
+  m_operatorController.A().WhileTrue(CommandFactory::PassThroughCommand(m_intakeSubsystem, m_hopperSubsystem));
+}
 
 void RobotContainer::ConfigureIntakeBindings() {
-  m_operatorController.A().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
+  m_operatorController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
 }
+
+void RobotContainer::ConfigureHopperBindings() {}
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   return frc2::cmd::Print("No autonomous command configured");
