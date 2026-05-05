@@ -6,7 +6,7 @@
 class IntakeSimIO : public IntakeIO {
  public:
   void UpdateInputs(IntakeIOInputs& inputs) override {
-    m_pivotPosition += m_pivotController.Calculate(m_pivotPosition, m_pivotSetpoint) * (m_slow ? 0.05 : 0.02);
+    m_pivotPosition += m_pivotController.Calculate(m_pivotPosition, m_pivotSetpoint) * (m_slow ? 0.005 : 0.02);
 
     inputs.rollerVoltage = m_rollerVoltage;
     inputs.pivotPosition = m_pivotPosition;
