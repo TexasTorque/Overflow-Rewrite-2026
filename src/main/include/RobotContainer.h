@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
@@ -19,9 +20,11 @@ class RobotContainer {
  private:
   void ConfigureBindings();
   void ConfigureIntakeBindings();
+  void ConfigureHopperBindings();
 
   frc2::CommandXboxController m_driverController{0};
   frc2::CommandXboxController m_operatorController{1};
 
   IntakeSubsystem m_intakeSubsystem;
+  HopperSubsystem m_hopperSubsystem;
 };

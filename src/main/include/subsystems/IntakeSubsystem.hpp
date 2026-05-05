@@ -14,6 +14,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
   void Periodic() override;
 
   frc2::CommandPtr RunIntakeCommand();
+  frc2::CommandPtr RunOuttakeCommand();
 
   void SetState(const IntakeStateEnum& newState);
   void Clean();
