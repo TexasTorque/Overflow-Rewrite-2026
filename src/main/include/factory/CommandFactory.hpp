@@ -7,8 +7,8 @@
 #include "subsystems/IntakeSubsystem.hpp"
 
 namespace CommandFactory {
-inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem& hopper) {
-  return intake.RunOuttakeCommand().AlongWith(hopper.RunOuttakeCommand());
+inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem& hopper, GateSubsystem& gate) {
+  return frc2::cmd::Parallel(intake.RunOuttakeCommand(), hopper.RunOuttakeCommand(), gate.RunOuttakeCommand());
 }
 
 inline frc2::CommandPtr PassThroughCommand(IntakeSubsystem& intake, HopperSubsystem& hopper, GateSubsystem& gate) {
