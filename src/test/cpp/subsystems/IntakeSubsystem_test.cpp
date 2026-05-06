@@ -13,7 +13,7 @@ class FakeIntakeIO : public IntakeIO {
 
   void SetIntakeVoltage(units::volt_t voltage) override { lastVoltage = voltage; }
 
-  void SetIntakePivotSetpoint(double setpoint) override { lastPivotSetpoint = setpoint; }
+  void SetIntakePivotSetpoint(double setpoint, bool slow = false) override { lastPivotSetpoint = setpoint; }
 
   units::volt_t lastVoltage{0_V};
   double lastPivotSetpoint{0.0};

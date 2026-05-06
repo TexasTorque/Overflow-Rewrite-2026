@@ -11,7 +11,7 @@ class HopperSubsystem : public frc2::SubsystemBase {
  public:
   HopperSubsystem(std::unique_ptr<HopperIO> io);
 
-  void Periodic();
+  void Periodic() override;
 
   frc2::CommandPtr RunHopperCommand();
   frc2::CommandPtr RunOuttakeCommand();

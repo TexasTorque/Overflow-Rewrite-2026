@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include <frc2/command/CommandPtr.h>
@@ -27,4 +28,5 @@ class RobotContainer {
 
   IntakeSubsystem m_intakeSubsystem;
   HopperSubsystem m_hopperSubsystem;
+  GateSubsystem m_gateSubsystem;
 };

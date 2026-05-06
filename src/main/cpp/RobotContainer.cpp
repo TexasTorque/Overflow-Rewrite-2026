@@ -3,6 +3,9 @@
 // the WPILib BSD license file in the root directory of this project.
 
 #include "RobotContainer.h"
+#include "abstractions/io/gate/GateIO.hpp"
+#include "abstractions/io/gate/GateRealIO.hpp"
+#include "abstractions/io/gate/GateSimIO.hpp"
 #include "abstractions/io/hopper/HopperIO.hpp"
 #include "abstractions/io/hopper/HopperRealIO.hpp"
 #include "abstractions/io/hopper/HopperSimIO.hpp"
@@ -17,15 +20,18 @@
 
 RobotContainer::RobotContainer()
     : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()),
-      m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()) {
+      m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
+      m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()) {
   ConfigureBindings();
   ConfigureIntakeBindings();
   ConfigureHopperBindings();
 }
 
 void RobotContainer::ConfigureBindings() {
-  m_operatorController.POVUp().WhileTrue(CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem));
-  m_operatorController.A().WhileTrue(CommandFactory::PassThroughCommand(m_intakeSubsystem, m_hopperSubsystem));
+  m_operatorController.POVUp().WhileTrue(
+      CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.A().WhileTrue(
+      CommandFactory::PassThroughCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
 }
 
 void RobotContainer::ConfigureIntakeBindings() {
