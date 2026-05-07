@@ -17,6 +17,7 @@ class GateRealIO : public GateIO {
 
   void UpdateInputs(GateIOInputs& inputs) override {
     inputs.gateVoltage = units::volt_t{m_gateRightMotor.GetBusVoltage() * m_gateRightMotor.GetAppliedOutput()};
+    inputs.gateCurrent = units::ampere_t{m_gateRightMotor.GetOutputCurrent()};
   }
 
   void SetGateVoltage(units::volt_t voltage) override { m_gateRightMotor.SetVoltage(voltage); }
