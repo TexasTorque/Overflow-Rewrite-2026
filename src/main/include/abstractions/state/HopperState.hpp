@@ -2,19 +2,13 @@
 
 #include <string>
 #include <utility>
+#include <magic_enum/magic_enum.hpp>
 #include "turbolib/state/TurboState.hpp"
 
 enum class HopperStateEnum { Intake, Outtake, Off };
 
-inline constexpr std::string stateToString(HopperStateEnum state) {
-  switch (state) {
-    case HopperStateEnum::Intake:
-      return "Intake";
-    case HopperStateEnum::Off:
-      return "Off";
-    case HopperStateEnum::Outtake:
-      return "Outtake";
-  }
+inline std::string stateToString(HopperStateEnum state) {
+  return std::string(magic_enum::enum_name(state));
 }
 
 class HopperState : public TurboState<HopperStateEnum> {

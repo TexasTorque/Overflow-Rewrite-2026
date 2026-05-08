@@ -2,19 +2,13 @@
 
 #include <string>
 #include <utility>
+#include <magic_enum/magic_enum.hpp>
 #include "turbolib/state/TurboState.hpp"
 
 enum class GateStateEnum { Off, On, Outtake };
 
-inline constexpr std::string stateToString(GateStateEnum state) {
-  switch (state) {
-    case GateStateEnum::Off:
-      return "Off";
-    case GateStateEnum::On:
-      return "On";
-    case GateStateEnum::Outtake:
-      return "Outtake";
-  }
+inline std::string stateToString(GateStateEnum state) {
+  return std::string(magic_enum::enum_name(state));
 }
 
 class GateState : public TurboState<GateStateEnum> {

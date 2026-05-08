@@ -23,7 +23,7 @@ frc2::CommandPtr IntakeSubsystem::RunOuttakeCommand() {
 }
 
 frc2::CommandPtr IntakeSubsystem::SlowZeroCommand() {
-  return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::SlowZero); },
+  return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::SlowPullup); },
                              [this] { SetState(IntakeStateEnum::Stow); }, {this});
 }
 
@@ -55,7 +55,7 @@ void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {
       m_io->SetIntakeVoltage(IntakeConstants::kOuttakeVoltage);
       m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryDownPosition);
       break;
-    case IntakeStateEnum::SlowZero:
+    case IntakeStateEnum::SlowPullup:
       m_io->SetIntakeVoltage(0_V);
       m_io->SetIntakePivotSetpoint(IntakeConstants::kRotarySlowZeroPosition, true);
   }

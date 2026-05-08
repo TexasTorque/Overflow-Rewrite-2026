@@ -1,21 +1,13 @@
 #pragma once
 
-#include "turbolib/state/TurboState.hpp"
 #include <string>
+#include <magic_enum/magic_enum.hpp>
+#include "turbolib/state/TurboState.hpp"
 
-enum class IntakeStateEnum { Intake, Stow, Outtake, SlowZero };
+enum class IntakeStateEnum { Intake, Stow, Outtake, SlowPullup };
 
-inline constexpr std::string stateToString(IntakeStateEnum state) {
-  switch (state) {
-    case IntakeStateEnum::Stow:
-      return "Stow";
-    case IntakeStateEnum::Intake:
-      return "Intake";
-    case IntakeStateEnum::Outtake:
-      return "Outtake";
-    case IntakeStateEnum::SlowZero:
-      return "Slow Zero";
-  }
+inline std::string stateToString(IntakeStateEnum state) {
+  return std::string(magic_enum::enum_name(state));
 }
 
 class IntakeState : public TurboState<IntakeStateEnum> {
