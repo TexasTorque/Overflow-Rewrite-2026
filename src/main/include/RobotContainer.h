@@ -5,6 +5,7 @@
 #pragma once
 
 #include "subsystems/IntakeSubsystem.hpp"
+#include "subsystems/ShooterSubsystem.hpp"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 
@@ -15,6 +16,7 @@ class RobotContainer {
   frc2::CommandPtr GetAutonomousCommand();
 
   IntakeSubsystem& GetIntakeSubsystem() { return m_intakeSubsystem; }
+  ShooterSubsystem& GetShooterSubsystem() { return m_shooterSubsystem; }
 
  private:
   void ConfigureBindings();
@@ -24,4 +26,5 @@ class RobotContainer {
   frc2::CommandXboxController m_operatorController{1};
 
   IntakeSubsystem m_intakeSubsystem;
+  ShooterSubsystem m_shooterSubsystem;
 };
