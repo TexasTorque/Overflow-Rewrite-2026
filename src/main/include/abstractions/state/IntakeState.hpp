@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <magic_enum/magic_enum.hpp>
+#include "magic_enum.hpp"
 #include "turbolib/state/TurboState.hpp"
 
 enum class IntakeStateEnum { Intake, Stow, Outtake, SlowPullup };
