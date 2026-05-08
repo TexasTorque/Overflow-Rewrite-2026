@@ -6,7 +6,7 @@
 
 namespace DriveConstants {
 inline constexpr units::meters_per_second_t kMaxSpeed = 4.5_mps;
-inline constexpr units::radians_per_second_t kMaxAngularRate = 0.75_tps;
+inline constexpr units::radians_per_second_t kMaxAngularRate = 2.0_tps;
 }  // namespace DriveConstants
 
 namespace IntakeConstants {

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ctre/phoenix6/configs/CurrentLimitsConfigs.hpp"
+#include "ctre/phoenix6/core/CoreTalonFX.hpp"
 #include "ctre/phoenix6/swerve/SwerveDrivetrain.hpp"
 #include "ctre/phoenix6/CANcoder.hpp"
 #include "ctre/phoenix6/TalonFX.hpp"
@@ -20,7 +22,7 @@ class TunerConstants {
   // output type specified by SwerveModuleConstants::SteerMotorClosedLoopOutput
   static constexpr configs::Slot0Configs steerGains =
       configs::Slot0Configs{}
-          .WithKP(50)
+          .WithKP(30)
           .WithKI(0)
           .WithKD(0.5)
           .WithKS(0.1)
@@ -54,7 +56,9 @@ class TunerConstants {
 
   // Initial configs for the drive and steer motors and the azimuth encoder; these cannot be null.
   // Some configs will be overwritten; check the `With*InitialConfigs()` API documentation.
-  static constexpr configs::TalonFXConfiguration driveInitialConfigs{};
+  static constexpr configs::TalonFXConfiguration driveInitialConfigs =
+      configs::TalonFXConfiguration{}.WithCurrentLimits(
+          configs::CurrentLimitsConfigs{}.WithSupplyCurrentLimit(70_A).WithSupplyCurrentLimitEnable(true));
   static constexpr configs::TalonFXConfiguration steerInitialConfigs =
       configs::TalonFXConfiguration{}.WithCurrentLimits(
           configs::CurrentLimitsConfigs{}
