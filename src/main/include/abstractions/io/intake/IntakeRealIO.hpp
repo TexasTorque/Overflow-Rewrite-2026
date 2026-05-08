@@ -52,7 +52,7 @@ class IntakeRealIO : public IntakeIO {
     config.VoltageCompensation(12);
 
     config.closedLoop.Pid(1.5, 0, 0, rev::spark::kSlot0);
-    config.closedLoop.Pid(0.75, 0, 0, rev::spark::kSlot1);
+    config.closedLoop.Pid(0.35, 0, 0, rev::spark::kSlot1);
 
     m_rotaryMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }

@@ -1,6 +1,13 @@
 #pragma once
 
 #include "units/voltage.h"
+#include "units/velocity.h"
+#include "units/angular_velocity.h"
+
+namespace DriveConstants {
+inline constexpr units::meters_per_second_t kMaxSpeed = 4.5_mps;
+inline constexpr units::radians_per_second_t kMaxAngularRate = 0.75_tps;
+}  // namespace DriveConstants
 
 namespace IntakeConstants {
 inline constexpr int kIntakeRotaryMotorPort = 13;
