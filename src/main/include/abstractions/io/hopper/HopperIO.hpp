@@ -1,10 +1,11 @@
 #pragma once
 
+#include "units/current.h"
 #include "units/voltage.h"
 
 struct HopperIOInputs {
   units::volt_t hopperVoltage{0_V};
-  units::volt_t voltageRequest{0_V};
+  units::ampere_t hopperCurrent{0_A};
 };
 
 class HopperIO {

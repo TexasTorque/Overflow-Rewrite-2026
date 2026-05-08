@@ -13,7 +13,7 @@ class HopperRealIO : public HopperIO {
 
   void UpdateInputs(HopperIOInputs& inputs) override {
     inputs.hopperVoltage = m_hopperMotor.GetMotorVoltage().GetValue();
-    inputs.voltageRequest = m_voltageRequest.Output;
+    inputs.hopperCurrent = m_hopperMotor.GetSupplyCurrent().GetValue();
   }
 
   void SetHopperVoltage(units::volt_t voltage) override {
