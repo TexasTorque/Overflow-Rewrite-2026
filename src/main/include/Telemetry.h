@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ctre/phoenix6/SignalLogger.hpp"
 #include <frc/smartdashboard/Mechanism2d.h>
 #include <frc/smartdashboard/MechanismLigament2d.h>
 #include <networktables/NetworkTableInstance.h>
