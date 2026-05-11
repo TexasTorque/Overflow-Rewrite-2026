@@ -41,6 +41,8 @@ void RobotContainer::ConfigureBindings() {
         .WithRotationalRate(-m_driverController.GetRightX() * DriveConstants::kMaxAngularRate);
   }));
 
+  m_driverController.LeftBumper().OnTrue(frc2::cmd::RunOnce([this] { m_driveSubsystem.SeedFieldCentric(); }));
+
   frc2::RobotModeTriggers::Disabled().WhileTrue(
       m_driveSubsystem.ApplyRequest([] { return swerve::requests::Idle{}; }).IgnoringDisable(true));
 
