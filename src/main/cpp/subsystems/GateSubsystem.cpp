@@ -43,7 +43,7 @@ void GateSubsystem::ApplyState(const GateStateEnum& newState) {
       m_io->SetGateVoltage(GateConstants::kGateVoltage);
       break;
     case GateStateEnum::Outtake:
-      m_io->SetGateVoltage(HopperConstants::kOuttakeVoltage);
+      m_io->SetGateVoltage(GateConstants::kOuttakeVoltage);
       break;
   }
 }
