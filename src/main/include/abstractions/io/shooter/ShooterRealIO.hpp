@@ -30,7 +30,7 @@ class ShooterRealIO : public ShooterIO {
 
     void UpdateInputs(ShooterIOInputs& inputs) override {
       inputs.flywheelRPMSetpoint = units::revolutions_per_minute_t{rpmRequest.Velocity};
-      inputs.flywheelRPM = units::revolutions_per_minute_t{m_flywheelMotorRight.GetVelocity().GetValue()*60};
+      inputs.flywheelRPM = m_flywheelMotorRight.GetVelocity().GetValue();
 
       inputs.flywheelNearDesired = abs(rpmRequest.Velocity.value() - inputs.flywheelRPM.value()) < ShooterConstants::kFlywheelTolerance;
     }
@@ -68,7 +68,7 @@ class ShooterRealIO : public ShooterIO {
         conf.MotorOutput.WithNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
 
         m_flywheelMotorLeft.GetConfigurator().Apply(conf);
-        m_flywheelMotorLeft.SetControl(ctre::phoenix6::controls::Follower{m_flywheelMotorRight.GetDeviceID(), false});
+        m_flywheelMotorLeft.SetControl(ctre::phoenix6::controls::Follower{m_flywheelMotorRight.GetDeviceID(), true});
         m_flywheelMotorLeft.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
       }
 };

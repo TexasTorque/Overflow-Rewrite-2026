@@ -18,6 +18,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr RunLaserCommand();
   frc2::CommandPtr RunClimbCommand();
   frc2::CommandPtr RunTrenchCommand();
+  frc2::CommandPtr RunRegressionCommand();
 
   void SetState(const ShooterStateEnum& newState);
   void Clean();

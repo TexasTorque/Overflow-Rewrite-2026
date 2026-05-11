@@ -2,6 +2,7 @@
 #include <functional>
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/state/ShooterState.hpp"
+#include "constants/Constants.hpp"
 #include "constants/constants.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
@@ -34,6 +35,12 @@ frc2::CommandPtr ShooterSubsystem::RunClimbCommand() {
 
 frc2::CommandPtr ShooterSubsystem::RunTrenchCommand() {
   return frc2::cmd::StartEnd([this] { SetState(ShooterStateEnum::Trench); }, [this] { SetState(ShooterStateEnum::Idle); },
+                             {this})
+      .WithName("Set Flywheel RPM");
+}
+
+frc2::CommandPtr ShooterSubsystem::RunRegressionCommand() {
+  return frc2::cmd::StartEnd([this] { SetState(ShooterStateEnum::Regression); }, [this] { SetState(ShooterStateEnum::Idle); },
                              {this})
       .WithName("Set Flywheel RPM");
 }
@@ -72,5 +79,8 @@ void ShooterSubsystem::ApplyState(const ShooterStateEnum& newState) {
     case ShooterStateEnum::Climb:
       m_io->SetFlywheelRPM(ShooterConstants::kClimbV);
       break;
+    case ShooterStateEnum::Regression:
+      m_io->SetFlywheelRPM(ShooterConstants::kTrenchV);
+    break;
   }
 }
