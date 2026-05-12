@@ -61,5 +61,6 @@ void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {
     case IntakeStateEnum::SlowPullup:
       m_io->SetIntakeVoltage(0_V);
       m_io->SetIntakePivotSetpoint(IntakeConstants::kRotarySlowZeroPosition, true);
+      break;
   }
 }
