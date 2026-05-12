@@ -1,3 +1,6 @@
+// Texas Torque 1477
+// Overflow 2026
+
 #include "subsystems/ShooterSubsystem.hpp"
 #include <functional>
 #include "abstractions/io/shooter/ShooterIO.hpp"

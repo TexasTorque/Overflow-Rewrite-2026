@@ -1,3 +1,7 @@
+// Texas Torque 1477
+// Overflow 2026
+#pragma once
+
 #include <telemetrykit/core/Units.h>
 #include "abstractions/io/hopper/HopperIO.hpp"
 #include "abstractions/state/HopperState.hpp"
