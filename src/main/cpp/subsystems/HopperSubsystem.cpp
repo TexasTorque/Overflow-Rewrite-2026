@@ -2,6 +2,7 @@
 // Overflow 2026
 
 #include "subsystems/HopperSubsystem.hpp"
+#include "abstractions/logging/HopperLogging.hpp"
 #include "abstractions/state/HopperState.hpp"
 #include "constants/constants.hpp"
 #include "frc2/command/Commands.h"
@@ -14,7 +15,7 @@ HopperSubsystem::HopperSubsystem(std::unique_ptr<HopperIO> io)
 
 void HopperSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  m_logger.UpdateTelemetry(m_inputs, GetState());
+  HopperLogging::UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr HopperSubsystem::RunHopperCommand() {

@@ -4,6 +4,7 @@
 #include "subsystems/ShooterSubsystem.hpp"
 #include <functional>
 #include "abstractions/io/shooter/ShooterIO.hpp"
+#include "abstractions/logging/ShooterLogging.hpp"
 #include "abstractions/state/ShooterState.hpp"
 #include "constants/Constants.hpp"
 #include "frc/DataLogManager.h"
@@ -19,7 +20,7 @@ ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
 
 void ShooterSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  m_logger.UpdateTelemetry(m_inputs, GetState());
+  ShooterLogging::UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr ShooterSubsystem::RunLayupCommand() {

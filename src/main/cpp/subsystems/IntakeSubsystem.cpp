@@ -2,6 +2,7 @@
 // Overflow 2026
 
 #include "subsystems/IntakeSubsystem.hpp"
+#include "abstractions/logging/IntakeLogging.hpp"
 #include "abstractions/state/IntakeState.hpp"
 #include "constants/constants.hpp"
 #include "frc2/command/CommandPtr.h"
@@ -41,7 +42,7 @@ void IntakeSubsystem::Clean() {
 
 void IntakeSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  m_logger.UpdateTelemetry(m_inputs, GetState());
+  IntakeLogging::UpdateTelemetry(m_inputs, GetState());
 }
 
 void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {

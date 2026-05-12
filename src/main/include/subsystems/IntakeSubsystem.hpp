@@ -4,7 +4,6 @@
 #pragma once
 
 #include "abstractions/io/intake/IntakeIO.hpp"
-#include "abstractions/logging/IntakeLogging.hpp"
 #include "abstractions/state/IntakeState.hpp"
 #include "frc2/command/CommandPtr.h"
 #include <frc2/command/SubsystemBase.h>
@@ -27,7 +26,6 @@ class IntakeSubsystem : public frc2::SubsystemBase {
 
  private:
   std::unique_ptr<IntakeIO> m_io;
-  IntakeLogging m_logger;
   IntakeIOInputs m_inputs;
   IntakeState m_state;
 

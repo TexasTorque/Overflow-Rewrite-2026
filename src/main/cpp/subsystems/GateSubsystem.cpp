@@ -2,6 +2,7 @@
 // Overflow 2026
 
 #include "subsystems/GateSubsystem.hpp"
+#include "abstractions/logging/GateLogging.hpp"
 #include "abstractions/state/GateState.hpp"
 #include "constants/Constants.hpp"
 #include "frc2/command/Commands.h"
@@ -14,7 +15,7 @@ GateSubsystem::GateSubsystem(std::unique_ptr<GateIO> io)
 
 void GateSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  m_logger.UpdateTelemetry(m_inputs, GetState());
+  GateLogging::UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr GateSubsystem::RunGateCommand() {

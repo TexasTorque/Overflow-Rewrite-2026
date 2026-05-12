@@ -5,7 +5,6 @@
 
 #include <memory>
 #include "abstractions/io/hopper/HopperIO.hpp"
-#include "abstractions/logging/HopperLogging.hpp"
 #include "abstractions/state/HopperState.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/SubsystemBase.h"
@@ -26,7 +25,6 @@ class HopperSubsystem : public frc2::SubsystemBase {
 
  private:
   std::unique_ptr<HopperIO> m_io;
-  HopperLogging m_logger;
   HopperIOInputs m_inputs;
   HopperState m_state;
 

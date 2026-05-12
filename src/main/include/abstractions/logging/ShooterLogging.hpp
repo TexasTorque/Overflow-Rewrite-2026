@@ -8,7 +8,7 @@
 
 class ShooterLogging {
  public:
-  void UpdateTelemetry(ShooterIOInputs inputs, ShooterStateEnum state) {
+  static void UpdateTelemetry(ShooterIOInputs inputs, ShooterStateEnum state) {
     tkit::RecordOutput("ShooterSubsystem/FlywheelNearDesired", inputs.flywheelNearDesired);
     tkit::RecordOutput("ShooterSubsystem/FlywheelRPM", inputs.flywheelRPM);
     tkit::RecordOutput("ShooterSubsystem/FlywheelRPMSetpoint", inputs.flywheelRPMSetpoint);

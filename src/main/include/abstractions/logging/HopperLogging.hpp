@@ -8,7 +8,7 @@
 
 class HopperLogging {
  public:
-  void UpdateTelemetry(const HopperIOInputs& inputs, HopperStateEnum state) {
+  static void UpdateTelemetry(const HopperIOInputs& inputs, HopperStateEnum state) {
     tkit::RecordOutput("HopperSubsystem/Voltage", inputs.hopperVoltage);
     tkit::RecordOutput("HopperSubsystem/Current", inputs.hopperCurrent);
 

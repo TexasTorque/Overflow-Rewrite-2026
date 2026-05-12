@@ -8,7 +8,7 @@
 
 class IntakeLogging {
  public:
-  void UpdateTelemetry(const IntakeIOInputs& inputs, IntakeStateEnum state) {
+  static void UpdateTelemetry(const IntakeIOInputs& inputs, IntakeStateEnum state) {
     tkit::RecordOutput("IntakeSubsystem/RollerCurrent", inputs.rollerCurrent);
     tkit::RecordOutput("IntakeSubsystem/RollerVoltage", inputs.rollerVoltage);
     tkit::RecordOutput("IntakeSubsystem/PivotPosition", inputs.pivotPosition);
