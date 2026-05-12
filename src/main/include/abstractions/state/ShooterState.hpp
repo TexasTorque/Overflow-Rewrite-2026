@@ -1,27 +1,13 @@
 #pragma once
 
+#include "magic_enum.hpp"
 #include "turbolib/state/TurboState.hpp"
 #include <string>
 
 enum class ShooterStateEnum { Off, Idle, Regression, Layup, Climb, Trench, Laser };
 
-inline constexpr std::string stateToString(ShooterStateEnum state) {
-  switch (state) {
-    case ShooterStateEnum::Off:
-      return "Off";
-    case ShooterStateEnum::Idle:
-      return "Idle";
-    case ShooterStateEnum::Regression:
-      return "Regression";
-    case ShooterStateEnum::Layup:
-      return "Layup";
-    case ShooterStateEnum::Climb:
-      return "Climb";
-    case ShooterStateEnum::Trench:
-      return "Trench";
-    case ShooterStateEnum::Laser:
-      return "Laser";
-  }
+inline std::string stateToString(ShooterStateEnum state) {
+  return std::string(magic_enum::enum_name(state));
 }
 
 class ShooterState : public TurboState<ShooterStateEnum> {
