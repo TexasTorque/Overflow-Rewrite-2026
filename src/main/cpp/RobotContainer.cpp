@@ -13,6 +13,9 @@
 #include "abstractions/io/intake/IntakeRealIO.hpp"
 #include "abstractions/io/intake/IntakeSimIO.hpp"
 #include "constants/Constants.hpp"
+#include "abstractions/io/shooter/ShooterIO.hpp"
+#include "abstractions/io/shooter/ShooterRealIO.hpp"
+#include "abstractions/io/shooter/ShooterSimIO.hpp"
 #include "factory/CommandFactory.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
@@ -22,11 +25,13 @@
 
 RobotContainer::RobotContainer()
     : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()),
+      m_shooterSubsystem(turbolib::utils::MakeIO<ShooterIO, ShooterRealIO, ShooterSimIO>()),
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
       m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()) {
   ConfigureBindings();
   ConfigureIntakeBindings();
   ConfigureHopperBindings();
+  ConfigureShooterBindings();
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -54,6 +59,14 @@ void RobotContainer::ConfigureIntakeBindings() {
 }
 
 void RobotContainer::ConfigureHopperBindings() {}
+
+void RobotContainer::ConfigureShooterBindings() {
+  m_operatorController.POVDown().WhileTrue(CommandFactory::LayupShotCommand(m_shooterSubsystem));
+  m_operatorController.POVLeft().WhileTrue(CommandFactory::TrenchShotCommand(m_shooterSubsystem));
+  m_operatorController.POVRight().WhileTrue(CommandFactory::LaserShotCommand(m_shooterSubsystem));
+  m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem));
+  m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem));
+}
 
 frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
   return frc2::cmd::Print("No autonomous command configured");
