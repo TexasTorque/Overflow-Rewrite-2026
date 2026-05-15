@@ -31,11 +31,11 @@ class HopperRealIO : public HopperIO {
   void ConfigureHopperMotor() {
     ctre::phoenix6::configs::TalonFXConfiguration config;
 
-    config.CurrentLimits.WithStatorCurrentLimit(70_A);
-    config.CurrentLimits.WithSupplyCurrentLimit(40_A);
+    config.CurrentLimits.StatorCurrentLimit = 70_A;
+    config.CurrentLimits.SupplyCurrentLimit = 40_A;
 
-    config.CurrentLimits.WithStatorCurrentLimitEnable(true);
-    config.CurrentLimits.WithSupplyCurrentLimitEnable(true);
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
     config.MotorOutput.Inverted = true;
 
