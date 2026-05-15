@@ -15,8 +15,8 @@ inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem&
   return frc2::cmd::Parallel(intake.RunOuttakeCommand(), hopper.RunOuttakeCommand(), gate.RunOuttakeCommand());
 }
 
-inline frc2::CommandPtr PassThroughCommand(IntakeSubsystem& intake, HopperSubsystem& hopper, GateSubsystem& gate) {
-  return frc2::cmd::Parallel(hopper.RunHopperCommand(), intake.SlowZeroCommand(), gate.RunGateCommand());
+inline frc2::CommandPtr PassThroughCommand(HopperSubsystem& hopper, GateSubsystem& gate) {
+  return frc2::cmd::Parallel(hopper.RunHopperCommand(), gate.RunGateCommand());
 };
 
 inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter) {

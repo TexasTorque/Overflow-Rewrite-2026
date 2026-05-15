@@ -36,8 +36,8 @@ RobotContainer::RobotContainer()
 void RobotContainer::ConfigureBindings() {
   m_operatorController.POVUp().WhileTrue(
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.A().WhileTrue(
-      CommandFactory::PassThroughCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.B().ToggleOnTrue(CommandFactory::PassThroughCommand(m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
   m_driveSubsystem.SetDefaultCommand(m_driveSubsystem.ApplyRequest([this]() -> auto&& {
     return drive.WithVelocityX(-m_driverController.GetLeftY() * DriveConstants::kMaxSpeed)
@@ -63,6 +63,7 @@ void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().WhileTrue(CommandFactory::LayupShotCommand(m_shooterSubsystem));
   m_operatorController.POVLeft().WhileTrue(CommandFactory::TrenchShotCommand(m_shooterSubsystem));
   m_operatorController.POVRight().WhileTrue(CommandFactory::LaserShotCommand(m_shooterSubsystem));
+
   m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem));
   m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem));
 }
