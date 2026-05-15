@@ -11,7 +11,7 @@
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
-#include "subsystems/Perception.hpp"
+#include "subsystems/PerceptionSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
