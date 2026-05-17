@@ -3,12 +3,12 @@
 #include <memory>
 #include <vector>
 #include "frc2/command/SubsystemBase.h"
-#include "subsystems/CommandSwerveDrivetrain.h"
+#include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
 class PerceptionSubsystem : frc2::SubsystemBase {
  public:
-  PerceptionSubsystem(subsystems::CommandSwerveDrivetrain& drive);
+  explicit PerceptionSubsystem(VisionMeasurementConsumer& visionConsumer);
 
   void Update();
   void AddLocalizationCamera(const std::string& cameraName, const frc::Transform3d& cameraInBotSpace,
@@ -20,6 +20,6 @@ class PerceptionSubsystem : frc2::SubsystemBase {
   void Periodic() override;
 
  private:
-  subsystems::CommandSwerveDrivetrain& m_drive;
+  VisionMeasurementConsumer& m_visionConsumer;
   std::vector<std::unique_ptr<turbolib::perception::TurboPhotonCamera>> m_localizationCameras;
 };

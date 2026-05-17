@@ -3,11 +3,10 @@
 #include "frc/apriltag/AprilTagFields.h"
 #include "frc/geometry/Rotation3d.h"
 #include "frc/geometry/Transform3d.h"
-#include "subsystems/CommandSwerveDrivetrain.h"
 #include "telemetrykit/core/AlertManager.h"
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
-PerceptionSubsystem::PerceptionSubsystem(subsystems::CommandSwerveDrivetrain& drive) : m_drive(drive) {
+PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsumer) : m_visionConsumer(visionConsumer) {
   AddLocalizationCamera("shooterRightCam",
                         frc::Transform3d{-10.88111_in, -7.985419_in, 10.326243_in, {0_deg, -22.5_deg, 180_deg}},
                         frc::AprilTagField::k2026RebuiltAndyMark);
@@ -32,7 +31,7 @@ void PerceptionSubsystem::Update() {
     const std::vector<turbolib::structure::PoseTimestampPair> visionPoses = camera->FetchPose();
 
     for (const auto& pair : visionPoses) {
-      m_drive.AddVisionMeasurement(pair.getPose(), pair.getLatency());
+      m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency());
     }
   }
 }
