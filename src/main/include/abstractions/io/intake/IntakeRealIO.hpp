@@ -32,8 +32,9 @@ class IntakeRealIO : public IntakeIO {
   void SetIntakeVoltage(units::volt_t voltage) override { m_rollerMotorRight.SetVoltage(voltage); }
 
   void SetIntakePivotSetpoint(double setpoint, bool slow = false) override {
-    m_rotaryMotor.GetClosedLoopController().SetSetpoint(setpoint, rev::spark::SparkLowLevel::ControlType::kPosition,
-                                                        slow ? rev::spark::kSlot1 : rev::spark::kSlot0);
+    m_rotaryMotor.GetClosedLoopController().SetSetpoint(
+        setpoint, rev::spark::SparkLowLevel::ControlType::kMAXMotionPositionControl,
+        slow ? rev::spark::kSlot1 : rev::spark::kSlot0);
   }
 
  private:
@@ -55,7 +56,13 @@ class IntakeRealIO : public IntakeIO {
     config.VoltageCompensation(12);
 
     config.closedLoop.Pid(1.5, 0, 0, rev::spark::kSlot0);
-    config.closedLoop.Pid(0.35, 0, 0, rev::spark::kSlot1);
+    config.closedLoop.Pid(1.5, 0, 0, rev::spark::kSlot1);
+
+    config.closedLoop.maxMotion.CruiseVelocity(30);
+    config.closedLoop.maxMotion.MaxAcceleration(10);
+
+    config.closedLoop.maxMotion.CruiseVelocity(15, rev::spark::kSlot1);
+    config.closedLoop.maxMotion.MaxAcceleration(5, rev::spark::kSlot1);
 
     m_rotaryMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
