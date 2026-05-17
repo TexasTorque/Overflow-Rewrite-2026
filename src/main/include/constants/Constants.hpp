@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "frc/geometry/Transform3d.h"
 #include "units/voltage.h"
 #include "units/velocity.h"
 #include "units/angular_velocity.h"
@@ -11,6 +12,15 @@ namespace DriveConstants {
 inline constexpr units::meters_per_second_t kMaxSpeed = 3.75_mps;
 inline constexpr units::radians_per_second_t kMaxAngularRate = 0.75_tps;
 }  // namespace DriveConstants
+
+namespace PerceptionConstants {
+inline constexpr frc::Transform3d kShooterRightCamTransform{
+    -10.88111_in, -7.985419_in, 10.326243_in, {0_deg, -22.5_deg, 180_deg}};
+inline constexpr frc::Transform3d kHopperLeftCamTransform{
+    2.50874_in, 12.29184_in, 6.912581_in, {0_deg, -25_deg, 90_deg}};
+inline constexpr frc::Transform3d kHopperRightCamTransform{
+    2.50874_in, -12.29184_in, 6.912581_in, {0_deg, -25_deg, -90_deg}};
+}  // namespace PerceptionConstants
 
 namespace IntakeConstants {
 inline constexpr int kIntakeRotaryMotorPort = 13;
