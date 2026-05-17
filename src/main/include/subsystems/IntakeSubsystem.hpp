@@ -11,7 +11,7 @@
 
 class IntakeSubsystem : public frc2::SubsystemBase {
  public:
-  IntakeSubsystem(std::unique_ptr<IntakeIO> io);
+  explicit IntakeSubsystem(std::unique_ptr<IntakeIO> io);
 
   void Periodic() override;
 

@@ -3,6 +3,7 @@
 
 #include "subsystems/CommandSwerveDrivetrain.h"
 #include <frc/RobotController.h>
+#include <memory>
 
 using namespace subsystems;
 

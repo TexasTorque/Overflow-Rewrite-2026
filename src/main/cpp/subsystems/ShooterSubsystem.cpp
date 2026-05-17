@@ -11,6 +11,7 @@
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
 #include "units/angular_velocity.h"
+#include <utility>
 
 ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
     : m_io(std::move(io)),

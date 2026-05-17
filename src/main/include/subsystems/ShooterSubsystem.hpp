@@ -12,7 +12,7 @@
 
 class ShooterSubsystem : public frc2::SubsystemBase {
  public:
-  ShooterSubsystem(std::unique_ptr<ShooterIO> io);
+  explicit ShooterSubsystem(std::unique_ptr<ShooterIO> io);
 
   void SetFlywheelVelocity(units::revolutions_per_minute_t rpm) { m_io->SetFlywheelRPM(rpm); }
 

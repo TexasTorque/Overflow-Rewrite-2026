@@ -6,6 +6,7 @@
 #include "abstractions/state/GateState.hpp"
 #include "constants/Constants.hpp"
 #include "frc2/command/Commands.h"
+#include <utility>
 
 GateSubsystem::GateSubsystem(std::unique_ptr<GateIO> io)
     : m_io(std::move(io)),

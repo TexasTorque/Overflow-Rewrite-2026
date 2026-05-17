@@ -6,6 +6,7 @@
 #include "magic_enum.hpp"
 #include "turbolib/state/TurboState.hpp"
 #include <string>
+#include <utility>
 
 enum class ShooterStateEnum { Off, Idle, Regression, Layup, Climb, Trench, Laser };
 

@@ -11,7 +11,7 @@
 
 class GateSubsystem : public frc2::SubsystemBase {
  public:
-  GateSubsystem(std::unique_ptr<GateIO> io);
+  explicit GateSubsystem(std::unique_ptr<GateIO> io);
 
   void Periodic() override;
 

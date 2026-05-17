@@ -6,6 +6,7 @@
 #include "abstractions/state/HopperState.hpp"
 #include "constants/constants.hpp"
 #include "frc2/command/Commands.h"
+#include <utility>
 
 HopperSubsystem::HopperSubsystem(std::unique_ptr<HopperIO> io)
     : m_io(std::move(io)),

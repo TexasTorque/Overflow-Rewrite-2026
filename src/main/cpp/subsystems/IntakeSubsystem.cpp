@@ -7,6 +7,7 @@
 #include "constants/constants.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
+#include <utility>
 
 IntakeSubsystem::IntakeSubsystem(std::unique_ptr<IntakeIO> io)
     : m_io(std::move(io)),
