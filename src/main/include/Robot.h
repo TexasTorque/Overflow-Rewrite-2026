@@ -6,7 +6,7 @@
 
 #include <optional>
 
-#include "choreo/Choreo.h"
+#include "abstractions/autonomous/AutonomousChooser.hpp"
 #include "choreo/trajectory/Trajectory.h"
 #include "ctre/phoenix6/HootAutoReplay.hpp"
 
@@ -35,12 +35,12 @@ class Robot : public frc::TimedRobot {
 
  private:
   frc::Timer m_timer;
-  std::optional<choreo::Trajectory<choreo::SwerveSample>> m_trajectory =
-      choreo::Choreo::LoadTrajectory<choreo::SwerveSample>("LeftDoubleSwipe");
+  std::optional<choreo::Trajectory<choreo::SwerveSample>> m_trajectory;
 
   std::optional<frc2::CommandPtr> m_autonomousCommand;
   std::unordered_map<std::string, std::function<frc2::CommandPtr()>> m_eventMap;
 
+  AutonomousChooser m_autoChooser;
   RobotContainer m_container;
 
   ctre::phoenix6::HootAutoReplay m_timeAndJoystickReplay =

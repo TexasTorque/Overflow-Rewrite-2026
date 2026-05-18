@@ -6,14 +6,14 @@
 #include <frc2/command/CommandScheduler.h>
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
-#include "factory/AutonomousCommand.hpp"
+#include "abstractions/autonomous/AutonomousCommand.hpp"
 #include "frc/RobotBase.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "telemetrykit/core/Logger.h"
 #include "telemetrykit/receiver/NetworkTablesReceiver.h"
 #include "telemetrykit/receiver/WPILogWriter.h"
 
-Robot::Robot() {
+Robot::Robot() : m_autoChooser([this] { m_trajectory = m_autoChooser.GetSelectedTrajectory(); }) {
   frc::SmartDashboard::PutData("Command Scheduler", &frc2::CommandScheduler::GetInstance());
 
   auto& logger = tkit::Logger::GetInstance();
@@ -34,7 +34,8 @@ Robot::Robot() {
   };
 
   m_autonomousCommand =
-      AutonomousCommand(m_container.GetDriveSubsystem(), std::move(m_trajectory), m_timer, std::move(m_eventMap))
+      AutonomousCommand(
+          m_container.GetDriveSubsystem(), [this] { return m_trajectory; }, m_timer, std::move(m_eventMap))
           .ToPtr();
 }
 

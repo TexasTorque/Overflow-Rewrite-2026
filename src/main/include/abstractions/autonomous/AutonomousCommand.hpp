@@ -21,15 +21,18 @@
 class AutonomousCommand : public frc2::CommandHelper<frc2::Command, AutonomousCommand> {
  public:
   using EventCallback = std::function<frc2::CommandPtr()>;
+  using Trajectory = std::optional<choreo::Trajectory<choreo::SwerveSample>>;
+  using TrajectorySupplier = std::function<Trajectory()>;
 
-  AutonomousCommand(subsystems::CommandSwerveDrivetrain& drive,
-                    std::optional<choreo::Trajectory<choreo::SwerveSample>> traj, frc::Timer& timer,
+  AutonomousCommand(subsystems::CommandSwerveDrivetrain& drive, TrajectorySupplier traj, frc::Timer& timer,
                     std::unordered_map<std::string, EventCallback> eventMap = {})
-      : m_drivebase(drive), m_autoTimer(timer), m_trajectory(std::move(traj)), m_eventMap(std::move(eventMap)) {
+      : m_drivebase(drive), m_autoTimer(timer), m_trajectorySupplier(std::move(traj)), m_eventMap(std::move(eventMap)) {
     AddRequirements(&m_drivebase);
   };
 
   void Initialize() override {
+    m_trajectory = m_trajectorySupplier();
+
     if (!m_trajectory.has_value()) {
       return;
     }
@@ -87,7 +90,9 @@ class AutonomousCommand : public frc2::CommandHelper<frc2::Command, AutonomousCo
 
   subsystems::CommandSwerveDrivetrain& m_drivebase;
   frc::Timer& m_autoTimer;
-  std::optional<choreo::Trajectory<choreo::SwerveSample>> m_trajectory;
+
+  TrajectorySupplier m_trajectorySupplier;
+  Trajectory m_trajectory;
 
   std::unordered_map<std::string, EventCallback> m_eventMap;
   std::vector<TimedEvent> m_timedEvents;
