@@ -11,7 +11,6 @@
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "abstractions/io/intake/IntakeRealIO.hpp"
 #include "abstractions/io/intake/IntakeSimIO.hpp"
-#include "constants/Constants.hpp"
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
@@ -66,8 +65,4 @@ void RobotContainer::ConfigureShooterBindings() {
 
   m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem));
   m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem));
-}
-
-frc2::CommandPtr RobotContainer::GetAutonomousCommand() {
-  return frc2::cmd::Print("No autonomous command configured");
 }

@@ -23,8 +23,7 @@ class RobotContainer {
  public:
   RobotContainer();
 
-  frc2::CommandPtr GetAutonomousCommand();
-
+  subsystems::CommandSwerveDrivetrain& GetDriveSubsystem() { return m_driveSubsystem; }
   IntakeSubsystem& GetIntakeSubsystem() { return m_intakeSubsystem; }
   HopperSubsystem& GetHopperSubsystem() { return m_hopperSubsystem; }
   ShooterSubsystem& GetShooterSubsystem() { return m_shooterSubsystem; }
@@ -42,7 +41,7 @@ class RobotContainer {
   swerve::requests::FieldCentric drive =
       swerve::requests::FieldCentric{}
           .WithDeadband(DriveConstants::kMaxSpeed * 0.05)
-          .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)  // Add a 10% deadband
+          .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)
           .WithDriveRequestType(ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake brake{};
   swerve::requests::PointWheelsAt point{};

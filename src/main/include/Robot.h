@@ -6,12 +6,15 @@
 
 #include <optional>
 
+#include "abstractions/autonomous/AutonomousChooser.hpp"
+#include "choreo/trajectory/Trajectory.h"
 #include "ctre/phoenix6/HootAutoReplay.hpp"
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
+#include "frc/Timer.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -31,8 +34,13 @@ class Robot : public frc::TimedRobot {
   void TestExit() override;
 
  private:
-  std::optional<frc2::CommandPtr> m_autonomousCommand;
+  frc::Timer m_timer;
+  std::optional<choreo::Trajectory<choreo::SwerveSample>> m_trajectory;
 
+  std::optional<frc2::CommandPtr> m_autonomousCommand;
+  std::unordered_map<std::string, std::function<frc2::CommandPtr()>> m_eventMap;
+
+  AutonomousChooser m_autoChooser;
   RobotContainer m_container;
 
   ctre::phoenix6::HootAutoReplay m_timeAndJoystickReplay =
