@@ -1,5 +1,6 @@
 #pragma once
 
+#include "choreo/trajectory/SwerveSample.h"
 #include "ctre/phoenix6/SignalLogger.hpp"
 
 #include <frc/DriverStation.h>
@@ -7,9 +8,14 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/sysid/SysIdRoutine.h>
+#include <cmath>
 
+#include "frc/controller/PIDController.h"
+#include "frc/geometry/Pose2d.h"
+#include "frc/kinematics/ChassisSpeeds.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
+#include "units/velocity.h"
 
 using namespace ctre::phoenix6;
 
@@ -113,6 +119,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     if (utils::IsSimulation()) {
       StartSimThread();
     }
+
+    m_thetaController.EnableContinuousInput(-M_PI, M_PI);
   }
 
   /**
@@ -135,6 +143,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     if (utils::IsSimulation()) {
       StartSimThread();
     }
+
+    m_thetaController.EnableContinuousInput(-M_PI, M_PI);
   }
 
   /**
@@ -162,6 +172,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     if (utils::IsSimulation()) {
       StartSimThread();
     }
+
+    m_thetaController.EnableContinuousInput(-M_PI, M_PI);
   }
 
   /**
@@ -255,7 +267,26 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     return _drivetrain.SamplePoseAt(utils::FPGAToCurrentTime(timestamp));
   }
 
+  void FollowTrajectory(const choreo::SwerveSample& sample) {
+    frc::Pose2d pose = GetState().Pose;
+    units::meters_per_second_t xFeedback = m_xController.Calculate(pose.X().value(), sample.x.value()) * 1_mps;
+    units::meters_per_second_t yFeedback = m_yController.Calculate(pose.Y().value(), sample.y.value()) * 1_mps;
+    units::radians_per_second_t thetaFeedback =
+        m_thetaController.Calculate(pose.Rotation().Radians().value(), sample.heading.value()) * 1_rad_per_s;
+
+    frc::ChassisSpeeds speeds{sample.vx + xFeedback, sample.vy + yFeedback, sample.omega + thetaFeedback};
+
+    SetControl(driveSpeeds.WithVelocityX(-speeds.vx).WithVelocityY(-speeds.vy).WithRotationalRate(speeds.omega));
+  }
+
  private:
+  swerve::requests::FieldCentric driveSpeeds = swerve::requests::FieldCentric{}.WithDriveRequestType(
+      ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
+
+  frc::PIDController m_xController{5.0, 0, 0};
+  frc::PIDController m_yController{5.0, 0, 0};
+  frc::PIDController m_thetaController{3.5, 0, 0};
+
   void StartSimThread();
 };
 

@@ -7,6 +7,7 @@
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
 #include "frc/RobotBase.h"
+#include "frc2/command/Commands.h"
 #include "telemetrykit/core/Logger.h"
 #include "telemetrykit/receiver/NetworkTablesReceiver.h"
 #include "telemetrykit/receiver/WPILogWriter.h"
@@ -23,6 +24,16 @@ Robot::Robot() {
   }
 
   logger.Start();
+
+  m_autonomousCommand = frc2::cmd::Run(
+      [this] {
+        if (m_trajectory) {
+          if (auto sample = m_trajectory.value().SampleAt(m_timer.Get(), IsRedAlliance())) {
+            m_container.GetDriveSubsystem().FollowTrajectory(sample.value());
+          }
+        }
+      },
+      {&m_container.GetDriveSubsystem()});
 }
 
 void Robot::RobotPeriodic() {
@@ -39,7 +50,14 @@ void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {}
 
 void Robot::AutonomousInit() {
-  m_autonomousCommand = m_container.GetAutonomousCommand();
+  if (m_trajectory) {
+    if (auto initialPose = m_trajectory.value().GetInitialPose(IsRedAlliance())) {
+      m_container.GetDriveSubsystem().ResetPose(initialPose.value());
+    }
+  }
+
+  m_timer.Reset();
+  m_timer.Start();
 
   if (m_autonomousCommand) {
     frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand.value());
@@ -51,7 +69,7 @@ void Robot::AutonomousPeriodic() {}
 void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {
-  if (m_autonomousCommand) {
+  if (m_autonomousCommand && m_autonomousCommand->IsScheduled()) {
     m_autonomousCommand->Cancel();
   }
 
@@ -87,6 +105,10 @@ void Robot::TestInit() {
 void Robot::TestPeriodic() {}
 
 void Robot::TestExit() {}
+
+bool Robot::IsRedAlliance() {
+  return frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue) == frc::DriverStation::kRed;
+}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {

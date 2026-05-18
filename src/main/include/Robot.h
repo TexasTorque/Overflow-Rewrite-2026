@@ -6,12 +6,15 @@
 
 #include <optional>
 
+#include "choreo/Choreo.h"
+#include "choreo/trajectory/Trajectory.h"
 #include "ctre/phoenix6/HootAutoReplay.hpp"
 
 #include <frc/TimedRobot.h>
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
+#include "frc/Timer.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -30,8 +33,14 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
   void TestExit() override;
 
+  bool IsRedAlliance();
+
  private:
   std::optional<frc2::CommandPtr> m_autonomousCommand;
+
+  frc::Timer m_timer;
+  std::optional<choreo::Trajectory<choreo::SwerveSample>> m_trajectory =
+      choreo::Choreo::LoadTrajectory<choreo::SwerveSample>("LeftDoubleSwipe");
 
   RobotContainer m_container;
 
