@@ -31,6 +31,7 @@ Robot::Robot() : m_autoChooser([this] { m_trajectory = m_autoChooser.GetSelected
   m_eventMap = {
       {"IntakeDown", [this] { return m_container.GetIntakeSubsystem().RunIntakeCommand(); }},
       {"IntakeStop", [this] { return m_container.GetIntakeSubsystem().StopIntakeCommand(); }},
+      {"AutoAlign", [this] { return m_container.GetDriveSubsystem().RotateToHub(); }},
   };
 
   m_autonomousCommand =

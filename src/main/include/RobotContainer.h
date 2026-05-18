@@ -43,6 +43,7 @@ class RobotContainer {
           .WithDeadband(DriveConstants::kMaxSpeed * 0.05)
           .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)
           .WithDriveRequestType(ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
+
   swerve::requests::SwerveDriveBrake brake{};
   swerve::requests::PointWheelsAt point{};
 

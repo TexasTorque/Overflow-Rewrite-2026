@@ -28,6 +28,7 @@ class AutonomousCommand : public frc2::CommandHelper<frc2::Command, AutonomousCo
                     std::unordered_map<std::string, EventCallback> eventMap = {})
       : m_drivebase(drive), m_autoTimer(timer), m_trajectorySupplier(std::move(traj)), m_eventMap(std::move(eventMap)) {
     AddRequirements(&m_drivebase);
+    SetName("Autonomous");
   };
 
   void Initialize() override {

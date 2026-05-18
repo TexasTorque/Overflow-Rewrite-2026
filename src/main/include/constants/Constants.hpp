@@ -20,6 +20,9 @@ inline constexpr frc::Transform3d kHopperLeftCamTransform{
     2.50874_in, 12.29184_in, 6.912581_in, {0_deg, -25_deg, 90_deg}};
 inline constexpr frc::Transform3d kHopperRightCamTransform{
     2.50874_in, -12.29184_in, 6.912581_in, {0_deg, -25_deg, -90_deg}};
+
+inline constexpr frc::Pose2d kRedHubPose{11.92_m, 4_m, 0_rad};
+inline constexpr frc::Pose2d kBlueHubPose{4.625_m, 4_m, 0_rad};
 }  // namespace PerceptionConstants
 
 namespace IntakeConstants {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "choreo/trajectory/SwerveSample.h"
+#include "constants/Constants.hpp"
 #include "ctre/phoenix6/SignalLogger.hpp"
 
 #include <frc/DriverStation.h>
@@ -9,12 +10,14 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/sysid/SysIdRoutine.h>
 #include <cmath>
+#include <functional>
 
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
+#include "units/length.h"
 #include "units/velocity.h"
 
 using namespace ctre::phoenix6;
@@ -279,13 +282,53 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     SetControl(driveSpeeds.WithVelocityX(-speeds.vx).WithVelocityY(-speeds.vy).WithRotationalRate(speeds.omega));
   }
 
+  frc2::CommandPtr TurnToAngleCommand(std::function<frc::Rotation2d()> targetAngle) {
+    return ApplyRequest([this, targetAngle] {
+             frc::Pose2d pose = GetState().Pose;
+             units::radians_per_second_t thetaFeedback =
+                 m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
+                 1_rad_per_s;
+
+             return driveSpeeds.WithRotationalRate(thetaFeedback);
+           })
+        .Until([this, targetAngle] {
+          frc::Pose2d pose = GetState().Pose;
+          return std::abs(pose.Rotation().Radians().value() - targetAngle().Radians().value()) < 0.075;
+        })
+        .WithName("Turn To Angle");
+  }
+
+  frc2::CommandPtr RotateToHub() {
+    return TurnToAngleCommand([this] {
+             auto alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue);
+             auto hubPose = (alliance == frc::DriverStation::kRed) ? PerceptionConstants::kRedHubPose
+                                                                   : PerceptionConstants::kBlueHubPose;
+
+             frc::Pose2d robotPose = GetState().Pose;
+             return frc::Rotation2d{units::radian_t{std::atan2(hubPose.Y().value() - robotPose.Y().value(),
+                                                               hubPose.X().value() - robotPose.X().value())}}
+                 .RotateBy(180_deg);
+           })
+        .WithName("Rotate To Hub");
+  }
+
+  units::meter_t GetDistanceToHub() const {
+    auto alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue);
+    auto hubPose =
+        (alliance == frc::DriverStation::kRed) ? PerceptionConstants::kRedHubPose : PerceptionConstants::kBlueHubPose;
+
+    frc::Pose2d robotPose = GetState().Pose;
+    return units::meter_t{
+        std::hypot(hubPose.X().value() - robotPose.X().value(), hubPose.Y().value() - robotPose.Y().value())};
+  }
+
  private:
   swerve::requests::FieldCentric driveSpeeds = swerve::requests::FieldCentric{}.WithDriveRequestType(
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
 
   frc::PIDController m_xController{5.0, 0, 0};
   frc::PIDController m_yController{5.0, 0, 0};
-  frc::PIDController m_thetaController{3.5, 0, 0};
+  frc::PIDController m_thetaController{5.0, 0, 0};
 
   void StartSimThread();
 };

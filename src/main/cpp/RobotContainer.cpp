@@ -36,13 +36,17 @@ void RobotContainer::ConfigureBindings() {
   m_operatorController.POVUp().WhileTrue(
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.B().ToggleOnTrue(CommandFactory::PassThroughCommand(m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
-  m_driveSubsystem.SetDefaultCommand(m_driveSubsystem.ApplyRequest([this]() -> auto&& {
-    return drive.WithVelocityX(-m_driverController.GetLeftY() * DriveConstants::kMaxSpeed)
-        .WithVelocityY(-m_driverController.GetLeftX() * DriveConstants::kMaxSpeed)
-        .WithRotationalRate(-m_driverController.GetRightX() * DriveConstants::kMaxAngularRate);
-  }));
+  m_operatorController.A().OnTrue(m_driveSubsystem.RotateToHub());
+
+  m_driveSubsystem.SetDefaultCommand(
+      m_driveSubsystem
+          .ApplyRequest([this]() -> auto&& {
+            return drive.WithVelocityX(-m_driverController.GetLeftY() * DriveConstants::kMaxSpeed)
+                .WithVelocityY(-m_driverController.GetLeftX() * DriveConstants::kMaxSpeed)
+                .WithRotationalRate(-m_driverController.GetRightX() * DriveConstants::kMaxAngularRate);
+          })
+          .WithName("Default Drive"));
 
   m_driverController.LeftBumper().OnTrue(frc2::cmd::RunOnce([this] { m_driveSubsystem.SeedFieldCentric(); }));
 
