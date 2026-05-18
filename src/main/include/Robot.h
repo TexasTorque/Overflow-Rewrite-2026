@@ -33,14 +33,12 @@ class Robot : public frc::TimedRobot {
   void TestPeriodic() override;
   void TestExit() override;
 
-  bool IsRedAlliance();
-
  private:
-  std::optional<frc2::CommandPtr> m_autonomousCommand;
-
   frc::Timer m_timer;
   std::optional<choreo::Trajectory<choreo::SwerveSample>> m_trajectory =
       choreo::Choreo::LoadTrajectory<choreo::SwerveSample>("LeftDoubleSwipe");
+
+  std::optional<frc2::CommandPtr> m_autonomousCommand;
 
   RobotContainer m_container;
 

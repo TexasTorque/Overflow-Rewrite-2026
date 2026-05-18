@@ -6,9 +6,8 @@
 #include <frc2/command/CommandScheduler.h>
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
-#include "abstractions/state/IntakeState.hpp"
+#include "factory/AutonomousComand.hpp"
 #include "frc/RobotBase.h"
-#include "frc2/command/Commands.h"
 #include "telemetrykit/core/Logger.h"
 #include "telemetrykit/receiver/NetworkTablesReceiver.h"
 #include "telemetrykit/receiver/WPILogWriter.h"
@@ -26,27 +25,7 @@ Robot::Robot() {
 
   logger.Start();
 
-  m_autonomousCommand = frc2::cmd::Run(
-      [this] {
-        if (m_trajectory) {
-          if (auto sample = m_trajectory.value().SampleAt(m_timer.Get(), IsRedAlliance())) {
-            m_container.GetDriveSubsystem().FollowTrajectory(sample.value());
-          }
-
-          for (const auto& event : m_trajectory.value().GetEvents("IntakeDown")) {
-            if (std::abs(m_timer.Get().value() - event.timestamp.value()) < 0.02) {
-              m_container.GetIntakeSubsystem().SetState(IntakeStateEnum::Intake);
-            }
-          }
-
-          for (const auto& event : m_trajectory.value().GetEvents("IntakeStop")) {
-            if (std::abs(m_timer.Get().value() - event.timestamp.value()) < 0.02) {
-              m_container.GetIntakeSubsystem().SetState(IntakeStateEnum::Stow);
-            }
-          }
-        }
-      },
-      {&m_container.GetDriveSubsystem()});
+  m_autonomousCommand = AutonomousCommand(m_container.GetDriveSubsystem(), m_trajectory, m_timer).ToPtr();
 }
 
 void Robot::RobotPeriodic() {
@@ -63,16 +42,7 @@ void Robot::DisabledPeriodic() {}
 void Robot::DisabledExit() {}
 
 void Robot::AutonomousInit() {
-  if (m_trajectory) {
-    if (auto initialPose = m_trajectory.value().GetInitialPose(IsRedAlliance())) {
-      m_container.GetDriveSubsystem().ResetPose(initialPose.value());
-    }
-  }
-
-  m_timer.Reset();
-  m_timer.Start();
-
-  if (m_autonomousCommand) {
+  if (m_autonomousCommand.has_value()) {
     frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand.value());
   }
 }
@@ -118,10 +88,6 @@ void Robot::TestInit() {
 void Robot::TestPeriodic() {}
 
 void Robot::TestExit() {}
-
-bool Robot::IsRedAlliance() {
-  return frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue) == frc::DriverStation::kRed;
-}
 
 #ifndef RUNNING_FRC_TESTS
 int main() {
