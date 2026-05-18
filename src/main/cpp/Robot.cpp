@@ -6,13 +6,16 @@
 #include <frc2/command/CommandScheduler.h>
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
-#include "factory/AutonomousComand.hpp"
+#include "factory/AutonomousCommand.hpp"
 #include "frc/RobotBase.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 #include "telemetrykit/core/Logger.h"
 #include "telemetrykit/receiver/NetworkTablesReceiver.h"
 #include "telemetrykit/receiver/WPILogWriter.h"
 
 Robot::Robot() {
+  frc::SmartDashboard::PutData("Command Scheduler", &frc2::CommandScheduler::GetInstance());
+
   auto& logger = tkit::Logger::GetInstance();
 
   logger.AddReceiver(std::make_unique<tkit::NetworkTablesReceiver>());
@@ -25,7 +28,14 @@ Robot::Robot() {
 
   logger.Start();
 
-  m_autonomousCommand = AutonomousCommand(m_container.GetDriveSubsystem(), m_trajectory, m_timer).ToPtr();
+  m_eventMap = {
+      {"IntakeDown", [this] { return m_container.GetIntakeSubsystem().RunIntakeCommand(); }},
+      {"IntakeStop", [this] { return m_container.GetIntakeSubsystem().StopIntakeCommand(); }},
+  };
+
+  m_autonomousCommand =
+      AutonomousCommand(m_container.GetDriveSubsystem(), std::move(m_trajectory), m_timer, std::move(m_eventMap))
+          .ToPtr();
 }
 
 void Robot::RobotPeriodic() {

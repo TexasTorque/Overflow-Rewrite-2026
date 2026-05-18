@@ -39,6 +39,7 @@ class Robot : public frc::TimedRobot {
       choreo::Choreo::LoadTrajectory<choreo::SwerveSample>("LeftDoubleSwipe");
 
   std::optional<frc2::CommandPtr> m_autonomousCommand;
+  std::unordered_map<std::string, std::function<frc2::CommandPtr()>> m_eventMap;
 
   RobotContainer m_container;
 

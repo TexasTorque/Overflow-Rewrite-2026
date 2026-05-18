@@ -27,6 +27,10 @@ frc2::CommandPtr IntakeSubsystem::RunOuttakeCommand() {
       .WithName("Run Outtake");
 }
 
+frc2::CommandPtr IntakeSubsystem::StopIntakeCommand() {
+  return frc2::cmd::RunOnce([this] { SetState(IntakeStateEnum::Stow); }, {this}).WithName("Stop Intake");
+}
+
 frc2::CommandPtr IntakeSubsystem::SlowZeroCommand() {
   return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::SlowPullup); },
                              [this] { SetState(IntakeStateEnum::Stow); }, {this});
