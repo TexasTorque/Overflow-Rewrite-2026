@@ -6,6 +6,7 @@
 #include <frc2/command/CommandScheduler.h>
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
+#include "abstractions/state/IntakeState.hpp"
 #include "frc/RobotBase.h"
 #include "frc2/command/Commands.h"
 #include "telemetrykit/core/Logger.h"
@@ -30,6 +31,18 @@ Robot::Robot() {
         if (m_trajectory) {
           if (auto sample = m_trajectory.value().SampleAt(m_timer.Get(), IsRedAlliance())) {
             m_container.GetDriveSubsystem().FollowTrajectory(sample.value());
+          }
+
+          for (const auto& event : m_trajectory.value().GetEvents("IntakeDown")) {
+            if (std::abs(m_timer.Get().value() - event.timestamp.value()) < 0.02) {
+              m_container.GetIntakeSubsystem().SetState(IntakeStateEnum::Intake);
+            }
+          }
+
+          for (const auto& event : m_trajectory.value().GetEvents("IntakeStop")) {
+            if (std::abs(m_timer.Get().value() - event.timestamp.value()) < 0.02) {
+              m_container.GetIntakeSubsystem().SetState(IntakeStateEnum::Stow);
+            }
           }
         }
       },
