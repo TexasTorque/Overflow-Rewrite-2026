@@ -10,6 +10,7 @@
 #include <frc2/command/CommandPtr.h>
 
 #include "RobotContainer.h"
+#include "frc2/command/Command.h"
 
 class Robot : public frc::TimedRobot {
  public:
@@ -30,6 +31,7 @@ class Robot : public frc::TimedRobot {
 
  private:
   RobotContainer m_container;
+  frc2::Command* m_autonomousCommand;
 
   ctre::phoenix6::HootAutoReplay m_timeAndJoystickReplay =
       ctre::phoenix6::HootAutoReplay{}.WithTimestampReplay().WithJoystickReplay();

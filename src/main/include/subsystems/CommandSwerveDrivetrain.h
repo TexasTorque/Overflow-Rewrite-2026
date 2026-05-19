@@ -11,11 +11,18 @@
 #include <cmath>
 #include <functional>
 
+#include "ctre/phoenix6/swerve/SwerveRequest.hpp"
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
+#include "frc/kinematics/ChassisSpeeds.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
+#include "pathplanner/lib/config/PIDConstants.h"
 #include "units/length.h"
+
+#include <pathplanner/lib/auto/AutoBuilder.h>
+#include <pathplanner/lib/config/RobotConfig.h>
+#include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
 using namespace ctre::phoenix6;
 
@@ -121,6 +128,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     }
 
     m_thetaController.EnableContinuousInput(-M_PI, M_PI);
+
+    ConfigurePathPlanner();
   }
 
   /**
@@ -145,6 +154,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     }
 
     m_thetaController.EnableContinuousInput(-M_PI, M_PI);
+
+    ConfigurePathPlanner();
   }
 
   /**
@@ -267,6 +278,29 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     return _drivetrain.SamplePoseAt(utils::FPGAToCurrentTime(timestamp));
   }
 
+  void ConfigurePathPlanner() {
+    pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
+
+    pathplanner::AutoBuilder::configure(
+        [this]() { return GetState().Pose; }, [this](frc::Pose2d pose) { ResetPose(pose); },
+        [this]() { return GetState().Speeds; }, [this](auto speeds, auto feedforwards) { DriveRobotRelative(speeds); },
+        std::make_shared<pathplanner::PPHolonomicDriveController>(pathplanner::PIDConstants(5.0, 0.0, 0.0),
+                                                                  pathplanner::PIDConstants(5.0, 0.0, 0.0)),
+        config,
+        []() {
+          auto alliance = frc::DriverStation::GetAlliance();
+          if (alliance) {
+            return alliance.value() == frc::DriverStation::Alliance::kRed;
+          }
+          return false;
+        },
+        this);
+  }
+
+  void DriveRobotRelative(const frc::ChassisSpeeds& speeds) {
+    SetControl(driveSpeeds.WithVelocityX(speeds.vx).WithVelocityY(speeds.vy).WithRotationalRate(speeds.omega));
+  }
+
   frc2::CommandPtr TurnToAngleCommand(std::function<frc::Rotation2d()> targetAngle) {
     return ApplyRequest([this, targetAngle] {
              frc::Pose2d pose = GetState().Pose;
@@ -308,11 +342,9 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   }
 
  private:
-  swerve::requests::FieldCentric driveSpeeds = swerve::requests::FieldCentric{}.WithDriveRequestType(
+  swerve::requests::RobotCentric driveSpeeds = swerve::requests::RobotCentric{}.WithDriveRequestType(
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
 
-  frc::PIDController m_xController{5.0, 0, 0};
-  frc::PIDController m_yController{5.0, 0, 0};
   frc::PIDController m_thetaController{5.0, 0, 0};
 
   void StartSimThread();

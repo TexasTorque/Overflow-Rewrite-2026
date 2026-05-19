@@ -41,13 +41,23 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::DisabledExit() {}
 
-void Robot::AutonomousInit() {}
+void Robot::AutonomousInit() {
+  m_autonomousCommand = m_container.GetAutonomousCommand();
+
+  if (m_autonomousCommand) {
+    frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand);
+  }
+}
 
 void Robot::AutonomousPeriodic() {}
 
 void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {
+  if (m_autonomousCommand) {
+    frc2::CommandScheduler::GetInstance().Cancel(m_autonomousCommand);
+  }
+
   auto& intakeSubsystem = m_container.GetIntakeSubsystem();
   auto& gateSubsystem = m_container.GetGateSubsystem();
   auto& hopperSubsystem = m_container.GetHopperSubsystem();

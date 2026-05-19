@@ -15,9 +15,14 @@
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
 #include "factory/CommandFactory.hpp"
+#include "frc/smartdashboard/SmartDashboard.h"
+#include "frc2/command/Command.h"
+#include "pathplanner/lib/auto/AutoBuilder.h"
+#include "pathplanner/lib/auto/NamedCommands.h"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
 #include <frc2/command/button/RobotModeTriggers.h>
+#include <pathplanner/lib/events/EventTrigger.h>
 
 #include <frc2/command/Commands.h>
 
@@ -26,10 +31,15 @@ RobotContainer::RobotContainer()
       m_shooterSubsystem(turbolib::utils::MakeIO<ShooterIO, ShooterRealIO, ShooterSimIO>()),
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
       m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()) {
+  ConfigurePlannerCommands();
   ConfigureBindings();
   ConfigureIntakeBindings();
   ConfigureHopperBindings();
   ConfigureShooterBindings();
+
+  m_autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
+
+  frc::SmartDashboard::PutData("Auto Chooser", &m_autoChooser);
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -42,7 +52,7 @@ void RobotContainer::ConfigureBindings() {
   m_driveSubsystem.SetDefaultCommand(
       m_driveSubsystem
           .ApplyRequest([this]() -> auto&& {
-            return drive.WithVelocityX(-m_driverController.GetLeftY() * DriveConstants::kMaxSpeed)
+            return m_drive.WithVelocityX(-m_driverController.GetLeftY() * DriveConstants::kMaxSpeed)
                 .WithVelocityY(-m_driverController.GetLeftX() * DriveConstants::kMaxSpeed)
                 .WithRotationalRate(-m_driverController.GetRightX() * DriveConstants::kMaxAngularRate);
           })
@@ -69,4 +79,15 @@ void RobotContainer::ConfigureShooterBindings() {
 
   m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem));
   m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem));
+}
+
+void RobotContainer::ConfigurePlannerCommands() {
+  pathplanner::EventTrigger("IntakeDown").OnTrue(m_intakeSubsystem.RunIntakeCommand());
+  pathplanner::EventTrigger("IntakeStop").OnTrue(m_intakeSubsystem.StopIntakeCommand());
+
+  pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub());
+}
+
+frc2::Command* RobotContainer::GetAutonomousCommand() {
+  return m_autoChooser.GetSelected();
 }
