@@ -1,6 +1,5 @@
 #pragma once
 
-#include "choreo/trajectory/SwerveSample.h"
 #include "constants/Constants.hpp"
 #include "ctre/phoenix6/SignalLogger.hpp"
 
@@ -14,11 +13,9 @@
 
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
-#include "frc/kinematics/ChassisSpeeds.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
-#include "units/velocity.h"
 
 using namespace ctre::phoenix6;
 
@@ -268,18 +265,6 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
    */
   std::optional<frc::Pose2d> SamplePoseAt(units::second_t timestamp) const override {
     return _drivetrain.SamplePoseAt(utils::FPGAToCurrentTime(timestamp));
-  }
-
-  void FollowTrajectory(const choreo::SwerveSample& sample) {
-    frc::Pose2d pose = GetState().Pose;
-    units::meters_per_second_t xFeedback = m_xController.Calculate(pose.X().value(), sample.x.value()) * 1_mps;
-    units::meters_per_second_t yFeedback = m_yController.Calculate(pose.Y().value(), sample.y.value()) * 1_mps;
-    units::radians_per_second_t thetaFeedback =
-        m_thetaController.Calculate(pose.Rotation().Radians().value(), sample.heading.value()) * 1_rad_per_s;
-
-    frc::ChassisSpeeds speeds{sample.vx + xFeedback, sample.vy + yFeedback, sample.omega + thetaFeedback};
-
-    SetControl(driveSpeeds.WithVelocityX(-speeds.vx).WithVelocityY(-speeds.vy).WithRotationalRate(speeds.omega));
   }
 
   frc2::CommandPtr TurnToAngleCommand(std::function<frc::Rotation2d()> targetAngle) {

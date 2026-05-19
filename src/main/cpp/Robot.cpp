@@ -6,14 +6,13 @@
 #include <frc2/command/CommandScheduler.h>
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
-#include "abstractions/autonomous/AutonomousCommand.hpp"
 #include "frc/RobotBase.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "telemetrykit/core/Logger.h"
 #include "telemetrykit/receiver/NetworkTablesReceiver.h"
 #include "telemetrykit/receiver/WPILogWriter.h"
 
-Robot::Robot() : m_autoChooser([this] { m_trajectory = m_autoChooser.GetSelectedTrajectory(); }) {
+Robot::Robot() {
   frc::SmartDashboard::PutData("Command Scheduler", &frc2::CommandScheduler::GetInstance());
 
   auto& logger = tkit::Logger::GetInstance();
@@ -27,17 +26,6 @@ Robot::Robot() : m_autoChooser([this] { m_trajectory = m_autoChooser.GetSelected
   }
 
   logger.Start();
-
-  m_eventMap = {
-      {"IntakeDown", [this] { return m_container.GetIntakeSubsystem().RunIntakeCommand(); }},
-      {"IntakeStop", [this] { return m_container.GetIntakeSubsystem().StopIntakeCommand(); }},
-      {"AutoAlign", [this] { return m_container.GetDriveSubsystem().RotateToHub(); }},
-  };
-
-  m_autonomousCommand =
-      AutonomousCommand(
-          m_container.GetDriveSubsystem(), [this] { return m_trajectory; }, m_timer, std::move(m_eventMap))
-          .ToPtr();
 }
 
 void Robot::RobotPeriodic() {
@@ -53,21 +41,13 @@ void Robot::DisabledPeriodic() {}
 
 void Robot::DisabledExit() {}
 
-void Robot::AutonomousInit() {
-  if (m_autonomousCommand.has_value()) {
-    frc2::CommandScheduler::GetInstance().Schedule(m_autonomousCommand.value());
-  }
-}
+void Robot::AutonomousInit() {}
 
 void Robot::AutonomousPeriodic() {}
 
 void Robot::AutonomousExit() {}
 
 void Robot::TeleopInit() {
-  if (m_autonomousCommand && m_autonomousCommand->IsScheduled()) {
-    m_autonomousCommand->Cancel();
-  }
-
   auto& intakeSubsystem = m_container.GetIntakeSubsystem();
   auto& gateSubsystem = m_container.GetGateSubsystem();
   auto& hopperSubsystem = m_container.GetHopperSubsystem();
