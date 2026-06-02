@@ -12,6 +12,7 @@ class GateLogging {
  public:
   static void UpdateTelemetry(const GateIOInputs& inputs, GateStateEnum state) {
     tkit::RecordOutput("GateSubsystem/Voltage", inputs.gateVoltage);
+    tkit::RecordOutput("GateSubsystem/Current", inputs.gateCurrent);
 
     tkit::RecordOutput("GateSubsystem/State", stateToString(state));
   }

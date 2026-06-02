@@ -37,7 +37,7 @@ void RobotContainer::ConfigureBindings() {
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.B().ToggleOnTrue(CommandFactory::PassThroughCommand(m_hopperSubsystem, m_gateSubsystem));
 
-  m_operatorController.A().OnTrue(m_driveSubsystem.RotateToHub());
+  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
   m_driveSubsystem.SetDefaultCommand(
       m_driveSubsystem
