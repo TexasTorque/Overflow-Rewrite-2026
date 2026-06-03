@@ -14,6 +14,7 @@
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "subsystems/PerceptionSubsystem.hpp"
+#include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
@@ -30,6 +31,7 @@ class RobotContainer {
   HopperSubsystem& GetHopperSubsystem() { return m_hopperSubsystem; }
   ShooterSubsystem& GetShooterSubsystem() { return m_shooterSubsystem; }
   GateSubsystem& GetGateSubsystem() { return m_gateSubsystem; }
+  ServoSubsystem& GetServoSubsystem() { return m_servoSubsystem; }
 
   frc2::Command* GetAutonomousCommand();
 
@@ -62,4 +64,5 @@ class RobotContainer {
   ShooterSubsystem m_shooterSubsystem;
   HopperSubsystem m_hopperSubsystem;
   GateSubsystem m_gateSubsystem;
+  ServoSubsystem m_servoSubsystem;
 };

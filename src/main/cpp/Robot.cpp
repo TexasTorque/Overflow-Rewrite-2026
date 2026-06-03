@@ -62,11 +62,13 @@ void Robot::TeleopInit() {
   auto& gateSubsystem = m_container.GetGateSubsystem();
   auto& hopperSubsystem = m_container.GetHopperSubsystem();
   auto& shooterSubsystem = m_container.GetShooterSubsystem();
+  auto& servoSubsystem = m_container.GetServoSubsystem();
 
   intakeSubsystem.SetState(intakeSubsystem.GetState());
   gateSubsystem.SetState(gateSubsystem.GetState());
   hopperSubsystem.SetState(hopperSubsystem.GetState());
   shooterSubsystem.SetState(shooterSubsystem.GetState());
+  servoSubsystem.SetState(servoSubsystem.GetState());
 }
 
 void Robot::TeleopPeriodic() {}
@@ -76,11 +78,13 @@ void Robot::TeleopExit() {
   auto& gateSubsystem = m_container.GetGateSubsystem();
   auto& hopperSubsystem = m_container.GetHopperSubsystem();
   auto& shooterSubsystem = m_container.GetShooterSubsystem();
+  auto& servoSubsystem = m_container.GetServoSubsystem();
 
   intakeSubsystem.Clean();
   gateSubsystem.Clean();
   hopperSubsystem.Clean();
   shooterSubsystem.Clean();
+  servoSubsystem.Clean();
 }
 
 void Robot::TestInit() {

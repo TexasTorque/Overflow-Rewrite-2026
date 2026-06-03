@@ -4,6 +4,7 @@
 #pragma once
 
 #include "abstractions/io/shooter/ShooterIO.hpp"
+#include "constants/Constants.hpp"
 #include "constants/constants.hpp"
 #include "ctre/phoenix6/TalonFX.hpp"
 #include "ctre/phoenix6/controls/Follower.hpp"
@@ -12,6 +13,7 @@
 #include "ctre/phoenix6/signals/SpnEnums.hpp"
 #include "units/current.h"
 #include "units/angular_velocity.h"
+#include "frc/Servo.h"
 
 class ShooterRealIO : public ShooterIO {
  public:

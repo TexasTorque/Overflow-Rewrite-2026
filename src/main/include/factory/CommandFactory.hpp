@@ -8,6 +8,7 @@
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
+#include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 
 namespace CommandFactory {
@@ -17,25 +18,26 @@ inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem&
 
 inline frc2::CommandPtr PassThroughCommand(HopperSubsystem& hopper, GateSubsystem& gate) {
   return frc2::cmd::Parallel(hopper.RunHopperCommand(), gate.RunGateCommand());
-};
+}
 
-inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter) {
-  return shooter.RunLayupCommand();
+// since default servo state is down, need to bring it up for any shots
+inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
+  return frc2::cmd::Parallel(shooter.RunLayupCommand(), servo.SetServoUpCommand());
 }
 
 inline frc2::CommandPtr LaserShotCommand(ShooterSubsystem& shooter) {
-  return shooter.RunLaserCommand();
+  return shooter.RunLaserCommand(); // only one where servo stays down
 }
 
-inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter) {
-  return shooter.RunTrenchCommand();
+inline frc2::CommandPtr ClimbShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
+  return frc2::cmd::Parallel(shooter.RunClimbCommand(), servo.SetServoUpCommand());
 }
 
-inline frc2::CommandPtr ClimbShotCommand(ShooterSubsystem& shooter) {
-  return shooter.RunClimbCommand();
+inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
+  return frc2::cmd::Parallel(shooter.RunTrenchCommand(), servo.SetServoUpCommand());
 }
 
-inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter) {
-  return shooter.RunRegressionCommand();
+inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
+  return frc2::cmd::Parallel(shooter.RunRegressionCommand(), servo.SetServoUpCommand());
 }
 }  // namespace CommandFactory

@@ -11,6 +11,8 @@
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "abstractions/io/intake/IntakeRealIO.hpp"
 #include "abstractions/io/intake/IntakeSimIO.hpp"
+#include "abstractions/io/servo/ServoRealIO.hpp"
+#include "abstractions/io/servo/ServoSimIO.hpp"
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
@@ -30,7 +32,8 @@ RobotContainer::RobotContainer()
     : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()),
       m_shooterSubsystem(turbolib::utils::MakeIO<ShooterIO, ShooterRealIO, ShooterSimIO>()),
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
-      m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()) {
+      m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()),
+      m_servoSubsystem(turbolib::utils::MakeIO<ServoIO, ServoRealIO, ServoSimIO>()) {
   ConfigurePlannerCommands();
   ConfigureBindings();
   ConfigureIntakeBindings();
@@ -73,12 +76,11 @@ void RobotContainer::ConfigureIntakeBindings() {
 void RobotContainer::ConfigureHopperBindings() {}
 
 void RobotContainer::ConfigureShooterBindings() {
-  m_operatorController.POVDown().WhileTrue(CommandFactory::LayupShotCommand(m_shooterSubsystem));
-  m_operatorController.POVLeft().WhileTrue(CommandFactory::TrenchShotCommand(m_shooterSubsystem));
+  m_operatorController.POVDown().WhileTrue(CommandFactory::LayupShotCommand(m_shooterSubsystem, m_servoSubsystem));
+  m_operatorController.POVLeft().WhileTrue(CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem));
   m_operatorController.POVRight().WhileTrue(CommandFactory::LaserShotCommand(m_shooterSubsystem));
-
-  m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem));
-  m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem));
+  m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem));
+  m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem));
 }
 
 void RobotContainer::ConfigurePlannerCommands() {
@@ -86,6 +88,7 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::EventTrigger("IntakeStop").OnTrue(m_intakeSubsystem.StopIntakeCommand());
 
   pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub());
+  pathplanner::NamedCommands::registerCommand("Shoot", m_shooterSubsystem.RunLayupCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

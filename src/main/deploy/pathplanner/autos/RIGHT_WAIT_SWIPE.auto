@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "lds1"
+            "pathName": "RDWS1"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "AutoAlign"
+            "pathName": "RDWS2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RDWS3"
           }
         }
       ]
