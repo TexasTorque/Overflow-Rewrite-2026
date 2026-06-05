@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
 #include "subsystems/GateSubsystem.hpp"
@@ -13,28 +15,47 @@
 
 namespace CommandFactory {
 inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem& hopper, GateSubsystem& gate) {
-  return frc2::cmd::Parallel(intake.RunOuttakeCommand(), hopper.RunOuttakeCommand(), gate.RunOuttakeCommand());
+  return frc2::cmd::Parallel(intake.RunOuttakeCommand(), hopper.RunOuttakeCommand(), gate.RunOuttakeCommand())
+      .WithName("Outtake");
 }
 
 inline frc2::CommandPtr PassThroughCommand(HopperSubsystem& hopper, GateSubsystem& gate) {
   return frc2::cmd::Parallel(hopper.RunHopperCommand(), gate.RunGateCommand());
 }
 
-// since default servo state is down, need to bring it up for any shots
-inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
-  return frc2::cmd::Parallel(shooter.RunLayupCommand(), servo.SetServoUpCommand());
+inline frc2::CommandPtr ShotCommand(std::function<frc2::CommandPtr()> makeShooterCmd,
+                                    std::function<frc2::CommandPtr()> makeServoCmd, ShooterSubsystem& shooter,
+                                    HopperSubsystem& hopper, GateSubsystem& gate) {
+  return (frc2::cmd::Parallel(makeShooterCmd(), makeServoCmd()).Until([&] { return shooter.IsReadyToShoot(); }))
+      .AndThen(PassThroughCommand(hopper, gate).AlongWith(frc2::cmd::Parallel(makeShooterCmd(), makeServoCmd())));
 }
 
-inline frc2::CommandPtr LaserShotCommand(ShooterSubsystem& shooter) {
-  return shooter.RunLaserCommand(); // only one where servo stays down
+inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                         GateSubsystem& gate) {
+  return ShotCommand([&] { return shooter.RunLayupCommand(); }, [&] { return servo.SetServoUpCommand(); }, shooter,
+                     hopper, gate)
+      .WithName("Layup Shot");
 }
 
-inline frc2::CommandPtr ClimbShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
-  return frc2::cmd::Parallel(shooter.RunClimbCommand(), servo.SetServoUpCommand());
+inline frc2::CommandPtr LaserShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                         GateSubsystem& gate) {
+  return ShotCommand([&] { return shooter.RunClimbCommand(); }, [&] { return servo.SetServoLaserCommand(); }, shooter,
+                     hopper, gate)
+      .WithName("Laser Shot");
 }
 
-inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
-  return frc2::cmd::Parallel(shooter.RunTrenchCommand(), servo.SetServoUpCommand());
+inline frc2::CommandPtr ClimbShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                         GateSubsystem& gate) {
+  return ShotCommand([&] { return shooter.RunClimbCommand(); }, [&] { return servo.SetServoUpCommand(); }, shooter,
+                     hopper, gate)
+      .WithName("Climb Shot");
+}
+
+inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                          GateSubsystem& gate) {
+  return ShotCommand([&] { return shooter.RunTrenchCommand(); }, [&] { return servo.SetServoUpCommand(); }, shooter,
+                     hopper, gate)
+      .WithName("Trench Shot");
 }
 
 inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {

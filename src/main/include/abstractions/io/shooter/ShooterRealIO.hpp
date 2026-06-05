@@ -5,7 +5,6 @@
 
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "constants/Constants.hpp"
-#include "constants/constants.hpp"
 #include "ctre/phoenix6/TalonFX.hpp"
 #include "ctre/phoenix6/controls/Follower.hpp"
 #include "ctre/phoenix6/controls/VelocityVoltage.hpp"
@@ -13,7 +12,6 @@
 #include "ctre/phoenix6/signals/SpnEnums.hpp"
 #include "units/current.h"
 #include "units/angular_velocity.h"
-#include "frc/Servo.h"
 
 class ShooterRealIO : public ShooterIO {
  public:
@@ -27,8 +25,8 @@ class ShooterRealIO : public ShooterIO {
     inputs.flywheelRPM = m_flywheelMotorRight.GetVelocity().GetValue();
     inputs.flywheelCurrent = m_flywheelMotorRight.GetSupplyCurrent().GetValue();
 
-    inputs.flywheelNearDesired =
-        std::abs(rpmRequest.Velocity.value() - inputs.flywheelRPM.value()) < ShooterConstants::kFlywheelTolerance;
+    inputs.flywheelNearDesired = std::abs(units::revolutions_per_minute_t{rpmRequest.Velocity}.value() -
+                                          inputs.flywheelRPM.value()) < ShooterConstants::kFlywheelTolerance;
   }
 
   void SetFlywheelRPM(units::revolutions_per_minute_t rpm) override {

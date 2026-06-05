@@ -7,7 +7,6 @@
 #include "abstractions/logging/ServoLogging.hpp"
 #include "abstractions/state/ServoState.hpp"
 #include "constants/Constants.hpp"
-#include "frc/DataLogManager.h"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
 
@@ -23,9 +22,15 @@ void ServoSubsystem::Periodic() {
 }
 
 frc2::CommandPtr ServoSubsystem::SetServoUpCommand() {
-  return frc2::cmd::StartEnd([this] { SetState(ServoStateEnum::Idle); },
-                             [this] { SetState(ServoStateEnum::Laser); }, {this})
+  return frc2::cmd::StartEnd([this] { SetState(ServoStateEnum::Idle); }, [this] { SetState(ServoStateEnum::Laser); },
+                             {this})
       .WithName("Servo Layup");
+}
+
+frc2::CommandPtr ServoSubsystem::SetServoLaserCommand() {
+  return frc2::cmd::StartEnd([this] { SetState(ServoStateEnum::Laser); }, [this] { SetState(ServoStateEnum::Laser); },
+                             {this})
+      .WithName("Servo Laser");
 }
 
 void ServoSubsystem::SetState(const ServoStateEnum& newState) {

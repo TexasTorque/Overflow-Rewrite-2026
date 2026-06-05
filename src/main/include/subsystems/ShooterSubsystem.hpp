@@ -5,6 +5,7 @@
 
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/state/ShooterState.hpp"
+#include "constants/Constants.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "units/angular_velocity.h"
 #include <frc2/command/SubsystemBase.h>
@@ -28,6 +29,14 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   void Periodic() override;
 
   ShooterStateEnum GetState() const { return m_state.Get(); }
+
+  bool IsReadyToShoot() const {
+    if (m_inputs.flywheelRPMSetpoint == 0_rpm || m_inputs.flywheelRPMSetpoint == ShooterConstants::kIdleRPM) {
+      return false;
+    }
+
+    return m_inputs.flywheelNearDesired;
+  }
 
  private:
   std::unique_ptr<ShooterIO> m_io;

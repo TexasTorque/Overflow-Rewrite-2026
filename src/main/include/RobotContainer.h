@@ -38,7 +38,6 @@ class RobotContainer {
  private:
   void ConfigureBindings();
   void ConfigureIntakeBindings();
-  void ConfigureHopperBindings();
   void ConfigureShooterBindings();
   void ConfigurePlannerCommands();
 

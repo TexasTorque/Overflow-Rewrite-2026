@@ -32,9 +32,7 @@ class IntakeRealIO : public IntakeIO {
   void SetIntakeVoltage(units::volt_t voltage) override { m_rollerMotorRight.SetVoltage(voltage); }
 
   void SetIntakePivotSetpoint(double setpoint, bool slow = false) override {
-    m_rotaryMotor.GetClosedLoopController().SetSetpoint(
-        setpoint, rev::spark::SparkLowLevel::ControlType::kMAXMotionPositionControl,
-        slow ? rev::spark::kSlot1 : rev::spark::kSlot0);
+    m_rotaryMotor.GetClosedLoopController().SetSetpoint(setpoint, rev::spark::SparkLowLevel::ControlType::kPosition);
   }
 
  private:

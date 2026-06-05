@@ -37,7 +37,6 @@ RobotContainer::RobotContainer()
   ConfigurePlannerCommands();
   ConfigureBindings();
   ConfigureIntakeBindings();
-  ConfigureHopperBindings();
   ConfigureShooterBindings();
 
   m_autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
@@ -50,7 +49,7 @@ void RobotContainer::ConfigureBindings() {
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.B().ToggleOnTrue(CommandFactory::PassThroughCommand(m_hopperSubsystem, m_gateSubsystem));
 
-  m_operatorController.A().OnTrue(m_driveSubsystem.RotateToHub());
+  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
   m_driveSubsystem.SetDefaultCommand(
       m_driveSubsystem
@@ -73,14 +72,15 @@ void RobotContainer::ConfigureIntakeBindings() {
   m_operatorController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
 }
 
-void RobotContainer::ConfigureHopperBindings() {}
-
 void RobotContainer::ConfigureShooterBindings() {
-  m_operatorController.POVDown().WhileTrue(CommandFactory::LayupShotCommand(m_shooterSubsystem, m_servoSubsystem));
-  m_operatorController.POVLeft().WhileTrue(CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem));
-  m_operatorController.POVRight().WhileTrue(CommandFactory::LaserShotCommand(m_shooterSubsystem));
-  m_operatorController.X().WhileTrue(CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem));
-  m_operatorController.Y().WhileTrue(CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem));
+  m_operatorController.POVDown().WhileTrue(
+      CommandFactory::LayupShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.X().WhileTrue(
+      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.POVRight().WhileTrue(
+      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.Y().WhileTrue(
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
 }
 
 void RobotContainer::ConfigurePlannerCommands() {
