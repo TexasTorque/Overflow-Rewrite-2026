@@ -12,6 +12,7 @@ class ShooterSimIO : public ShooterIO {
     inputs.flywheelRPM = m_rpm;
     inputs.flywheelRPMSetpoint = m_rpm;
     inputs.flywheelCurrent = 0_A;
+    inputs.flywheelNearDesired = true;
   }
 
   void SetFlywheelRPM(units::revolutions_per_minute_t rpm) override { m_rpm = rpm; }

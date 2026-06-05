@@ -41,7 +41,7 @@ inline constexpr units::volt_t kOuttakeVoltage = -12_V;
 namespace HopperConstants {
 inline constexpr int kHopperMotorPort = 16;
 
-inline constexpr units::volt_t kIntakeVoltage = -10_V;
+inline constexpr units::volt_t kIntakeVoltage = -6_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
 }  // namespace HopperConstants
 
@@ -71,3 +71,11 @@ inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
 }  // namespace ShooterConstants
+
+namespace ServoConstants {
+inline constexpr int kServoLeftPort = 7;
+inline constexpr int kServoRightPort = 8;
+
+inline constexpr double kServoIdlePos = 0.6;
+inline constexpr double kServoLaserPos = 0.9;
+}  // namespace ServoConstants

@@ -6,6 +6,7 @@
 #include <telemetrykit/core/Units.h>
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/state/ShooterState.hpp"
+#include "telemetrykit/core/Logger.h"
 
 class ShooterLogging {
  public:
@@ -13,6 +14,7 @@ class ShooterLogging {
     tkit::RecordOutput("ShooterSubsystem/FlywheelNearDesired", inputs.flywheelNearDesired);
     tkit::RecordOutput("ShooterSubsystem/FlywheelRPM", inputs.flywheelRPM);
     tkit::RecordOutput("ShooterSubsystem/FlywheelRPMSetpoint", inputs.flywheelRPMSetpoint);
+    tkit::RecordOutput("ShooterSubsystem/FlywheelCurrent", inputs.flywheelCurrent);
 
     tkit::RecordOutput("ShooterSubsystem/State", stateToString(state));
   }

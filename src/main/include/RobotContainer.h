@@ -6,12 +6,15 @@
 
 #include "Telemetry.h"
 #include "constants/Constants.hpp"
+#include "frc/smartdashboard/SendableChooser.h"
+#include "frc2/command/Command.h"
 #include "generated/TunerConstants.h"
 #include "subsystems/CommandSwerveDrivetrain.h"
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "subsystems/PerceptionSubsystem.hpp"
+#include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
@@ -28,26 +31,31 @@ class RobotContainer {
   HopperSubsystem& GetHopperSubsystem() { return m_hopperSubsystem; }
   ShooterSubsystem& GetShooterSubsystem() { return m_shooterSubsystem; }
   GateSubsystem& GetGateSubsystem() { return m_gateSubsystem; }
+  ServoSubsystem& GetServoSubsystem() { return m_servoSubsystem; }
+
+  frc2::Command* GetAutonomousCommand();
 
  private:
   void ConfigureBindings();
   void ConfigureIntakeBindings();
-  void ConfigureHopperBindings();
   void ConfigureShooterBindings();
+  void ConfigurePlannerCommands();
 
   frc2::CommandXboxController m_driverController{0};
   frc2::CommandXboxController m_operatorController{1};
 
-  swerve::requests::FieldCentric drive =
+  swerve::requests::FieldCentric m_drive =
       swerve::requests::FieldCentric{}
           .WithDeadband(DriveConstants::kMaxSpeed * 0.05)
           .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)
           .WithDriveRequestType(ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
 
-  swerve::requests::SwerveDriveBrake brake{};
-  swerve::requests::PointWheelsAt point{};
+  swerve::requests::SwerveDriveBrake m_brake{};
+  swerve::requests::PointWheelsAt m_point{};
 
   Telemetry logger{DriveConstants::kMaxSpeed};
+
+  frc::SendableChooser<frc2::Command*> m_autoChooser;
 
   subsystems::CommandSwerveDrivetrain m_driveSubsystem{TunerConstants::CreateDrivetrain()};
   PerceptionSubsystem m_perception{m_driveSubsystem};
@@ -55,4 +63,5 @@ class RobotContainer {
   ShooterSubsystem m_shooterSubsystem;
   HopperSubsystem m_hopperSubsystem;
   GateSubsystem m_gateSubsystem;
+  ServoSubsystem m_servoSubsystem;
 };
