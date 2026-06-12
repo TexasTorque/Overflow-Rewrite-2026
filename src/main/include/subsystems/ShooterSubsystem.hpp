@@ -8,6 +8,7 @@
 #include "constants/Constants.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "units/angular_velocity.h"
+#include "units/length.h"
 #include <frc2/command/SubsystemBase.h>
 #include <memory>
 
@@ -21,7 +22,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr RunLaserCommand();
   frc2::CommandPtr RunClimbCommand();
   frc2::CommandPtr RunTrenchCommand();
-  frc2::CommandPtr RunRegressionCommand();
+  frc2::CommandPtr RunRegressionCommand(units::meter_t distance);
 
   void SetState(const ShooterStateEnum& newState);
   void Clean();
@@ -42,6 +43,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   std::unique_ptr<ShooterIO> m_io;
   ShooterIOInputs m_inputs;
   ShooterState m_state;
+
+  units::meter_t m_distance = 0.0_m;
 
   void ApplyState(const ShooterStateEnum& newState);
 };

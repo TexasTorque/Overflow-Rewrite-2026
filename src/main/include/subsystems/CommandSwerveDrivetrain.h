@@ -284,8 +284,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     pathplanner::AutoBuilder::configure(
         [this]() { return GetState().Pose; }, [this](frc::Pose2d pose) { ResetPose(pose); },
         [this]() { return GetState().Speeds; }, [this](auto speeds, auto feedforwards) { DriveRobotRelative(speeds); },
-        std::make_shared<pathplanner::PPHolonomicDriveController>(pathplanner::PIDConstants(5.0, 0.0, 0.0),
-                                                                  pathplanner::PIDConstants(5.0, 0.0, 0.0)),
+        std::make_shared<pathplanner::PPHolonomicDriveController>(pathplanner::PIDConstants(2.0, 0.0, 0.0),
+                                                                  pathplanner::PIDConstants(2.0, 0.0, 0.0)),
         config,
         []() {
           auto alliance = frc::DriverStation::GetAlliance();
@@ -345,7 +345,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   swerve::requests::RobotCentric driveSpeeds = swerve::requests::RobotCentric{}.WithDriveRequestType(
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
 
-  frc::PIDController m_thetaController{5.0, 0, 0};
+  frc::PIDController m_thetaController{2.0, 0, 0};
 
   void StartSimThread();
 };

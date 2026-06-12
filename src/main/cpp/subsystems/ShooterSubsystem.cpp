@@ -7,10 +7,11 @@
 #include "abstractions/logging/ShooterLogging.hpp"
 #include "abstractions/state/ShooterState.hpp"
 #include "constants/Constants.hpp"
-#include "frc/DataLogManager.h"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
+#include "regression/Regression.hpp"
 #include "units/angular_velocity.h"
+#include "units/length.h"
 #include <utility>
 
 ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
@@ -48,9 +49,17 @@ frc2::CommandPtr ShooterSubsystem::RunTrenchCommand() {
       .WithName("Shooter Trench");
 }
 
-frc2::CommandPtr ShooterSubsystem::RunRegressionCommand() {
-  return frc2::cmd::StartEnd([this] { SetState(ShooterStateEnum::Regression); },
-                             [this] { SetState(ShooterStateEnum::Idle); }, {this})
+frc2::CommandPtr ShooterSubsystem::RunRegressionCommand(units::meter_t distance) {
+  return frc2::cmd::StartEnd(
+             [this, distance] {
+               m_distance = distance;
+               SetState(ShooterStateEnum::Regression);
+             },
+             [this] {
+               m_distance = 0_m;
+               SetState(ShooterStateEnum::Idle);
+             },
+             {this})
       .WithName("Shooter Regression");
 }
 
@@ -84,7 +93,7 @@ void ShooterSubsystem::ApplyState(const ShooterStateEnum& newState) {
       m_io->SetFlywheelRPM(ShooterConstants::kClimbRPM);
       break;
     case ShooterStateEnum::Regression:
-      frc::DataLogManager::Log("Regression not implemented");
+      m_io->SetFlywheelRPM(Regression::PerformRPMRegression(m_distance));
       break;
   }
 }

@@ -18,7 +18,7 @@ PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsum
 }
 
 void PerceptionSubsystem::Update() {
-  if (m_localizationCameras.empty()) {
+  if (m_localizationCameras.empty() || !m_isEnabled) {
     return;
   }
 

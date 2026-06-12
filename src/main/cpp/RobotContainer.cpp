@@ -49,6 +49,7 @@ void RobotContainer::ConfigureBindings() {
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.B().ToggleOnTrue(CommandFactory::PassThroughCommand(m_hopperSubsystem, m_gateSubsystem));
 
+  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub());
   m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
   m_driveSubsystem.SetDefaultCommand(
@@ -88,7 +89,11 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::EventTrigger("IntakeStop").OnTrue(m_intakeSubsystem.StopIntakeCommand());
 
   pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub());
-  pathplanner::NamedCommands::registerCommand("Shoot", m_shooterSubsystem.RunLayupCommand());
+  pathplanner::NamedCommands::registerCommand("Shoot", m_shooterSubsystem.RunClimbCommand());
+  pathplanner::NamedCommands::registerCommand("DisableVision",
+                                              frc2::cmd::RunOnce([this] { m_perception.DisableVision(); }));
+  pathplanner::NamedCommands::registerCommand("EnableVision",
+                                              frc2::cmd::RunOnce([this] { m_perception.EnableVision(); }));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
