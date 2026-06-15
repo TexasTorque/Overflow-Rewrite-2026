@@ -22,7 +22,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr RunLaserCommand();
   frc2::CommandPtr RunClimbCommand();
   frc2::CommandPtr RunTrenchCommand();
-  frc2::CommandPtr RunRegressionCommand(units::meter_t distance);
+  frc2::CommandPtr RunRegressionCommand(std::function<units::meter_t()> distance);
 
   void SetState(const ShooterStateEnum& newState);
   void Clean();

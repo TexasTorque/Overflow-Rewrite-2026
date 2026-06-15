@@ -110,7 +110,20 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeDown",
+      "waypointRelativePos": 0.6140035906642735,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "IntakeStop",
+      "waypointRelativePos": 3.777378815080769,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 4.5,
     "maxAcceleration": 3.0,

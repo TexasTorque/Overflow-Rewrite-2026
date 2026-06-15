@@ -76,6 +76,9 @@ void RobotContainer::ConfigureIntakeBindings() {
 void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().WhileTrue(
       CommandFactory::LayupShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.POVLeft().WhileTrue(
+      CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
+                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }));
   m_operatorController.X().WhileTrue(
       CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.POVRight().WhileTrue(
@@ -90,6 +93,9 @@ void RobotContainer::ConfigurePlannerCommands() {
 
   pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub());
   pathplanner::NamedCommands::registerCommand("Shoot", m_shooterSubsystem.RunClimbCommand());
+  pathplanner::NamedCommands::registerCommand("RegressionShoot", m_shooterSubsystem.RunRegressionCommand([this] {
+    return m_driveSubsystem.GetDistanceToHub();
+  }));
   pathplanner::NamedCommands::registerCommand("DisableVision",
                                               frc2::cmd::RunOnce([this] { m_perception.DisableVision(); }));
   pathplanner::NamedCommands::registerCommand("EnableVision",

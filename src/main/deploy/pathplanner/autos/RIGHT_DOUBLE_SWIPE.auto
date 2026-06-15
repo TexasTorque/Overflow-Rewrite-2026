@@ -5,45 +5,47 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "DisableVision"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "RDS1"
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "EnableVision"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlign"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "AutoAlign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DisableVision"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RegressionShoot"
+                }
+              }
+            ]
           }
         },
         {
@@ -53,27 +55,41 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "EnableVision"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlign"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "AutoAlign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DisableVision"
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "RegressionShoot"
+                }
+              }
+            ]
           }
         }
       ]

@@ -17,7 +17,6 @@
 #include "frc/kinematics/ChassisSpeeds.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
-#include "pathplanner/lib/config/PIDConstants.h"
 #include "units/length.h"
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
@@ -48,6 +47,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   static constexpr frc::Rotation2d kRedAlliancePerspectiveRotation{180_deg};
   /* Keep track if we've ever applied the operator perspective before or not */
   bool m_hasAppliedOperatorPerspective = false;
+
+  swerve::requests::ApplyRobotSpeeds m_pathApplyRobotSpeeds;
 
   /* Swerve requests to apply during SysId characterization */
   swerve::requests::SysIdSwerveTranslation m_translationCharacterization;
@@ -184,6 +185,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       StartSimThread();
     }
 
+    ConfigurePathPlanner();
+
     m_thetaController.EnableContinuousInput(-M_PI, M_PI);
   }
 
@@ -278,25 +281,6 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     return _drivetrain.SamplePoseAt(utils::FPGAToCurrentTime(timestamp));
   }
 
-  void ConfigurePathPlanner() {
-    pathplanner::RobotConfig config = pathplanner::RobotConfig::fromGUISettings();
-
-    pathplanner::AutoBuilder::configure(
-        [this]() { return GetState().Pose; }, [this](frc::Pose2d pose) { ResetPose(pose); },
-        [this]() { return GetState().Speeds; }, [this](auto speeds, auto feedforwards) { DriveRobotRelative(speeds); },
-        std::make_shared<pathplanner::PPHolonomicDriveController>(pathplanner::PIDConstants(2.0, 0.0, 0.0),
-                                                                  pathplanner::PIDConstants(2.0, 0.0, 0.0)),
-        config,
-        []() {
-          auto alliance = frc::DriverStation::GetAlliance();
-          if (alliance) {
-            return alliance.value() == frc::DriverStation::Alliance::kRed;
-          }
-          return false;
-        },
-        this);
-  }
-
   void DriveRobotRelative(const frc::ChassisSpeeds& speeds) {
     SetControl(driveSpeeds.WithVelocityX(speeds.vx).WithVelocityY(speeds.vy).WithRotationalRate(speeds.omega));
   }
@@ -348,6 +332,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   frc::PIDController m_thetaController{2.0, 0, 0};
 
   void StartSimThread();
+  void ConfigurePathPlanner();
 };
 
 }  // namespace subsystems

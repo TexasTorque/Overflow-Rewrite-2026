@@ -12,6 +12,7 @@
 #include "subsystems/IntakeSubsystem.hpp"
 #include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
+#include "units/length.h"
 
 namespace CommandFactory {
 inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem& hopper, GateSubsystem& gate) {
@@ -58,7 +59,10 @@ inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter, ServoSubsys
       .WithName("Trench Shot");
 }
 
-inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo) {
-  return frc2::cmd::Parallel(shooter.RunRegressionCommand(), servo.SetServoUpCommand());
+inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                              GateSubsystem& gate, std::function<units::meter_t()> distance) {
+  return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); },
+                     [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
+      .WithName("Regression Shot");
 }
 }  // namespace CommandFactory

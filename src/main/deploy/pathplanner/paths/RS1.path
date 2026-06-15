@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 3.04081361060049,
-        "y": 2.6134267290900732
+        "x": 2.2925421686746983,
+        "y": 2.4395542168674704
       },
       "prevControl": {
-        "x": 4.701057154605263,
-        "y": 2.220898574561403
+        "x": 3.927867816091954,
+        "y": 2.34630706716954
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RIGHT_DOUBLE_SWIPE_1"
+      "linkedName": "RDS1E"
     }
   ],
   "rotationTargets": [
@@ -103,7 +103,20 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeDown",
+      "waypointRelativePos": 0.4605026929982049,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "IntakeStop",
+      "waypointRelativePos": 2.6472172351884953,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -114,7 +127,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -133.0
+    "rotation": -135.80692945510236
   },
   "reversed": false,
   "folder": "RIGHT_SPOILER",

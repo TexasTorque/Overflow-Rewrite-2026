@@ -49,10 +49,10 @@ frc2::CommandPtr ShooterSubsystem::RunTrenchCommand() {
       .WithName("Shooter Trench");
 }
 
-frc2::CommandPtr ShooterSubsystem::RunRegressionCommand(units::meter_t distance) {
+frc2::CommandPtr ShooterSubsystem::RunRegressionCommand(std::function<units::meter_t()> distance) {
   return frc2::cmd::StartEnd(
              [this, distance] {
-               m_distance = distance;
+               m_distance = distance();
                SetState(ShooterStateEnum::Regression);
              },
              [this] {
