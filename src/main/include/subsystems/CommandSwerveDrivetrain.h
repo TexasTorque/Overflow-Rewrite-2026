@@ -131,6 +131,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     m_thetaController.EnableContinuousInput(-M_PI, M_PI);
 
     ConfigurePathPlanner();
+    OptimizeBusUtilization(4_Hz);
   }
 
   /**
@@ -157,6 +158,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     m_thetaController.EnableContinuousInput(-M_PI, M_PI);
 
     ConfigurePathPlanner();
+    OptimizeBusUtilization(4_Hz);
   }
 
   /**
@@ -188,6 +190,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     ConfigurePathPlanner();
 
     m_thetaController.EnableContinuousInput(-M_PI, M_PI);
+    OptimizeBusUtilization(4_Hz);
   }
 
   /**

@@ -57,6 +57,9 @@ class ShooterRealIO : public ShooterIO {
     conf.Slot0.kV = ShooterConstants::kFlywheelkV;
 
     m_flywheelMotorRight.GetConfigurator().Apply(conf);
+
+    m_flywheelMotorRight.OptimizeBusUtilization(4_Hz);
+    m_flywheelMotorRight.GetVelocity(false).SetUpdateFrequency(50_Hz);
   }
 
   void ConfigureFlywheelLeftMotor() {
@@ -74,5 +77,7 @@ class ShooterRealIO : public ShooterIO {
 
     m_flywheelMotorLeft.SetControl(ctre::phoenix6::controls::Follower{m_flywheelMotorRight.GetDeviceID(), true});
     m_flywheelMotorLeft.SetNeutralMode(ctre::phoenix6::signals::NeutralModeValue::Coast);
+
+    m_flywheelMotorLeft.OptimizeBusUtilization(4_Hz);
   }
 };

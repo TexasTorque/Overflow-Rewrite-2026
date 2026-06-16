@@ -62,6 +62,12 @@ class IntakeRealIO : public IntakeIO {
     config.closedLoop.maxMotion.CruiseVelocity(15, rev::spark::kSlot1);
     config.closedLoop.maxMotion.MaxAcceleration(5, rev::spark::kSlot1);
 
+    config.signals.PrimaryEncoderPositionPeriodMs(20);
+    config.signals.PrimaryEncoderVelocityPeriodMs(100);
+    config.signals.AppliedOutputPeriodMs(45);
+    config.signals.MotorTemperaturePeriodMs(1000);
+    config.signals.FaultsPeriodMs(1000);
+
     m_rotaryMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
 
@@ -70,6 +76,11 @@ class IntakeRealIO : public IntakeIO {
 
     config.SmartCurrentLimit(40);
     config.VoltageCompensation(12);
+
+    config.signals.AppliedOutputPeriodMs(45);
+    config.signals.OutputCurrentPeriodMs(100);
+    config.signals.MotorTemperaturePeriodMs(1000);
+    config.signals.FaultsPeriodMs(1000);
 
     m_rollerMotorRight.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
@@ -80,6 +91,10 @@ class IntakeRealIO : public IntakeIO {
     config.SmartCurrentLimit(40);
     config.Follow(IntakeConstants::kIntakeRollerMotorRightPort, true);
     config.VoltageCompensation(12);
+
+    config.signals.AppliedOutputPeriodMs(45);
+    config.signals.MotorTemperaturePeriodMs(1000);
+    config.signals.FaultsPeriodMs(1000);
 
     m_rollerMotorLeft.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }

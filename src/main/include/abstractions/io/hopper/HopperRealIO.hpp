@@ -40,5 +40,7 @@ class HopperRealIO : public HopperIO {
     config.MotorOutput.Inverted = true;
 
     m_hopperMotor.GetConfigurator().Apply(config);
+
+    m_hopperMotor.OptimizeBusUtilization(4_Hz);
   }
 };

@@ -72,6 +72,10 @@ inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
 }  // namespace ShooterConstants
 
+namespace DebugConstants {
+inline constexpr bool kDebugSignalLogging = false;
+}  // namespace DebugConstants
+
 namespace ServoConstants {
 inline constexpr int kServoLeftPort = 7;
 inline constexpr int kServoRightPort = 8;

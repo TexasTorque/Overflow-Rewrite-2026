@@ -38,6 +38,10 @@ class GateRealIO : public GateIO {
     config.VoltageCompensation(12);
     config.Follow(GateConstants::kGateRightMotorPort, false);
 
+    config.signals.AppliedOutputPeriodMs(45);
+    config.signals.MotorTemperaturePeriodMs(1000);
+    config.signals.FaultsPeriodMs(1000);
+
     m_gateLeftMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
 
@@ -47,6 +51,11 @@ class GateRealIO : public GateIO {
     config.SmartCurrentLimit(40);
     config.VoltageCompensation(12);
     config.Inverted(true);
+
+    config.signals.AppliedOutputPeriodMs(45);
+    config.signals.OutputCurrentPeriodMs(100);
+    config.signals.MotorTemperaturePeriodMs(1000);
+    config.signals.FaultsPeriodMs(1000);
 
     m_gateRightMotor.Configure(config, rev::ResetMode::kResetSafeParameters, rev::PersistMode::kPersistParameters);
   }
