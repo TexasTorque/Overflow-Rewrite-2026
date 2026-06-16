@@ -18,7 +18,7 @@ class ServoRealIO : public ServoIO {
 
   void SetServoPos(double servoSetpoint) override {
     m_servoLeft.SetPosition(servoSetpoint);
-    m_servoLeft.SetPosition(1 - servoSetpoint);
+    m_servoRight.SetPosition(1 - servoSetpoint);
   }
 
  private:

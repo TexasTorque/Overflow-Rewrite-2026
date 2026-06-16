@@ -2,7 +2,6 @@
 // Overflow 2026
 
 #include "subsystems/ShooterSubsystem.hpp"
-#include <functional>
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/logging/ShooterLogging.hpp"
 #include "abstractions/state/ShooterState.hpp"
