@@ -27,8 +27,8 @@ inline constexpr frc::Pose2d kBlueHubPose{4.625_m, 4_m, 0_rad};
 
 namespace IntakeConstants {
 inline constexpr int kIntakeRotaryMotorPort = 13;
-inline constexpr int kIntakeRollerMotorRightPort = 14;
-inline constexpr int kIntakeRollerMotorLeftPort = 15;
+inline constexpr int kIntakeRollerMotorLeftPort = 14;
+inline constexpr int kIntakeRollerMotorRightPort = 15;
 
 inline constexpr double kRotaryUpPosition = 0.0;
 inline constexpr double kRotaryDownPosition = 24.6;
