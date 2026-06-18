@@ -80,6 +80,6 @@ namespace ServoConstants {
 inline constexpr int kServoLeftPort = 7;
 inline constexpr int kServoRightPort = 8;
 
-inline constexpr double kServoIdlePos = 0.6;
-inline constexpr double kServoLaserPos = 0.9;
+inline constexpr double kServoIdlePos = 0.35;
+inline constexpr double kServoLaserPos = 0.1;
 }  // namespace ServoConstants
