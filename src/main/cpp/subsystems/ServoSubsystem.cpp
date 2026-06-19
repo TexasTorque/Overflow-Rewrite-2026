@@ -35,7 +35,7 @@ frc2::CommandPtr ServoSubsystem::SetServoLaserCommand() {
 
 void ServoSubsystem::SetState(const ServoStateEnum& newState) {
   m_state.Set(newState);
-  m_state.Apply();
+  // m_state.Apply();
 }
 
 void ServoSubsystem::Clean() {
