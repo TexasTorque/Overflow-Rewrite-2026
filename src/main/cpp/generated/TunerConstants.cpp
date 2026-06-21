@@ -5,5 +5,5 @@
 #include "subsystems/CommandSwerveDrivetrain.h"
 
 subsystems::CommandSwerveDrivetrain TunerConstants::CreateDrivetrain() {
-  return {DrivetrainConstants, 50_Hz, FrontLeft, FrontRight, BackLeft, BackRight};
+  return {DrivetrainConstants, FrontLeft, FrontRight, BackLeft, BackRight};
 }
