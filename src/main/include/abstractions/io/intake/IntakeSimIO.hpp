@@ -16,10 +16,13 @@ class IntakeSimIO : public IntakeIO {
     inputs.pivotSetpoint = m_pivotSetpoint;
   }
 
+  void Process() override {}
+
   void SetIntakeVoltage(units::volt_t voltage) override { m_rollerVoltage = voltage; }
 
   void SetIntakePivotSetpoint(double setpoint, bool slow = false) override {
     m_pivotSetpoint = setpoint;
+    m_slow = slow;
   }
 
  private:

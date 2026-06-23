@@ -24,12 +24,14 @@ class IntakeRealIO : public IntakeIO {
   }
 
   void UpdateInputs(IntakeIOInputs& inputs) override {
-    auto pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
-
     inputs.rollerVoltage = units::volt_t{m_rollerMotorRight.GetAppliedOutput() * m_rollerMotorRight.GetBusVoltage()};
     inputs.rollerCurrent = units::ampere_t{m_rollerMotorRight.GetOutputCurrent()};
-    inputs.pivotPosition = pivotPosition;
+    inputs.pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
     inputs.pivotSetpoint = m_pivotController.GetSetpoint();
+  }
+
+  void Process() override {
+    auto pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
 
     if (!m_slow) {
       m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint())});

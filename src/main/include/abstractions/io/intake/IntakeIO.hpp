@@ -17,6 +17,7 @@ struct IntakeIOInputs {
 class IntakeIO {
  public:
   virtual void UpdateInputs(IntakeIOInputs& inputs) = 0;
+  virtual void Process() = 0;
 
   virtual void SetIntakeVoltage(units::volt_t voltage) = 0;
   virtual void SetIntakePivotSetpoint(double setpoint, bool slow = false) = 0;

@@ -47,6 +47,7 @@ void IntakeSubsystem::Clean() {
 
 void IntakeSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
+  m_io->Process();
   IntakeLogging::UpdateTelemetry(m_inputs, GetState());
 }
 
