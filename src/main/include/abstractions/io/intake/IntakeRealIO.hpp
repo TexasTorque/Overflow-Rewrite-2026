@@ -5,6 +5,7 @@
 
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "constants/constants.hpp"
+#include "frc/controller/PIDController.h"
 #include "rev/ClosedLoopTypes.h"
 #include "rev/ConfigureTypes.h"
 #include "rev/SparkBase.h"
@@ -23,16 +24,26 @@ class IntakeRealIO : public IntakeIO {
   }
 
   void UpdateInputs(IntakeIOInputs& inputs) override {
+    auto pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
+
     inputs.rollerVoltage = units::volt_t{m_rollerMotorRight.GetAppliedOutput() * m_rollerMotorRight.GetBusVoltage()};
     inputs.rollerCurrent = units::ampere_t{m_rollerMotorRight.GetOutputCurrent()};
-    inputs.pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
-    inputs.pivotSetpoint = m_rotaryMotor.GetClosedLoopController().GetSetpoint();
+    inputs.pivotPosition = pivotPosition;
+    inputs.pivotSetpoint = m_pivotController.GetSetpoint();
+
+    if (!m_slow) {
+      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint())});
+    } else {
+      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 3.25});
+    }
   }
 
   void SetIntakeVoltage(units::volt_t voltage) override { m_rollerMotorRight.SetVoltage(voltage); }
 
   void SetIntakePivotSetpoint(double setpoint, bool slow = false) override {
-    m_rotaryMotor.GetClosedLoopController().SetSetpoint(setpoint, rev::spark::SparkLowLevel::ControlType::kPosition);
+    m_pivotController.SetSetpoint(setpoint);
+
+    m_slow = slow;
   }
 
  private:
@@ -44,6 +55,9 @@ class IntakeRealIO : public IntakeIO {
 
   rev::spark::SparkMax m_rollerMotorLeft{IntakeConstants::kIntakeRollerMotorLeftPort,
                                          rev::spark::SparkLowLevel::MotorType::kBrushless};
+
+  frc::PIDController m_pivotController{1.5, 0, 0};
+  bool m_slow = false;
 
   void ConfigureRotaryMotor() {
     rev::spark::SparkMaxConfig config;

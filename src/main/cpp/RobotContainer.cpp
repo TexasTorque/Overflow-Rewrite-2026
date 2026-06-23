@@ -47,9 +47,8 @@ RobotContainer::RobotContainer()
 void RobotContainer::ConfigureBindings() {
   m_operatorController.POVUp().WhileTrue(
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.B().ToggleOnTrue(CommandFactory::PassThroughCommand(m_hopperSubsystem, m_gateSubsystem));
 
-  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub());
+  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1_s)));
   m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
   m_driveSubsystem.SetDefaultCommand(
@@ -74,17 +73,18 @@ void RobotContainer::ConfigureIntakeBindings() {
 }
 
 void RobotContainer::ConfigureShooterBindings() {
-  m_operatorController.POVDown().WhileTrue(
-      CommandFactory::LayupShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.POVLeft().WhileTrue(
+  m_operatorController.POVDown().OnTrue(
+      CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.POVLeft().ToggleOnTrue(
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
                                             [this] { return m_driveSubsystem.GetDistanceToHub(); }));
-  m_operatorController.X().WhileTrue(
+  m_operatorController.X().ToggleOnTrue(
       CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.POVRight().WhileTrue(
+  m_operatorController.POVRight().ToggleOnTrue(
       CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.Y().WhileTrue(
+  m_operatorController.Y().ToggleOnTrue(
       CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  m_operatorController.B().WhileTrue(CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
 }
 
 void RobotContainer::ConfigurePlannerCommands() {

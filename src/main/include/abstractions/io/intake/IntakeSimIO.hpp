@@ -20,7 +20,6 @@ class IntakeSimIO : public IntakeIO {
 
   void SetIntakePivotSetpoint(double setpoint, bool slow = false) override {
     m_pivotSetpoint = setpoint;
-    m_slow = slow;
   }
 
  private:

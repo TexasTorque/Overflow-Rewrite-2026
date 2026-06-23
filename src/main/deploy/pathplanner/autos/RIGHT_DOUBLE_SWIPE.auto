@@ -5,9 +5,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "DisableVision"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RDS1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "EnableVision"
           }
         },
         {
@@ -49,9 +61,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "DisableVision"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RDS2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "EnableVision"
           }
         },
         {
