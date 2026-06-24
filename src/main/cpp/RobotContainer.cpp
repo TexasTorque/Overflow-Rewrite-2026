@@ -48,7 +48,7 @@ void RobotContainer::ConfigureBindings() {
   m_operatorController.POVUp().WhileTrue(
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
-  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1_s)));
+  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
   m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
 
   m_driveSubsystem.SetDefaultCommand(

@@ -332,7 +332,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   swerve::requests::RobotCentric driveSpeeds = swerve::requests::RobotCentric{}.WithDriveRequestType(
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
 
-  frc::PIDController m_thetaController{2.0, 0, 0};
+  frc::PIDController m_thetaController{4.0, 0, 0};
 
   void StartSimThread();
   void ConfigurePathPlanner();
