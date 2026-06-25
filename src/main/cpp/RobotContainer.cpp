@@ -21,6 +21,7 @@
 #include "frc2/command/Command.h"
 #include "pathplanner/lib/auto/AutoBuilder.h"
 #include "pathplanner/lib/auto/NamedCommands.h"
+#include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
 #include <frc2/command/button/RobotModeTriggers.h>
@@ -33,7 +34,8 @@ RobotContainer::RobotContainer()
       m_shooterSubsystem(turbolib::utils::MakeIO<ShooterIO, ShooterRealIO, ShooterSimIO>()),
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
       m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()),
-      m_servoSubsystem(turbolib::utils::MakeIO<ServoIO, ServoRealIO, ServoSimIO>()) {
+      m_servoSubsystem(turbolib::utils::MakeIO<ServoIO, ServoRealIO, ServoSimIO>()),
+      m_hubSubsystem() {
   ConfigurePlannerCommands();
   ConfigureBindings();
   ConfigureIntakeBindings();

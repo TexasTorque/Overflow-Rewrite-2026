@@ -12,6 +12,7 @@
 #include "subsystems/CommandSwerveDrivetrain.h"
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
+#include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "subsystems/PerceptionSubsystem.hpp"
 #include "subsystems/ServoSubsystem.hpp"
@@ -64,4 +65,5 @@ class RobotContainer {
   HopperSubsystem m_hopperSubsystem;
   GateSubsystem m_gateSubsystem;
   ServoSubsystem m_servoSubsystem;
+  HubSubsystem m_hubSubsystem;
 };
