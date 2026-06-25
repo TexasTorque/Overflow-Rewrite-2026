@@ -9,12 +9,14 @@
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/sysid/SysIdRoutine.h>
 #include <cmath>
+#include <cstdlib>
 #include <functional>
 
 #include "ctre/phoenix6/swerve/SwerveRequest.hpp"
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
+#include "frc/smartdashboard/SmartDashboard.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
@@ -295,12 +297,13 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                  m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
                  1_rad_per_s;
 
-             return driveSpeeds.WithRotationalRate(thetaFeedback);
+             frc::SmartDashboard::PutNumber("thetafeedback", thetaFeedback.value());
+
+             return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
            })
-        .Until([this, targetAngle] {
-          frc::Pose2d pose = GetState().Pose;
-          return std::abs(pose.Rotation().Radians().value() - targetAngle().Radians().value()) < 0.075;
-        })
+        .Until([this] {
+          return std::abs(m_thetaController.GetError()) < 0.125;
+        }).AndThen(ApplyRequest([this] {return m_brake; }))
         .WithName("Turn To Angle");
   }
 
@@ -331,8 +334,9 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
  private:
   swerve::requests::RobotCentric driveSpeeds = swerve::requests::RobotCentric{}.WithDriveRequestType(
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
+  swerve::requests::SwerveDriveBrake m_brake{};
 
-  frc::PIDController m_thetaController{4.0, 0, 0};
+  frc::PIDController m_thetaController{2.02, 0, 0.001};
 
   void StartSimThread();
   void ConfigurePathPlanner();

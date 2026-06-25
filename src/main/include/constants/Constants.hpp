@@ -4,7 +4,6 @@
 #pragma once
 
 #include "frc/geometry/Transform3d.h"
-#include "pathplanner/lib/util/FlippingUtil.h"
 #include "units/voltage.h"
 #include "units/velocity.h"
 #include "units/angular_velocity.h"
@@ -22,8 +21,8 @@ inline constexpr frc::Transform3d kHopperLeftCamTransform{
 inline constexpr frc::Transform3d kHopperRightCamTransform{
     2.50874_in, -12.29184_in, 6.912581_in, {0_deg, -25_deg, -90_deg}};
 
-inline constexpr frc::Pose2d kBlueHubPose{4.620_m, 4.040_m, 0_rad};
-inline const frc::Pose2d kRedHubPose = pathplanner::FlippingUtil::flipFieldPose(kBlueHubPose);
+inline constexpr frc::Pose2d kRedHubPose{11.92_m, 4_m, 0_rad};
+inline constexpr frc::Pose2d kBlueHubPose{4.625_m, 4_m, 0_rad};
 }  // namespace PerceptionConstants
 
 namespace IntakeConstants {

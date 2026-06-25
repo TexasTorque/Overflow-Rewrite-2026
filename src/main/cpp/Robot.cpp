@@ -31,6 +31,8 @@ Robot::Robot() {
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
 
+  frc::SmartDashboard::PutNumber("MatchTime", frc::DriverStation::GetMatchTime().value());
+
   m_timeAndJoystickReplay.Update();
   tkit::Logger::GetInstance().Periodic();
 }
