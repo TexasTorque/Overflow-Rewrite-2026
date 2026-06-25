@@ -84,7 +84,6 @@ void RobotContainer::ConfigureShooterBindings() {
       CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.Y().ToggleOnTrue(
       CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.B().WhileTrue(CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
 }
 
 void RobotContainer::ConfigurePlannerCommands() {
