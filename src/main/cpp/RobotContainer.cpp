@@ -91,16 +91,16 @@ void RobotContainer::ConfigureShooterBindings() {
 void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::EventTrigger("IntakeDown").OnTrue(m_intakeSubsystem.RunIntakeCommand());
   pathplanner::EventTrigger("IntakeStop").OnTrue(m_intakeSubsystem.StopIntakeCommand());
+  pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
 
   pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub());
   pathplanner::NamedCommands::registerCommand("Shoot", m_shooterSubsystem.RunClimbCommand());
-  pathplanner::NamedCommands::registerCommand("RegressionShoot", m_shooterSubsystem.RunRegressionCommand([this] {
-    return m_driveSubsystem.GetDistanceToHub();
-  }));
+  pathplanner::NamedCommands::registerCommand("RegressionShoot", CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
+                                        [this] { return m_driveSubsystem.GetDistanceToHub(); }));
   pathplanner::NamedCommands::registerCommand("DisableVision",
-                                              frc2::cmd::RunOnce([this] { m_perception.DisableVision(); }));
+                                              frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
   pathplanner::NamedCommands::registerCommand("EnableVision",
-                                              frc2::cmd::RunOnce([this] { m_perception.EnableVision(); }));
+                                              frc2::cmd::RunOnce([this] { m_perceptionSubsystem.EnableVision(); }));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

@@ -66,6 +66,7 @@ void Robot::TeleopInit() {
   auto& shooterSubsystem = m_container.GetShooterSubsystem();
   auto& servoSubsystem = m_container.GetServoSubsystem();
 
+  m_container.GetPerceptionSubsystem().EnableVision();
   intakeSubsystem.SetState(intakeSubsystem.GetState());
   gateSubsystem.SetState(gateSubsystem.GetState());
   hopperSubsystem.SetState(hopperSubsystem.GetState());

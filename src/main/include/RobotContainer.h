@@ -33,6 +33,7 @@ class RobotContainer {
   ShooterSubsystem& GetShooterSubsystem() { return m_shooterSubsystem; }
   GateSubsystem& GetGateSubsystem() { return m_gateSubsystem; }
   ServoSubsystem& GetServoSubsystem() { return m_servoSubsystem; }
+  PerceptionSubsystem& GetPerceptionSubsystem() { return m_perceptionSubsystem; }
 
   frc2::Command* GetAutonomousCommand();
 
@@ -59,7 +60,7 @@ class RobotContainer {
   frc::SendableChooser<frc2::Command*> m_autoChooser;
 
   subsystems::CommandSwerveDrivetrain m_driveSubsystem{TunerConstants::CreateDrivetrain()};
-  PerceptionSubsystem m_perception{m_driveSubsystem};
+  PerceptionSubsystem m_perceptionSubsystem{m_driveSubsystem};
   IntakeSubsystem m_intakeSubsystem;
   ShooterSubsystem m_shooterSubsystem;
   HopperSubsystem m_hopperSubsystem;

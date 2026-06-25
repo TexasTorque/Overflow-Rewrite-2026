@@ -88,7 +88,7 @@ class TunerConstants {
 
   static constexpr units::scalar_t kDriveGearRatio = 8.100000000000001;
   static constexpr units::scalar_t kSteerGearRatio = 13.371428571428572;
-  static constexpr units::inch_t kWheelRadius = 2_in;
+  static constexpr units::inch_t kWheelRadius = 4_in;
 
   static constexpr bool kInvertLeftSide = false;
   static constexpr bool kInvertRightSide = true;
