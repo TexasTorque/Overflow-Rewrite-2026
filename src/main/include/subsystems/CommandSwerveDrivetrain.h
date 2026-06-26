@@ -318,6 +318,10 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
         .WithName("Rotate To Hub");
   }
 
+  frc2::CommandPtr BrakeInPlace() {
+    return StartEnd([this] { SetControl(m_brake); }, [] {});
+  }
+
   units::meter_t GetDistanceToHub() const {
     auto alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue);
     auto hubPose =

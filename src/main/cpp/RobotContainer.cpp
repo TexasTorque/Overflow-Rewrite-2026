@@ -16,9 +16,9 @@
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
+#include "abstractions/state/IntakeState.hpp"
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
-#include "frc/DataLogManager.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "frc2/command/Command.h"
 #include "pathplanner/lib/auto/NamedCommands.h"
@@ -47,9 +47,6 @@ RobotContainer::RobotContainer()
   m_autoChooser = AutoChooser{};
 
   frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
-  frc::SmartDashboard::PutBoolean("Caleb Mode", DriveConstants::kIsCalebMode);
-
-  frc::DataLogManager::Log("Chooser present: " + m_autoChooser->GetChooser()->GetSelected()->GetName());
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -85,13 +82,21 @@ void RobotContainer::ConfigureShooterBindings() {
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.POVLeft().ToggleOnTrue(
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }));
+                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }).AlongWith(frc2::cmd::RunOnce([this] {
+                                              m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+                                            })).AlongWith(m_driveSubsystem.BrakeInPlace()));
   m_operatorController.X().ToggleOnTrue(
-      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
+        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
   m_operatorController.POVRight().ToggleOnTrue(
-      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
+        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
   m_operatorController.Y().ToggleOnTrue(
-      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
+        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
 }
 
 void RobotContainer::ConfigurePlannerCommands() {

@@ -36,7 +36,7 @@ class IntakeRealIO : public IntakeIO {
     if (!m_slow) {
       m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 1.90});
     } else {
-      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 3.25});
+      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 2.50});
     }
   }
 
