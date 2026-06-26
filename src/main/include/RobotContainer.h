@@ -6,7 +6,6 @@
 
 #include "Telemetry.h"
 #include "constants/Constants.hpp"
-#include "frc/smartdashboard/SendableChooser.h"
 #include "frc2/command/Command.h"
 #include "generated/TunerConstants.h"
 #include "subsystems/CommandSwerveDrivetrain.h"
@@ -17,9 +16,11 @@
 #include "subsystems/PerceptionSubsystem.hpp"
 #include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
+#include "utils/AutoChooser.hpp"
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <ctre/phoenix6/swerve/SwerveRequest.hpp>
+#include <optional>
 
 using namespace ctre::phoenix6;
 
@@ -57,8 +58,6 @@ class RobotContainer {
 
   Telemetry logger{DriveConstants::kMaxSpeed};
 
-  frc::SendableChooser<frc2::Command*> m_autoChooser;
-
   subsystems::CommandSwerveDrivetrain m_driveSubsystem{TunerConstants::CreateDrivetrain()};
   PerceptionSubsystem m_perceptionSubsystem{m_driveSubsystem};
   IntakeSubsystem m_intakeSubsystem;
@@ -67,4 +66,6 @@ class RobotContainer {
   GateSubsystem m_gateSubsystem;
   ServoSubsystem m_servoSubsystem;
   HubSubsystem m_hubSubsystem;
+
+  std::optional<AutoChooser> m_autoChooser;
 };

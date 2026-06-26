@@ -18,17 +18,19 @@
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
+#include "frc/DataLogManager.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "frc2/command/Command.h"
-#include "pathplanner/lib/auto/AutoBuilder.h"
 #include "pathplanner/lib/auto/NamedCommands.h"
 #include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
+#include "utils/AutoChooser.hpp"
 #include <frc2/command/button/RobotModeTriggers.h>
 #include <pathplanner/lib/events/EventTrigger.h>
 
 #include <frc2/command/Commands.h>
+#include <string>
 
 RobotContainer::RobotContainer()
     : m_intakeSubsystem(turbolib::utils::MakeIO<IntakeIO, IntakeRealIO, IntakeSimIO>()),
@@ -42,10 +44,12 @@ RobotContainer::RobotContainer()
   ConfigureIntakeBindings();
   ConfigureShooterBindings();
 
-  m_autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
+  m_autoChooser = AutoChooser{};
 
-  frc::SmartDashboard::PutData("Auto Chooser", &m_autoChooser);
+  frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
   frc::SmartDashboard::PutBoolean("Caleb Mode", DriveConstants::kIsCalebMode);
+
+  frc::DataLogManager::Log("Chooser present: " + m_autoChooser->GetChooser()->GetSelected()->GetName());
 }
 
 void RobotContainer::ConfigureBindings() {
@@ -91,11 +95,11 @@ void RobotContainer::ConfigureShooterBindings() {
 }
 
 void RobotContainer::ConfigurePlannerCommands() {
-  pathplanner::EventTrigger("IntakeDown").OnTrue(m_intakeSubsystem.RunIntakeCommand());
-  pathplanner::EventTrigger("IntakeStop").OnTrue(m_intakeSubsystem.StopIntakeCommand());
+  pathplanner::NamedCommands::registerCommand("IntakeDown", m_intakeSubsystem.RunIntakeCommand());
+  pathplanner::NamedCommands::registerCommand("IntakeStop", m_intakeSubsystem.StopIntakeCommand());
   pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
 
-  pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub());
+  pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
   pathplanner::NamedCommands::registerCommand("Shoot", m_shooterSubsystem.RunClimbCommand());
   pathplanner::NamedCommands::registerCommand("RegressionShoot", CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
                                         [this] { return m_driveSubsystem.GetDistanceToHub(); }));
@@ -106,5 +110,5 @@ void RobotContainer::ConfigurePlannerCommands() {
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
-  return m_autoChooser.GetSelected();
+  return m_autoChooser->GetChooser()->GetSelected();
 }

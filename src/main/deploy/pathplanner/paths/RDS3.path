@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.9656151620370377,
+        "y": 2.4286265060240964
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.026209418402778,
+        "y": 2.5392766927083334
+      },
+      "isLocked": false,
+      "linkedName": "RDS2E"
+    },
+    {
+      "anchor": {
+        "x": 6.791991536458333,
+        "y": 2.5678172743055554
+      },
+      "prevControl": {
+        "x": 5.791991536458333,
+        "y": 2.5678172743055554
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": true
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -134.01632129435038
+  },
+  "reversed": false,
+  "folder": "RIGHT_DOUBLE_SWIPE",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -135.04002032842507
+  },
+  "useDefaultConstraints": false
+}

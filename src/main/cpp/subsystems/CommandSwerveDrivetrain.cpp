@@ -53,8 +53,8 @@ void CommandSwerveDrivetrain::ConfigurePathPlanner() {
                               .WithWheelForceFeedforwardsX(feedforwards.robotRelativeForcesX)
                               .WithWheelForceFeedforwardsY(feedforwards.robotRelativeForcesY));
       },
-      std::make_shared<pathplanner::PPHolonomicDriveController>(pathplanner::PIDConstants(10.0, 0.0, 0.0),
-                                                                pathplanner::PIDConstants(7.0, 0.0, 0.0)),
+      std::make_shared<pathplanner::PPHolonomicDriveController>(pathplanner::PIDConstants(3.0, 0.0, 0.0),
+                                                                pathplanner::PIDConstants(3.0, 0.0, 0.0)),
       std::move(config),
       [] {
         auto const alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::Alliance::kBlue);
