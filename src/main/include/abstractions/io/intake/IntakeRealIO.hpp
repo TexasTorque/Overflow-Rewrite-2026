@@ -34,7 +34,7 @@ class IntakeRealIO : public IntakeIO {
     auto pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
 
     if (!m_slow) {
-      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint())});
+      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 1.20});
     } else {
       m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 3.25});
     }

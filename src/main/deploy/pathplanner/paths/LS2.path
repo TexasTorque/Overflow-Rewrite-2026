@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.067506694847734,
-        "y": 5.532983246281869
+        "x": 2.3915587384259265,
+        "y": 5.605978587962963
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3102969439681353,
-        "y": 6.2942113086609925
+        "x": 1.634348987546328,
+        "y": 6.367206650342086
       },
       "isLocked": false,
       "linkedName": "LS1E"
@@ -80,16 +80,16 @@
     },
     {
       "anchor": {
-        "x": 3.0892580322157084,
-        "y": 5.58689220642324
+        "x": 2.3915587384259265,
+        "y": 5.605978587962963
       },
       "prevControl": {
-        "x": 4.555045502288057,
-        "y": 5.550333962809041
+        "x": 3.857346208498275,
+        "y": 5.569420344348764
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LS2E"
     }
   ],
   "rotationTargets": [
@@ -135,13 +135,23 @@
       "name": "IntakeDown",
       "waypointRelativePos": 1.4631956912028694,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeDown"
+        }
+      }
     },
     {
       "name": "IntakeStop",
       "waypointRelativePos": 4.685816876122082,
       "endWaypointRelativePos": null,
-      "command": null
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeStop"
+        }
+      }
     }
   ],
   "globalConstraints": {

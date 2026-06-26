@@ -11,22 +11,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlign"
-                }
-              }
-            ]
+            "name": "AutoAlign"
           }
         },
         {
@@ -43,6 +30,25 @@
                 "type": "named",
                 "data": {
                   "name": "RegressionShoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.35
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakePullUp"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -55,22 +61,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlign"
-                }
-              }
-            ]
+            "name": "AutoAlign"
           }
         },
         {
@@ -87,6 +80,25 @@
                 "type": "named",
                 "data": {
                   "name": "RegressionShoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.35
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IntakePullUp"
+                      }
+                    }
+                  ]
                 }
               }
             ]
