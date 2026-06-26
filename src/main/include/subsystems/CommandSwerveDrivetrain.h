@@ -16,7 +16,6 @@
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
-#include "frc/smartdashboard/SmartDashboard.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
@@ -296,8 +295,6 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
              units::radians_per_second_t thetaFeedback =
                  m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
                  1_rad_per_s;
-
-             frc::SmartDashboard::PutNumber("thetafeedback", thetaFeedback.value());
 
              return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
            })

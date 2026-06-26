@@ -6,6 +6,7 @@
 #include <frc2/command/CommandScheduler.h>
 #include <telemetrykit/TelemetryKit.h>
 #include <memory>
+#include "frc/DriverStation.h"
 #include "frc/RobotBase.h"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "telemetrykit/core/Logger.h"
@@ -32,6 +33,7 @@ void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
 
   frc::SmartDashboard::PutNumber("MatchTime", frc::DriverStation::GetMatchTime().value());
+  frc::SmartDashboard::PutNumber("Voltage", frc::DriverStation::GetBatteryVoltage());
 
   m_timeAndJoystickReplay.Update();
   tkit::Logger::GetInstance().Periodic();
