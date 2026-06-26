@@ -4,11 +4,12 @@
   "holonomicMode": true,
   "pathFolders": [
     "CENTER_DEPOT",
+    "CROSS_DEPOT",
     "LEFT_DOUBLE_SWIPE",
     "LEFT_SPOILER",
     "LEFT_SWIPE_DEPOT",
     "LEFT_WAIT_SWIPE",
-    "CROSS_DEPOT",
+    "RIGHT_DOUBLE_SWIPE_BUMP",
     "RIGHT_DOUBLE_SWIPE",
     "RIGHT_SPOILER",
     "RIGHT_WAIT_SWIPE"

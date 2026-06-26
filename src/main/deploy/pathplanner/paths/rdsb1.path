@@ -1,0 +1,181 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.451073350694445,
+        "y": 7.603884910300927
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.4705298032407415,
+        "y": 7.540308304398149
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.465811704282407,
+        "y": 7.124337528935185
+      },
+      "prevControl": {
+        "x": 6.6696569167967255,
+        "y": 7.735182282709362
+      },
+      "nextControl": {
+        "x": 7.950935980902779,
+        "y": 6.752128978587963
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.827981843171296,
+        "y": 5.19558470775463
+      },
+      "prevControl": {
+        "x": 7.835986328124999,
+        "y": 6.059741030092592
+      },
+      "nextControl": {
+        "x": 7.8200456695784535,
+        "y": 4.338803212743758
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.578166811342593,
+        "y": 5.324050130208334
+      },
+      "prevControl": {
+        "x": 7.361195710358796,
+        "y": 5.009906901041666
+      },
+      "nextControl": {
+        "x": 5.795137912326389,
+        "y": 5.638193359375001
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.829974175347222,
+        "y": 5.563528573495371
+      },
+      "prevControl": {
+        "x": 5.233807002314815,
+        "y": 5.556508246527779
+      },
+      "nextControl": {
+        "x": 4.202176356979082,
+        "y": 5.574442361726954
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.169335865162038,
+        "y": 5.563528573495371
+      },
+      "prevControl": {
+        "x": 2.7595026041666673,
+        "y": 5.547257161458333
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RDSB1E"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9950508191747576,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 2.0349002578883497,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 3.0106568567961167,
+      "rotationDegrees": 151.2988016404909
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.8675276839339334,
+      "maxWaypointRelativePos": 3.4744392830330346,
+      "constraints": {
+        "maxVelocity": 1.85,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 3.169165259009008,
+      "maxWaypointRelativePos": 4.740815033783784,
+      "constraints": {
+        "maxVelocity": 3.5,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeDown",
+      "waypointRelativePos": 0.8132742117117118,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeDown"
+        }
+      }
+    },
+    {
+      "name": "IntakeStop",
+      "waypointRelativePos": 3.1949723160660657,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeStop"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 141.5695371006091
+  },
+  "reversed": false,
+  "folder": "RIGHT_DOUBLE_SWIPE_BUMP",
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": -90.0
+  },
+  "useDefaultConstraints": true
+}

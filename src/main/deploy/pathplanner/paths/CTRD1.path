@@ -16,15 +16,15 @@
     },
     {
       "anchor": {
-        "x": 2.1067710843373493,
+        "x": 1.704288411456897,
         "y": 6.001987951807228
       },
       "prevControl": {
-        "x": 2.356586377995178,
+        "x": 1.9541037051147256,
         "y": 5.992379671281927
       },
       "nextControl": {
-        "x": 1.8226506024096385,
+        "x": 1.4201679295291862,
         "y": 6.012915662650602
       },
       "isLocked": false,
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": -0.669,
-        "y": 6.4
+        "x": 0.4881315827531929,
+        "y": 6.001987951807228
       },
       "prevControl": {
-        "x": -0.12310916725091614,
-        "y": 6.410917816654982
+        "x": 1.0340224155022768,
+        "y": 6.01290576846221
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LEFT_DEPOT"
+      "linkedName": "CTRD1E"
     }
   ],
   "rotationTargets": [
@@ -53,7 +53,7 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.562282878411915,
+      "minWaypointRelativePos": 1.0280827702702695,
       "maxWaypointRelativePos": 1.9672456575682296,
       "constraints": {
         "maxVelocity": 1.0,
@@ -66,9 +66,21 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeDown",
+      "waypointRelativePos": 0.49432244744744747,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeDown"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -83,7 +95,7 @@
   "folder": "CENTER_DEPOT",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": 180.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
