@@ -24,10 +24,13 @@ class PerceptionSubsystem : frc2::SubsystemBase {
   void DisableVision() { m_isEnabled = false; }
   void EnableVision() { m_isEnabled = true; }
 
+  void Log();
   void Periodic() override;
 
  private:
   VisionMeasurementConsumer& m_visionConsumer;
   std::vector<std::unique_ptr<turbolib::perception::TurboPhotonCamera>> m_localizationCameras;
+
   bool m_isEnabled = true;
+  bool m_seesTag = false;
 };

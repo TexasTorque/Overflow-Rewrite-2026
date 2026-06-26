@@ -16,6 +16,7 @@
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
+#include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "frc2/command/Command.h"
@@ -44,6 +45,7 @@ RobotContainer::RobotContainer()
   m_autoChooser = pathplanner::AutoBuilder::buildAutoChooser();
 
   frc::SmartDashboard::PutData("Auto Chooser", &m_autoChooser);
+  frc::SmartDashboard::PutBoolean("Caleb Mode", DriveConstants::kIsCalebMode);
 }
 
 void RobotContainer::ConfigureBindings() {

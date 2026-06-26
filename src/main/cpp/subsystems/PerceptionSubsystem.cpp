@@ -2,10 +2,12 @@
 // Overflow 2026
 
 #include "subsystems/PerceptionSubsystem.hpp"
+#include <algorithm>
 #include <memory>
 #include <vector>
 #include "constants/Constants.hpp"
 #include "frc/apriltag/AprilTagFields.h"
+#include "telemetrykit/core/Logger.h"
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
 PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsumer) : m_visionConsumer(visionConsumer) {
@@ -31,6 +33,16 @@ void PerceptionSubsystem::Update() {
   }
 }
 
+void PerceptionSubsystem::Log() {
+  tkit::RecordOutput("PerceptionSubsystem/SeesTag", m_seesTag);
+}
+
 void PerceptionSubsystem::Periodic() {
   Update();
+
+  m_seesTag = std::any_of(m_localizationCameras.begin(), m_localizationCameras.end(), [](const std::unique_ptr<turbolib::perception::TurboPhotonCamera>& camera) {
+    return camera->SeesTag();
+  });
+
+  Log();
 }

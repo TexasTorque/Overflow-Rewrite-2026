@@ -1,0 +1,169 @@
+{
+  "version": 1.0,
+  "grid_size": 64,
+  "tabs": [
+    {
+      "name": "Main",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "MatchTime",
+            "x": 384.0,
+            "y": 0.0,
+            "width": 704.0,
+            "height": 384.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/MatchTime",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 20,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "TimeUntilPhaseChange",
+            "x": 384.0,
+            "y": 384.0,
+            "width": 704.0,
+            "height": 256.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/SmartDashboard/TimeUntilPhaseChange",
+              "period": 0.033,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 20,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "IsAllianceActive",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "HubSubsystem/IsAllianceActive",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          },
+          {
+            "title": "Shooter State",
+            "x": 1088.0,
+            "y": 128.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/TelemetryKit/ShooterSubsystem/State",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Intake State",
+            "x": 1088.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/TelemetryKit/IntakeSubsystem/State",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Gate State",
+            "x": 1088.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "/TelemetryKit/GateSubsystem/State",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Command Scheduler",
+            "x": 1088.0,
+            "y": 384.0,
+            "width": 384.0,
+            "height": 448.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Command Scheduler",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "PhotonAlerts",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 384.0,
+            "height": 320.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/PhotonAlerts",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "MatchPhase",
+            "x": 512.0,
+            "y": 640.0,
+            "width": 448.0,
+            "height": 128.0,
+            "type": "Large Text Display",
+            "properties": {
+              "topic": "HubSubsystem/MatchPhase",
+              "period": 0.06,
+              "data_type": "string"
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 0.0,
+            "y": 704.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "SeesTag",
+            "x": 960.0,
+            "y": 640.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/TelemetryKit/PerceptionSubsystem/SeesTag",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

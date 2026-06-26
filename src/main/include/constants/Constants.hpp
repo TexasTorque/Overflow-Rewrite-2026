@@ -9,7 +9,9 @@
 #include "units/angular_velocity.h"
 
 namespace DriveConstants {
-inline constexpr units::meters_per_second_t kMaxSpeed = 3.75_mps;
+inline constexpr bool kIsCalebMode = false;
+
+inline constexpr units::meters_per_second_t kMaxSpeed = 3.75_mps * (kIsCalebMode == true ? 0.9 : 1.0);
 inline constexpr units::radians_per_second_t kMaxAngularRate = 0.75_tps;
 }  // namespace DriveConstants
 
@@ -73,7 +75,7 @@ inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
 }  // namespace ShooterConstants
 
 namespace DebugConstants {
-inline constexpr bool kDebugSignalLogging = false;
+inline constexpr bool kDebugSignalLogging = true;
 }  // namespace DebugConstants
 
 namespace ServoConstants {
