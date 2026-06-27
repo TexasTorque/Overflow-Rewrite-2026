@@ -138,7 +138,7 @@
   "eventMarkers": [
     {
       "name": "IntakeDown",
-      "waypointRelativePos": 0.8132742117117118,
+      "waypointRelativePos": 0.5088095908408409,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
