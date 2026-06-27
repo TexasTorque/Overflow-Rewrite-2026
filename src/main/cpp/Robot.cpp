@@ -4,29 +4,17 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
-#include <telemetrykit/TelemetryKit.h>
-#include <memory>
+#include "frc/DataLogManager.h"
 #include "frc/DriverStation.h"
 #include "frc/RobotBase.h"
 #include "frc/smartdashboard/SmartDashboard.h"
-#include "telemetrykit/core/Logger.h"
-#include "telemetrykit/receiver/NetworkTablesReceiver.h"
-#include "telemetrykit/receiver/WPILogWriter.h"
 
 Robot::Robot() {
+  frc::DataLogManager::Start();
+  frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
+
   frc::SmartDashboard::PutData("Command Scheduler", &frc2::CommandScheduler::GetInstance());
 
-  auto& logger = tkit::Logger::GetInstance();
-
-  logger.AddReceiver(std::make_unique<tkit::NetworkTablesReceiver>());
-
-  if (frc::RobotBase::IsReal()) {
-    logger.AddReceiver(std::make_unique<tkit::WPILogWriter>());
-  } else {
-    logger.AddReceiver(std::make_unique<tkit::WPILogWriter>("logs"));
-  }
-
-  logger.Start();
 }
 
 void Robot::RobotPeriodic() {
@@ -36,7 +24,6 @@ void Robot::RobotPeriodic() {
   frc::SmartDashboard::PutNumber("Voltage", frc::DriverStation::GetBatteryVoltage());
 
   m_timeAndJoystickReplay.Update();
-  tkit::Logger::GetInstance().Periodic();
 }
 
 void Robot::DisabledInit() {}

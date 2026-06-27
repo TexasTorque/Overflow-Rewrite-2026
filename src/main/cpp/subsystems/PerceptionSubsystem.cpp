@@ -7,7 +7,6 @@
 #include <vector>
 #include "constants/Constants.hpp"
 #include "frc/apriltag/AprilTagFields.h"
-#include "telemetrykit/core/Logger.h"
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
 PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsumer) : m_visionConsumer(visionConsumer) {
@@ -17,6 +16,8 @@ PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsum
                         frc::AprilTagField::k2026RebuiltAndyMark);
   AddLocalizationCamera("hopperRightCam", PerceptionConstants::kHopperRightCamTransform,
                         frc::AprilTagField::k2026RebuiltAndyMark);
+
+  m_seesTagPublisher = nt::NetworkTableInstance::GetDefault().GetBooleanTopic("PerceptionSubsystem/seesTag").Publish();
 }
 
 void PerceptionSubsystem::Update() {
@@ -34,7 +35,7 @@ void PerceptionSubsystem::Update() {
 }
 
 void PerceptionSubsystem::Log() {
-  tkit::RecordOutput("PerceptionSubsystem/SeesTag", m_seesTag);
+  m_seesTagPublisher.Set(m_seesTag);
 }
 
 void PerceptionSubsystem::Periodic() {

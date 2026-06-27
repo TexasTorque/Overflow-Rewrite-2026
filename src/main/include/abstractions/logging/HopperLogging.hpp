@@ -3,16 +3,26 @@
 
 #pragma once
 
-#include <telemetrykit/core/Units.h>
 #include "abstractions/io/hopper/HopperIO.hpp"
 #include "abstractions/state/HopperState.hpp"
+#include "networktables/DoubleTopic.h"
+#include "networktables/NetworkTableInstance.h"
+#include "networktables/StringTopic.h"
 
 class HopperLogging {
  public:
   static void UpdateTelemetry(const HopperIOInputs& inputs, HopperStateEnum state) {
-    tkit::RecordOutput("HopperSubsystem/Voltage", inputs.hopperVoltage);
-    tkit::RecordOutput("HopperSubsystem/Current", inputs.hopperCurrent);
-
-    tkit::RecordOutput("HopperSubsystem/State", stateToString(state));
+    voltagePublisher.Set(inputs.hopperVoltage.value());
+    currentPublisher.Set(inputs.hopperCurrent.value());
+    statePublisher.Set(stateToString(state));
   }
+
+ private:
+   static nt::DoublePublisher voltagePublisher;
+   static nt::DoublePublisher currentPublisher;
+   static nt::StringPublisher statePublisher;
 };
+
+inline nt::DoublePublisher HopperLogging::voltagePublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Voltage").Publish();
+inline nt::DoublePublisher HopperLogging::currentPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Current").Publish();
+inline nt::StringPublisher HopperLogging::statePublisher = nt::NetworkTableInstance::GetDefault().GetStringTopic("HopperSubsystem/State").Publish();

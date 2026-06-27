@@ -8,6 +8,7 @@
 #include <vector>
 #include "frc2/command/SubsystemBase.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
+#include "networktables/BooleanTopic.h"
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
 class PerceptionSubsystem : frc2::SubsystemBase {
@@ -33,4 +34,6 @@ class PerceptionSubsystem : frc2::SubsystemBase {
 
   bool m_isEnabled = true;
   bool m_seesTag = false;
+
+  nt::BooleanPublisher m_seesTagPublisher;
 };
