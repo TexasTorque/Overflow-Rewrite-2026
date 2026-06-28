@@ -44,6 +44,8 @@ class RobotContainer {
   void ConfigureIntakeBindings();
   void ConfigureShooterBindings();
 
+  frc2::CommandPtr WithShotSetup(frc2::CommandPtr shotCommand);
+
   frc2::CommandXboxController m_driverController{0};
   frc2::CommandXboxController m_operatorController{1};
 

@@ -101,26 +101,24 @@ void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().OnTrue(
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
-  m_operatorController.POVLeft().ToggleOnTrue(
+  m_operatorController.POVLeft().ToggleOnTrue(WithShotSetup(
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            [this] { return m_driveSubsystem.GetDistanceToHub(); })
-          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
-          .AlongWith(m_driveSubsystem.BrakeInPlace()));
+                                            [this] { return m_driveSubsystem.GetDistanceToHub(); })));
 
-  m_operatorController.X().ToggleOnTrue(
-      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)
-          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
-          .AlongWith(m_driveSubsystem.BrakeInPlace()));
+  m_operatorController.X().ToggleOnTrue(WithShotSetup(
+      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
 
-  m_operatorController.POVRight().ToggleOnTrue(
-      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)
-          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
-          .AlongWith(m_driveSubsystem.BrakeInPlace()));
+  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(
+      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
 
-  m_operatorController.Y().ToggleOnTrue(
-      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)
-          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
-          .AlongWith(m_driveSubsystem.BrakeInPlace()));
+  m_operatorController.Y().ToggleOnTrue(WithShotSetup(
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
+}
+
+frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
+  return std::move(shotCommand)
+      .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
+      .AlongWith(m_driveSubsystem.BrakeInPlace());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
