@@ -17,12 +17,15 @@ class GateLogging {
     statePublisher.Set(stateToString(state));
   }
 
-  private:
-    static nt::DoublePublisher voltagePublisher;
-    static nt::DoublePublisher currentPublisher;
-    static nt::StringPublisher statePublisher;
+ private:
+  static nt::DoublePublisher voltagePublisher;
+  static nt::DoublePublisher currentPublisher;
+  static nt::StringPublisher statePublisher;
 };
 
-inline nt::DoublePublisher GateLogging::voltagePublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("GateSubsystem/Voltage").Publish();
-inline nt::DoublePublisher GateLogging::currentPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("GateSubsystem/Current").Publish();
-inline nt::StringPublisher GateLogging::statePublisher = nt::NetworkTableInstance::GetDefault().GetStringTopic("GateSubsystem/State").Publish();
+inline nt::DoublePublisher GateLogging::voltagePublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("GateSubsystem/Voltage").Publish();
+inline nt::DoublePublisher GateLogging::currentPublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("GateSubsystem/Current").Publish();
+inline nt::StringPublisher GateLogging::statePublisher =
+    nt::NetworkTableInstance::GetDefault().GetStringTopic("GateSubsystem/State").Publish();

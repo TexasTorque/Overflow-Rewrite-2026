@@ -41,9 +41,9 @@ void PerceptionSubsystem::Log() {
 void PerceptionSubsystem::Periodic() {
   Update();
 
-  m_seesTag = std::any_of(m_localizationCameras.begin(), m_localizationCameras.end(), [](const std::unique_ptr<turbolib::perception::TurboPhotonCamera>& camera) {
-    return camera->SeesTag();
-  });
+  m_seesTag = std::any_of(
+      m_localizationCameras.begin(), m_localizationCameras.end(),
+      [](const std::unique_ptr<turbolib::perception::TurboPhotonCamera>& camera) { return camera->SeesTag(); });
 
   Log();
 }

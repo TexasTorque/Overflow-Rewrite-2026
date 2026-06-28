@@ -21,15 +21,20 @@ class IntakeLogging {
   }
 
  private:
-   static nt::DoublePublisher rollerCurrentPublisher;
-   static nt::DoublePublisher rollerVoltagePublisher;
-   static nt::DoublePublisher pivotPositionPublisher;
-   static nt::DoublePublisher pivotSetpointPublisher;
-   static nt::StringPublisher statePublisher;
+  static nt::DoublePublisher rollerCurrentPublisher;
+  static nt::DoublePublisher rollerVoltagePublisher;
+  static nt::DoublePublisher pivotPositionPublisher;
+  static nt::DoublePublisher pivotSetpointPublisher;
+  static nt::StringPublisher statePublisher;
 };
 
-inline nt::DoublePublisher IntakeLogging::rollerCurrentPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerCurrent").Publish();
-inline nt::DoublePublisher IntakeLogging::rollerVoltagePublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerVoltage").Publish();
-inline nt::DoublePublisher IntakeLogging::pivotPositionPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotPosition").Publish();
-inline nt::DoublePublisher IntakeLogging::pivotSetpointPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotSetpoint").Publish();
-inline nt::StringPublisher IntakeLogging::statePublisher = nt::NetworkTableInstance::GetDefault().GetStringTopic("IntakeSubsystem/State").Publish();
+inline nt::DoublePublisher IntakeLogging::rollerCurrentPublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerCurrent").Publish();
+inline nt::DoublePublisher IntakeLogging::rollerVoltagePublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerVoltage").Publish();
+inline nt::DoublePublisher IntakeLogging::pivotPositionPublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotPosition").Publish();
+inline nt::DoublePublisher IntakeLogging::pivotSetpointPublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotSetpoint").Publish();
+inline nt::StringPublisher IntakeLogging::statePublisher =
+    nt::NetworkTableInstance::GetDefault().GetStringTopic("IntakeSubsystem/State").Publish();

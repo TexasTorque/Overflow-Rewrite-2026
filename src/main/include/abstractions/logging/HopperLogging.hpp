@@ -18,11 +18,14 @@ class HopperLogging {
   }
 
  private:
-   static nt::DoublePublisher voltagePublisher;
-   static nt::DoublePublisher currentPublisher;
-   static nt::StringPublisher statePublisher;
+  static nt::DoublePublisher voltagePublisher;
+  static nt::DoublePublisher currentPublisher;
+  static nt::StringPublisher statePublisher;
 };
 
-inline nt::DoublePublisher HopperLogging::voltagePublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Voltage").Publish();
-inline nt::DoublePublisher HopperLogging::currentPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Current").Publish();
-inline nt::StringPublisher HopperLogging::statePublisher = nt::NetworkTableInstance::GetDefault().GetStringTopic("HopperSubsystem/State").Publish();
+inline nt::DoublePublisher HopperLogging::voltagePublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Voltage").Publish();
+inline nt::DoublePublisher HopperLogging::currentPublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Current").Publish();
+inline nt::StringPublisher HopperLogging::statePublisher =
+    nt::NetworkTableInstance::GetDefault().GetStringTopic("HopperSubsystem/State").Publish();

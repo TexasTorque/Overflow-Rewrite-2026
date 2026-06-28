@@ -82,21 +82,21 @@ void RobotContainer::ConfigureShooterBindings() {
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
   m_operatorController.POVLeft().ToggleOnTrue(
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }).AlongWith(frc2::cmd::RunOnce([this] {
-                                              m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-                                            })).AlongWith(m_driveSubsystem.BrakeInPlace()));
+                                            [this] { return m_driveSubsystem.GetDistanceToHub(); })
+          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
+          .AlongWith(m_driveSubsystem.BrakeInPlace()));
   m_operatorController.X().ToggleOnTrue(
-      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
+      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)
+          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
+          .AlongWith(m_driveSubsystem.BrakeInPlace()));
   m_operatorController.POVRight().ToggleOnTrue(
-      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
+      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)
+          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
+          .AlongWith(m_driveSubsystem.BrakeInPlace()));
   m_operatorController.Y().ToggleOnTrue(
-      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)
+          .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
+          .AlongWith(m_driveSubsystem.BrakeInPlace()));
 }
 
 void RobotContainer::ConfigurePlannerCommands() {
@@ -104,10 +104,15 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand("IntakeStop", m_intakeSubsystem.StopIntakeCommand());
   pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
 
-  pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
-  pathplanner::NamedCommands::registerCommand("RegressionShoot", CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                        [this] { return m_driveSubsystem.GetDistanceToHub(); }));
-  pathplanner::NamedCommands::registerCommand("ClimbShoot", CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  pathplanner::NamedCommands::registerCommand("AutoAlign",
+                                              m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
+  pathplanner::NamedCommands::registerCommand(
+      "RegressionShoot",
+      CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
+                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }));
+  pathplanner::NamedCommands::registerCommand(
+      "ClimbShoot",
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
   pathplanner::NamedCommands::registerCommand("DisableVision",
                                               frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
   pathplanner::NamedCommands::registerCommand("EnableVision",

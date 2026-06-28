@@ -17,9 +17,11 @@ class ServoLogging {
   }
 
  private:
-   static nt::DoublePublisher positionPublisher;
-   static nt::StringPublisher statePublisher;
+  static nt::DoublePublisher positionPublisher;
+  static nt::StringPublisher statePublisher;
 };
 
-inline nt::DoublePublisher ServoLogging::positionPublisher = nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ServoSubsystem/Position").Publish();
-inline nt::StringPublisher ServoLogging::statePublisher = nt::NetworkTableInstance::GetDefault().GetStringTopic("ServoSubsystem/State").Publish();
+inline nt::DoublePublisher ServoLogging::positionPublisher =
+    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ServoSubsystem/Position").Publish();
+inline nt::StringPublisher ServoLogging::statePublisher =
+    nt::NetworkTableInstance::GetDefault().GetStringTopic("ServoSubsystem/State").Publish();

@@ -67,8 +67,7 @@ inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSu
 }
 
 inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                              GateSubsystem& gate) {
-  return frc2::cmd::RunOnce([&] {}, {&shooter, &servo, &hopper, &gate})
-      .WithName("Stop Shot");
+                                        GateSubsystem& gate) {
+  return frc2::cmd::RunOnce([&] {}, {&shooter, &servo, &hopper, &gate}).WithName("Stop Shot");
 }
 }  // namespace CommandFactory
