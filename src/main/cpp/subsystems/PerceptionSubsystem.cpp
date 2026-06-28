@@ -16,6 +16,8 @@ PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsum
                         frc::AprilTagField::k2026RebuiltAndyMark);
   AddLocalizationCamera("hopperRightCam", PerceptionConstants::kHopperRightCamTransform,
                         frc::AprilTagField::k2026RebuiltAndyMark);
+  AddLocalizationCamera("shooterLeftCam", PerceptionConstants::kShooterLeftCamTransform,
+                        frc::AprilTagField::k2026RebuiltAndyMark);
 
   m_seesTagPublisher = nt::NetworkTableInstance::GetDefault().GetBooleanTopic("PerceptionSubsystem/seesTag").Publish();
 }

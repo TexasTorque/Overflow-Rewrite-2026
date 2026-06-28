@@ -6,7 +6,6 @@
 
 #include "Telemetry.h"
 #include "constants/Constants.hpp"
-#include "frc2/command/Command.h"
 #include "generated/TunerConstants.h"
 #include "subsystems/CommandSwerveDrivetrain.h"
 #include "subsystems/GateSubsystem.hpp"
@@ -17,9 +16,10 @@
 #include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 #include "utils/AutoChooser.hpp"
+#include <ctre/phoenix6/swerve/SwerveRequest.hpp>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
-#include <ctre/phoenix6/swerve/SwerveRequest.hpp>
 #include <optional>
 
 using namespace ctre::phoenix6;
@@ -39,10 +39,10 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
+  void ConfigurePlannerCommands();
   void ConfigureBindings();
   void ConfigureIntakeBindings();
   void ConfigureShooterBindings();
-  void ConfigurePlannerCommands();
 
   frc2::CommandXboxController m_driverController{0};
   frc2::CommandXboxController m_operatorController{1};
@@ -52,7 +52,6 @@ class RobotContainer {
           .WithDeadband(DriveConstants::kMaxSpeed * 0.05)
           .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)
           .WithDriveRequestType(ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
-
   swerve::requests::SwerveDriveBrake m_brake{};
   swerve::requests::PointWheelsAt m_point{};
 
