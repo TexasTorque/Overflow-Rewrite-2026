@@ -81,7 +81,7 @@ void RobotContainer::ConfigureBindings() {
           .WithName("Default Drive"));
 
   m_driverController.LeftBumper().OnTrue(frc2::cmd::RunOnce([this] { m_driveSubsystem.SeedFieldCentric(); }));
-  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
+  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.3_s)));
 
   m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
   m_operatorController.POVUp().WhileTrue(
