@@ -94,10 +94,27 @@ namespace LEDConstants {
 inline constexpr int kLEDPort = 9;
 inline constexpr int kLEDLength = 37;
 
+// Strip layout — adjust to match physical wiring
+inline constexpr int kFrontLength = 18;
+inline constexpr int kBackLength = kLEDLength - kFrontLength;
+
 // IDLE
 inline const std::array<frc::Color, 2> kIdleColors = {frc::Color::kRed, frc::Color::kBlue};
 inline frc::LEDPattern kIdle = frc::LEDPattern::Gradient(frc::LEDPattern::kContinuous, kIdleColors);
 
 // RUNNING
 inline frc::LEDPattern kRunning = frc::LEDPattern::Solid(frc::Color::kRed);
+
+// INTAKING
+inline const std::array<std::pair<double, frc::Color>, 4> kIntakeFrontSteps = {
+    std::pair{0.0, frc::Color::kYellow}, std::pair{0.22, frc::Color::kBlack}, std::pair{0.5, frc::Color::kOrange},
+    std::pair{0.72, frc::Color::kBlack}};
+inline const std::array<std::pair<double, frc::Color>, 6> kIntakeBackSteps = {
+    std::pair{0.0, frc::Color::kYellow}, std::pair{0.12, frc::Color::kBlack},  std::pair{0.33, frc::Color::kOrange},
+    std::pair{0.45, frc::Color::kBlack}, std::pair{0.67, frc::Color::kYellow}, std::pair{0.79, frc::Color::kBlack}};
+inline frc::LEDPattern kIntakeFront =
+    frc::LEDPattern::Steps(kIntakeFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{0.8});
+inline frc::LEDPattern kIntakeBack =
+    frc::LEDPattern::Steps(kIntakeBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
+
 }  // namespace LEDConstants

@@ -12,15 +12,19 @@ class LEDSubsystem : public frc2::SubsystemBase {
   LEDSubsystem();
 
   void SetLEDPattern(const frc::LEDPattern& pattern);
+  void SetLEDPatterns(const frc::LEDPattern& frontPattern, const frc::LEDPattern& backPattern);
+
   void UpdateBuffer();
 
   frc2::CommandPtr ShowIdleCommand();
   frc2::CommandPtr ShowRunningCommand();
+  frc2::CommandPtr ShowIntakingCommand();
 
   void Periodic() override;
 
  private:
   frc::AddressableLED m_leds{LEDConstants::kLEDPort};
   std::array<frc::AddressableLED::LEDData, LEDConstants::kLEDLength> m_ledData;
-  frc::LEDPattern m_pattern{LEDConstants::kIdle};
+  frc::LEDPattern m_frontPattern{LEDConstants::kIdle};
+  frc::LEDPattern m_backPattern{LEDConstants::kIdle};
 };

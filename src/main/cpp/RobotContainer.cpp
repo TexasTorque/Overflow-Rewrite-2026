@@ -27,6 +27,7 @@
 
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
+#include "frc2/command/button/Trigger.h"
 #include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
@@ -136,10 +137,13 @@ frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
 }
 
 void RobotContainer::ConfigureLEDBindings() {
-  (frc2::RobotModeTriggers::Teleop() || frc2::RobotModeTriggers::Autonomous())
-      .WhileTrue(m_ledSubsystem.ShowRunningCommand());
+  m_ledSubsystem.SetDefaultCommand(m_ledSubsystem.ShowRunningCommand());
 
   frc2::RobotModeTriggers::Disabled().WhileTrue(m_ledSubsystem.ShowIdleCommand().IgnoringDisable(true));
+
+  frc2::Trigger([this] {
+    return m_intakeSubsystem.GetState() == IntakeStateEnum::Intake;
+  }).WhileTrue(m_ledSubsystem.ShowIntakingCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
