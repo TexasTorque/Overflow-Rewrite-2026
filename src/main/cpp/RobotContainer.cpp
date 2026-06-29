@@ -2,6 +2,7 @@
 
 #include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/Command.h>
+#include <frc2/command/CommandScheduler.h>
 #include <frc2/command/Commands.h>
 #include <frc2/command/button/RobotModeTriggers.h>
 
@@ -81,7 +82,7 @@ void RobotContainer::ConfigureBindings() {
           .WithName("Default Drive"));
 
   m_driverController.LeftBumper().OnTrue(frc2::cmd::RunOnce([this] { m_driveSubsystem.SeedFieldCentric(); }));
-  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.3_s)));
+  m_driverController.RightTrigger().WhileTrue(m_driveSubsystem.RotateToHub());
 
   m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
   m_operatorController.POVUp().WhileTrue(
@@ -101,7 +102,7 @@ void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().OnTrue(
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
-  m_operatorController.POVLeft().ToggleOnTrue(WithShotSetup(
+  m_operatorController.LeftTrigger().ToggleOnTrue(WithShotSetup(
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
                                             [this] { return m_driveSubsystem.GetDistanceToHub(); })));
 
@@ -116,9 +117,19 @@ void RobotContainer::ConfigureShooterBindings() {
 }
 
 frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
+  auto wasIntaking = std::make_shared<bool>(false);
+
   return std::move(shotCommand)
-      .AlongWith(frc2::cmd::RunOnce([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); }))
-      .AlongWith(m_driveSubsystem.BrakeInPlace());
+      .AlongWith(m_driveSubsystem.BrakeInPlace())
+      .BeforeStarting([this, wasIntaking] {
+        *wasIntaking = (m_intakeSubsystem.GetState() == IntakeStateEnum::Intake);
+        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+      })
+      .FinallyDo([this, wasIntaking](bool) {
+        if (*wasIntaking) {
+          frc2::CommandScheduler::GetInstance().Schedule(m_intakeSubsystem.RunIntakeCommand());
+        }
+      });
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

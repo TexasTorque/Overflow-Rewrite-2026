@@ -7,6 +7,10 @@
 
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
+#include "abstractions/state/GateState.hpp"
+#include "abstractions/state/HopperState.hpp"
+#include "abstractions/state/ServoState.hpp"
+#include "abstractions/state/ShooterState.hpp"
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
@@ -68,6 +72,14 @@ inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSu
 
 inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
                                         GateSubsystem& gate) {
-  return frc2::cmd::RunOnce([&] {}, {&shooter, &servo, &hopper, &gate}).WithName("Stop Shot");
+  return frc2::cmd::RunOnce(
+             [&] {
+               shooter.SetState(ShooterStateEnum::Off);
+               servo.SetState(ServoStateEnum::Idle);
+               hopper.SetState(HopperStateEnum::Off);
+               gate.SetState(GateStateEnum::Off);
+             },
+             {&shooter, &servo, &hopper, &gate})
+      .WithName("Stop Shot");
 }
 }  // namespace CommandFactory
