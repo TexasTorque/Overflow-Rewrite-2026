@@ -1,0 +1,26 @@
+#pragma once
+
+#include <array>
+#include "frc/AddressableLED.h"
+#include "frc/LEDPattern.h"
+#include "frc2/command/CommandPtr.h"
+#include "frc2/command/SubsystemBase.h"
+#include "constants/Constants.hpp"
+
+class LEDSubsystem : public frc2::SubsystemBase {
+ public:
+  LEDSubsystem();
+
+  void SetLEDPattern(const frc::LEDPattern& pattern);
+  void UpdateBuffer();
+
+  frc2::CommandPtr ShowIdleCommand();
+  frc2::CommandPtr ShowRunningCommand();
+
+  void Periodic() override;
+
+ private:
+  frc::AddressableLED m_leds{LEDConstants::kLEDPort};
+  std::array<frc::AddressableLED::LEDData, LEDConstants::kLEDLength> m_ledData;
+  frc::LEDPattern m_pattern{LEDConstants::kIdle};
+};

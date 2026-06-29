@@ -40,11 +40,13 @@ RobotContainer::RobotContainer()
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
       m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()),
       m_servoSubsystem(turbolib::utils::MakeIO<ServoIO, ServoRealIO, ServoSimIO>()),
-      m_hubSubsystem() {
+      m_hubSubsystem(),
+      m_ledSubsystem() {
   ConfigurePlannerCommands();
   ConfigureBindings();
   ConfigureIntakeBindings();
   ConfigureShooterBindings();
+  ConfigureLEDBindings();
 
   m_autoChooser = AutoChooser{};
   frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
@@ -88,8 +90,9 @@ void RobotContainer::ConfigureBindings() {
   m_operatorController.POVUp().WhileTrue(
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
-  frc2::RobotModeTriggers::Disabled().WhileTrue(
-      m_driveSubsystem.ApplyRequest([] { return swerve::requests::Idle{}; }).IgnoringDisable(true));
+  frc2::RobotModeTriggers::Disabled().WhileTrue(m_driveSubsystem.ApplyRequest([] { return swerve::requests::Idle{}; })
+                                                    .IgnoringDisable(true)
+                                                    .WithName("Idle Drive"));
 
   m_driveSubsystem.RegisterTelemetry([this](auto const& state) { logger.Telemeterize(state); });
 }
@@ -130,6 +133,13 @@ frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
           frc2::CommandScheduler::GetInstance().Schedule(m_intakeSubsystem.RunIntakeCommand());
         }
       });
+}
+
+void RobotContainer::ConfigureLEDBindings() {
+  (frc2::RobotModeTriggers::Teleop() || frc2::RobotModeTriggers::Autonomous())
+      .WhileTrue(m_ledSubsystem.ShowRunningCommand());
+
+  frc2::RobotModeTriggers::Disabled().WhileTrue(m_ledSubsystem.ShowIdleCommand().IgnoringDisable(true));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

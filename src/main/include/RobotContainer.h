@@ -12,6 +12,7 @@
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
+#include "subsystems/LEDSubsystem.hpp"
 #include "subsystems/PerceptionSubsystem.hpp"
 #include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
@@ -43,6 +44,7 @@ class RobotContainer {
   void ConfigureBindings();
   void ConfigureIntakeBindings();
   void ConfigureShooterBindings();
+  void ConfigureLEDBindings();
 
   frc2::CommandPtr WithShotSetup(frc2::CommandPtr shotCommand);
 
@@ -67,6 +69,7 @@ class RobotContainer {
   GateSubsystem m_gateSubsystem;
   ServoSubsystem m_servoSubsystem;
   HubSubsystem m_hubSubsystem;
+  LEDSubsystem m_ledSubsystem;
 
   std::optional<AutoChooser> m_autoChooser;
 };

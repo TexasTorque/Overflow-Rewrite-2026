@@ -3,7 +3,9 @@
 
 #pragma once
 
+#include "frc/LEDPattern.h"
 #include "frc/geometry/Transform3d.h"
+#include "frc/util/Color.h"
 #include "units/voltage.h"
 #include "units/velocity.h"
 #include "units/angular_velocity.h"
@@ -87,3 +89,15 @@ inline constexpr int kServoRightPort = 8;
 inline constexpr double kServoIdlePos = 0.35;
 inline constexpr double kServoLaserPos = 0.1;
 }  // namespace ServoConstants
+
+namespace LEDConstants {
+inline constexpr int kLEDPort = 9;
+inline constexpr int kLEDLength = 37;
+
+// IDLE
+inline const std::array<frc::Color, 2> kIdleColors = {frc::Color::kRed, frc::Color::kBlue};
+inline frc::LEDPattern kIdle = frc::LEDPattern::Gradient(frc::LEDPattern::kContinuous, kIdleColors);
+
+// RUNNING
+inline frc::LEDPattern kRunning = frc::LEDPattern::Solid(frc::Color::kRed);
+}  // namespace LEDConstants
