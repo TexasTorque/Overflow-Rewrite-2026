@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "abstractions/state/SubsystemState.hpp"
 #include "abstractions/io/hopper/HopperIO.hpp"
 #include "abstractions/state/HopperState.hpp"
 #include "networktables/DoubleTopic.h"

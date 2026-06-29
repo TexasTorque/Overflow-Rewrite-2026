@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "abstractions/state/SubsystemState.hpp"
 #include "networktables/DoubleTopic.h"
 #include "networktables/NetworkTableInstance.h"
 #include "networktables/StringTopic.h"

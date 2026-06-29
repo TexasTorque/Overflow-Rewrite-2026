@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "abstractions/state/SubsystemState.hpp"
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/state/ShooterState.hpp"
 #include "networktables/BooleanTopic.h"
