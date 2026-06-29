@@ -61,7 +61,7 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
 
   pathplanner::NamedCommands::registerCommand("AutoAlign",
-                                              m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
+                                              m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(0.7_s)));
   pathplanner::NamedCommands::registerCommand(
       "RegressionShoot",
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
@@ -152,8 +152,9 @@ void RobotContainer::ConfigureLEDBindings() {
     return state != ShooterStateEnum::Off && state != ShooterStateEnum::Idle;
   }).WhileTrue(m_ledSubsystem.ShowSpinUpCommand());
 
-  frc2::Trigger([this] { return m_gateSubsystem.GetState() == GateStateEnum::On; })
-      .WhileTrue(m_ledSubsystem.ShowShootingCommand());
+  frc2::Trigger([this] {
+    return m_gateSubsystem.GetState() == GateStateEnum::On;
+  }).WhileTrue(m_ledSubsystem.ShowShootingCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

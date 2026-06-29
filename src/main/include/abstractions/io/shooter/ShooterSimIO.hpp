@@ -14,7 +14,7 @@ class ShooterSimIO : public ShooterIO {
     inputs.flywheelRPMSetpoint = m_targetRPM;
 
     double error = m_targetRPM.value() - m_currentRPM.value();
-    m_currentRPM += units::revolutions_per_minute_t{error * 0.05};
+    m_currentRPM += units::revolutions_per_minute_t{error * 0.08};
 
     inputs.flywheelRPM = m_currentRPM;
     inputs.flywheelCurrent = 0_A;
