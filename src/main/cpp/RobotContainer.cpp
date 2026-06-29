@@ -23,7 +23,9 @@
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
+#include "abstractions/state/GateState.hpp"
 #include "abstractions/state/IntakeState.hpp"
+#include "abstractions/state/ShooterState.hpp"
 
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
@@ -144,6 +146,14 @@ void RobotContainer::ConfigureLEDBindings() {
   frc2::Trigger([this] {
     return m_intakeSubsystem.GetState() == IntakeStateEnum::Intake;
   }).WhileTrue(m_ledSubsystem.ShowIntakingCommand());
+
+  frc2::Trigger([this] {
+    auto state = m_shooterSubsystem.GetState();
+    return state != ShooterStateEnum::Off && state != ShooterStateEnum::Idle;
+  }).WhileTrue(m_ledSubsystem.ShowSpinUpCommand());
+
+  frc2::Trigger([this] { return m_gateSubsystem.GetState() == GateStateEnum::On; })
+      .WhileTrue(m_ledSubsystem.ShowShootingCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

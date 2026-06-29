@@ -19,6 +19,8 @@ class LEDSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr ShowIdleCommand();
   frc2::CommandPtr ShowRunningCommand();
   frc2::CommandPtr ShowIntakingCommand();
+  frc2::CommandPtr ShowSpinUpCommand();
+  frc2::CommandPtr ShowShootingCommand();
 
   void Periodic() override;
 

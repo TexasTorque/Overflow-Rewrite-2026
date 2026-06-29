@@ -117,4 +117,9 @@ inline frc::LEDPattern kIntakeFront =
 inline frc::LEDPattern kIntakeBack =
     frc::LEDPattern::Steps(kIntakeBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
 
+// SHOOTER SPINNING UP
+inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.5_s);
+
+// ACTIVELY SHOOTING
+inline frc::LEDPattern kShooting = frc::LEDPattern::Solid(frc::Color::kGreen).Blink(0.15_s);
 }  // namespace LEDConstants

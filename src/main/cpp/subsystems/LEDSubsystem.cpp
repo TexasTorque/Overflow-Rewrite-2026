@@ -40,3 +40,11 @@ frc2::CommandPtr LEDSubsystem::ShowIntakingCommand() {
   return StartRun([this] { SetLEDPatterns(LEDConstants::kIntakeFront, LEDConstants::kIntakeBack); }, [] {})
       .WithName("LED Intaking");
 }
+
+frc2::CommandPtr LEDSubsystem::ShowSpinUpCommand() {
+  return StartRun([this] { SetLEDPattern(LEDConstants::kSpinUp); }, [] {}).WithName("LED Spin Up");
+}
+
+frc2::CommandPtr LEDSubsystem::ShowShootingCommand() {
+  return StartRun([this] { SetLEDPattern(LEDConstants::kShooting); }, [] {}).WithName("LED Shooting");
+}
