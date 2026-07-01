@@ -11,9 +11,7 @@
 #include "units/angular_velocity.h"
 
 namespace DriveConstants {
-inline constexpr bool kIsCalebMode = false;
-
-inline constexpr units::meters_per_second_t kMaxSpeed = 3.75_mps * (kIsCalebMode == true ? 0.9 : 1.0);
+inline constexpr units::meters_per_second_t kMaxSpeed = 4.25_mps;
 inline constexpr units::radians_per_second_t kMaxAngularRate = 0.75_tps;
 }  // namespace DriveConstants
 

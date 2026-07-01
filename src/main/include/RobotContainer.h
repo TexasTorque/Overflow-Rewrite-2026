@@ -51,11 +51,8 @@ class RobotContainer {
   frc2::CommandXboxController m_driverController{0};
   frc2::CommandXboxController m_operatorController{1};
 
-  swerve::requests::FieldCentric m_drive =
-      swerve::requests::FieldCentric{}
-          .WithDeadband(DriveConstants::kMaxSpeed * 0.05)
-          .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)
-          .WithDriveRequestType(ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
+  swerve::requests::FieldCentric m_drive = swerve::requests::FieldCentric{}.WithDriveRequestType(
+      ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
   swerve::requests::PointWheelsAt m_point{};
 
