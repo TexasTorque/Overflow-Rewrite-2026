@@ -30,6 +30,7 @@
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
 #include "frc2/command/button/Trigger.h"
+#include "frc2/command/sysid/SysIdRoutine.h"
 #include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
@@ -50,6 +51,7 @@ RobotContainer::RobotContainer()
   ConfigureIntakeBindings();
   ConfigureShooterBindings();
   ConfigureLEDBindings();
+  // ConfigureSysIDBindings();
 
   m_autoChooser = AutoChooser{};
   frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
@@ -120,6 +122,13 @@ void RobotContainer::ConfigureShooterBindings() {
 
   m_operatorController.Y().ToggleOnTrue(WithShotSetup(
       CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
+}
+
+void RobotContainer::ConfigureSysIDBindings() {
+  m_driverController.A().WhileTrue(m_driveSubsystem.SysIdDynamic(frc2::sysid::kForward));
+  m_driverController.B().WhileTrue(m_driveSubsystem.SysIdDynamic(frc2::sysid::kReverse));
+  m_driverController.X().WhileTrue(m_driveSubsystem.SysIdQuasistatic(frc2::sysid::kForward));
+  m_driverController.Y().WhileTrue(m_driveSubsystem.SysIdQuasistatic(frc2::sysid::kReverse));
 }
 
 frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {

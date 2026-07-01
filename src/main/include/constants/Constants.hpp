@@ -90,9 +90,8 @@ inline constexpr double kServoLaserPos = 0.1;
 
 namespace LEDConstants {
 inline constexpr int kLEDPort = 9;
-inline constexpr int kLEDLength = 37;
+inline constexpr int kLEDLength = 38;
 
-// Strip layout — adjust to match physical wiring
 inline constexpr int kFrontLength = 18;
 inline constexpr int kBackLength = kLEDLength - kFrontLength;
 
@@ -111,13 +110,13 @@ inline const std::array<std::pair<double, frc::Color>, 6> kIntakeBackSteps = {
     std::pair{0.0, frc::Color::kYellow}, std::pair{0.12, frc::Color::kBlack},  std::pair{0.33, frc::Color::kOrange},
     std::pair{0.45, frc::Color::kBlack}, std::pair{0.67, frc::Color::kYellow}, std::pair{0.79, frc::Color::kBlack}};
 inline frc::LEDPattern kIntakeFront =
-    frc::LEDPattern::Steps(kIntakeFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{0.8});
+    frc::LEDPattern::Steps(kIntakeFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{1.2});
 inline frc::LEDPattern kIntakeBack =
     frc::LEDPattern::Steps(kIntakeBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
 
 // SHOOTER SPINNING UP
-inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.5_s);
+inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.3_s);
 
 // ACTIVELY SHOOTING
-inline frc::LEDPattern kShooting = frc::LEDPattern::Solid(frc::Color::kGreen).Blink(0.15_s);
+inline frc::LEDPattern kShooting = frc::LEDPattern::Solid(frc::Color::kGreen).Blink(0.1_s);
 }  // namespace LEDConstants

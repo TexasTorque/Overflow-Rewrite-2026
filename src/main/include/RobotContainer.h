@@ -45,6 +45,7 @@ class RobotContainer {
   void ConfigureIntakeBindings();
   void ConfigureShooterBindings();
   void ConfigureLEDBindings();
+  void ConfigureSysIDBindings();
 
   frc2::CommandPtr WithShotSetup(frc2::CommandPtr shotCommand);
 
