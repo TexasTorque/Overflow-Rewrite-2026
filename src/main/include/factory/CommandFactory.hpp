@@ -74,7 +74,7 @@ inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsyste
                                         GateSubsystem& gate) {
   return frc2::cmd::RunOnce(
              [&] {
-               shooter.SetState(ShooterStateEnum::Off);
+               shooter.SetState(ShooterStateEnum::Idle);
                servo.SetState(ServoStateEnum::Idle);
                hopper.SetState(HopperStateEnum::Off);
                gate.SetState(GateStateEnum::Off);

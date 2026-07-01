@@ -63,7 +63,7 @@ class IntakeRealIO : public IntakeIO {
 
     config.SmartCurrentLimit(40);
     config.SetIdleMode(rev::spark::SparkBaseConfig::kBrake);
-    config.Inverted(true);
+    config.Inverted(false);
     config.VoltageCompensation(12);
 
     config.signals.PrimaryEncoderPositionPeriodMs(20);
