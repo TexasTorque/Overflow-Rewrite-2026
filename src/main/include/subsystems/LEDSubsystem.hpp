@@ -6,6 +6,7 @@
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/SubsystemBase.h"
 #include "constants/Constants.hpp"
+#include "subsystems/CommandSwerveDrivetrain.h"
 
 class LEDSubsystem : public frc2::SubsystemBase {
  public:
@@ -21,6 +22,7 @@ class LEDSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr ShowIntakingCommand();
   frc2::CommandPtr ShowSpinUpCommand();
   frc2::CommandPtr ShowShootingCommand();
+  frc2::CommandPtr ShowAutoAlignCommand(AutoAlignState state);
 
   void Periodic() override;
 

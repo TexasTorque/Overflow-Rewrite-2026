@@ -119,4 +119,15 @@ inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Bli
 
 // ACTIVELY SHOOTING
 inline frc::LEDPattern kShooting = frc::LEDPattern::Solid(frc::Color::kGreen).Blink(0.1_s);
+
+// AUTO ALIGN
+inline const std::array<std::pair<double, frc::Color>, 4> kAutoAlignSteps = {
+    std::pair{0.0, frc::Color::kBlue}, std::pair{0.25, frc::Color::kBlack}, std::pair{0.5, frc::Color::kBlue},
+    std::pair{0.75, frc::Color::kBlack}};
+
+inline frc::LEDPattern kAutoAlignRight =
+    frc::LEDPattern::Steps(kAutoAlignSteps).ScrollAtRelativeSpeed(units::hertz_t{-1.5});
+
+inline frc::LEDPattern kAutoAlignLeft =
+    frc::LEDPattern::Steps(kAutoAlignSteps).ScrollAtRelativeSpeed(units::hertz_t{1.5});
 }  // namespace LEDConstants

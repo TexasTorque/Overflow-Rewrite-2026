@@ -24,6 +24,12 @@
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
 
+enum class AutoAlignState {
+  None,
+  Right,
+  Left,
+};
+
 using namespace ctre::phoenix6;
 
 namespace subsystems {
@@ -285,6 +291,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     return _drivetrain.SamplePoseAt(utils::FPGAToCurrentTime(timestamp));
   }
 
+  AutoAlignState GetAutoAlignState() const { return m_autoAlignState; }
+
   void DriveRobotRelative(const frc::ChassisSpeeds& speeds) {
     SetControl(driveSpeeds.WithVelocityX(speeds.vx).WithVelocityY(speeds.vy).WithRotationalRate(speeds.omega));
   }
@@ -295,10 +303,16 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
              units::radians_per_second_t thetaFeedback =
                  m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
                  1_rad_per_s;
-
              return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
            })
+        .AlongWith(frc2::cmd::Run([this, targetAngle] {
+          frc::Rotation2d error = targetAngle() - GetState().Pose.Rotation();
+          m_autoAlignState = error.Radians() < 0_rad   ? AutoAlignState::Right
+                             : error.Radians() > 0_rad ? AutoAlignState::Left
+                                                       : AutoAlignState::None;
+        }))
         .Until([this] { return std::abs(m_thetaController.GetError()) < 0.035; })
+        .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .AndThen(ApplyRequest([this] { return m_brake; }))
         .WithName("Turn To Angle");
   }
@@ -337,6 +351,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   swerve::requests::SwerveDriveBrake m_brake{};
 
   frc::PIDController m_thetaController{5.25, 0, 0.4};
+  AutoAlignState m_autoAlignState = AutoAlignState::None;
 
   void StartSimThread();
   void ConfigurePathPlanner();

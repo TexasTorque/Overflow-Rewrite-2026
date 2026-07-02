@@ -1,5 +1,6 @@
 #include "subsystems/LEDSubsystem.hpp"
 #include "constants/Constants.hpp"
+#include "frc2/command/CommandPtr.h"
 
 LEDSubsystem::LEDSubsystem() {
   m_leds.SetLength(m_ledData.max_size());
@@ -47,4 +48,14 @@ frc2::CommandPtr LEDSubsystem::ShowSpinUpCommand() {
 
 frc2::CommandPtr LEDSubsystem::ShowShootingCommand() {
   return StartRun([this] { SetLEDPattern(LEDConstants::kShooting); }, [] {}).WithName("LED Shooting");
+}
+
+frc2::CommandPtr LEDSubsystem::ShowAutoAlignCommand(AutoAlignState state) {
+  return StartRun(
+             [this, state] {
+               SetLEDPattern(state == AutoAlignState::Right ? LEDConstants::kAutoAlignRight
+                                                            : LEDConstants::kAutoAlignLeft);
+             },
+             [] {})
+      .WithName("LED Auto Align");
 }
