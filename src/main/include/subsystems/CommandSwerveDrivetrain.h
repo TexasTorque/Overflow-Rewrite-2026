@@ -298,7 +298,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
 
              return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
            })
-        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.135; })
+        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.035; })
         .AndThen(ApplyRequest([this] { return m_brake; }))
         .WithName("Turn To Angle");
   }
@@ -336,7 +336,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
 
-  frc::PIDController m_thetaController{2.00, 0, 0};
+  frc::PIDController m_thetaController{5.25, 0, 0.4};
 
   void StartSimThread();
   void ConfigurePathPlanner();
