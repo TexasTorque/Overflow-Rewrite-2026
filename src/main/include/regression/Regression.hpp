@@ -24,8 +24,3 @@ class Regression {
 };
 
 inline std::vector<double> Regression::rpmCoefficients = {1050.00, 695.00};
-
-/*
- * x1  |  y1
- *
- */

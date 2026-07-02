@@ -83,6 +83,13 @@ inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsyst
       .WithName("Debug Shot");
 }
 
+inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                         GateSubsystem& gate, units::revolutions_per_minute_t rpm) {
+  return ShotCommand([&] { return shooter.RunDebugShotCommand([rpm] { return rpm; }); },
+                     [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
+      .WithName("Debug Shot");
+}
+
 inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
                                         GateSubsystem& gate) {
   return frc2::cmd::RunOnce(

@@ -73,7 +73,7 @@ inline constexpr units::revolutions_per_minute_t kLayupRPM = 2900_rpm;
 inline constexpr units::revolutions_per_minute_t kLaserRPM = 5000_rpm;
 inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
-inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
+inline constexpr units::revolutions_per_minute_t kIdleRPM = 0_rpm;
 }  // namespace ShooterConstants
 
 namespace DebugConstants {
@@ -90,14 +90,15 @@ inline constexpr double kServoLaserPos = 0.1;
 
 namespace LEDConstants {
 inline constexpr int kLEDPort = 9;
-inline constexpr int kLEDLength = 38;
+inline constexpr int kLEDLength = 34;
 
 inline constexpr int kFrontLength = 18;
 inline constexpr int kBackLength = kLEDLength - kFrontLength;
 
 // IDLE
-inline const std::array<frc::Color, 2> kIdleColors = {frc::Color::kRed, frc::Color::kBlue};
-inline frc::LEDPattern kIdle = frc::LEDPattern::Gradient(frc::LEDPattern::kContinuous, kIdleColors);
+inline const std::array<frc::Color, 2> kIdleColors = {frc::Color{1.0, 0.0, 0.1}, frc::Color{0.1, 0.0, 1.0}};
+inline frc::LEDPattern kIdle =
+    frc::LEDPattern::Gradient(frc::LEDPattern::kContinuous, kIdleColors).ScrollAtRelativeSpeed(units::hertz_t{0.5});
 
 // RUNNING
 inline frc::LEDPattern kRunning = frc::LEDPattern::Solid(frc::Color::kRed);

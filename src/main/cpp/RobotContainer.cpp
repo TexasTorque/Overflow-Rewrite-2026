@@ -71,6 +71,9 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand(
       "ClimbShoot",
       CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+  pathplanner::NamedCommands::registerCommand(
+      "VomitShot", CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
+                                                    m_gateSubsystem, 1600_rpm));
 
   pathplanner::NamedCommands::registerCommand("DisableVision",
                                               frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
@@ -153,10 +156,6 @@ void RobotContainer::ConfigureLEDBindings() {
   frc2::RobotModeTriggers::Disabled().WhileTrue(m_ledSubsystem.ShowIdleCommand().IgnoringDisable(true));
 
   frc2::Trigger([this] {
-    return m_intakeSubsystem.GetState() == IntakeStateEnum::Intake;
-  }).WhileTrue(m_ledSubsystem.ShowIntakingCommand());
-
-  frc2::Trigger([this] {
     auto state = m_shooterSubsystem.GetState();
     return state != ShooterStateEnum::Off && state != ShooterStateEnum::Idle;
   }).WhileTrue(m_ledSubsystem.ShowSpinUpCommand());
@@ -168,6 +167,10 @@ void RobotContainer::ConfigureLEDBindings() {
   frc2::Trigger([this] {
     return m_driveSubsystem.GetAutoAlignState() != AutoAlignState::None;
   }).WhileTrue(m_ledSubsystem.ShowAutoAlignCommand([this] { return m_driveSubsystem.GetAutoAlignState(); }));
+
+  frc2::Trigger([this] {
+    return m_intakeSubsystem.GetState() == IntakeStateEnum::Intake;
+  }).WhileTrue(m_ledSubsystem.ShowIntakingCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {
