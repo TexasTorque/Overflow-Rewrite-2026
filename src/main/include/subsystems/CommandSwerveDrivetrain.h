@@ -16,6 +16,7 @@
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
+#include "frc2/command/Commands.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
@@ -328,6 +329,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                                                                hubPose.X().value() - robotPose.X().value())}}
                  .RotateBy(180_deg);
            })
+        .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .WithName("Rotate To Hub");
   }
 

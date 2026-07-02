@@ -167,7 +167,7 @@ void RobotContainer::ConfigureLEDBindings() {
 
   frc2::Trigger([this] {
     return m_driveSubsystem.GetAutoAlignState() != AutoAlignState::None;
-  }).WhileTrue(m_ledSubsystem.ShowAutoAlignCommand(m_driveSubsystem.GetAutoAlignState()));
+  }).WhileTrue(m_ledSubsystem.ShowAutoAlignCommand([this] { return m_driveSubsystem.GetAutoAlignState(); }));
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

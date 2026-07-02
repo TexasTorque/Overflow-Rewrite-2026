@@ -50,11 +50,11 @@ frc2::CommandPtr LEDSubsystem::ShowShootingCommand() {
   return StartRun([this] { SetLEDPattern(LEDConstants::kShooting); }, [] {}).WithName("LED Shooting");
 }
 
-frc2::CommandPtr LEDSubsystem::ShowAutoAlignCommand(AutoAlignState state) {
+frc2::CommandPtr LEDSubsystem::ShowAutoAlignCommand(std::function<AutoAlignState()>&& stateFunc) {
   return StartRun(
-             [this, state] {
-               SetLEDPattern(state == AutoAlignState::Right ? LEDConstants::kAutoAlignRight
-                                                            : LEDConstants::kAutoAlignLeft);
+             [this, stateFunc] {
+               SetLEDPattern(stateFunc() == AutoAlignState::Right ? LEDConstants::kAutoAlignRight
+                                                                  : LEDConstants::kAutoAlignLeft);
              },
              [] {})
       .WithName("LED Auto Align");
