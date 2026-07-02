@@ -10,6 +10,7 @@
 #include "units/angular_velocity.h"
 #include "units/length.h"
 #include <frc2/command/SubsystemBase.h>
+#include <functional>
 #include <memory>
 
 class ShooterSubsystem : public frc2::SubsystemBase {
@@ -23,6 +24,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr RunClimbCommand();
   frc2::CommandPtr RunTrenchCommand();
   frc2::CommandPtr RunRegressionCommand(std::function<units::meter_t()> distance);
+  frc2::CommandPtr RunDebugShotCommand(std::function<units::revolutions_per_minute_t()> rpm);
 
   void SetState(const ShooterStateEnum& newState);
   void Clean();
@@ -45,6 +47,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   ShooterState m_state;
 
   units::meter_t m_distance = 0.0_m;
+  units::revolutions_per_minute_t m_debugRPM = 0.0_rpm;
 
   void ApplyState(const ShooterStateEnum& newState);
 };

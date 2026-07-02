@@ -5,7 +5,7 @@
 
 #include "turbolib/state/TurboState.hpp"
 
-enum class ShooterStateEnum { Off, Idle, Regression, Layup, Climb, Trench, Laser };
+enum class ShooterStateEnum { Off, Idle, Regression, Layup, Climb, Trench, Laser, Debug };
 
 class ShooterState : public TurboState<ShooterStateEnum> {
  public:

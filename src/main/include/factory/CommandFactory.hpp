@@ -5,6 +5,7 @@
 
 #include <functional>
 
+#include "frc/smartdashboard/SmartDashboard.h"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
 #include "abstractions/state/GateState.hpp"
@@ -16,6 +17,7 @@
 #include "subsystems/IntakeSubsystem.hpp"
 #include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
+#include "units/angular_velocity.h"
 #include "units/length.h"
 
 namespace CommandFactory {
@@ -68,6 +70,17 @@ inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSu
   return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); },
                      [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
       .WithName("Regression Shot");
+}
+
+inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+                                         GateSubsystem& gate) {
+  return ShotCommand(
+             [&] {
+               return shooter.RunDebugShotCommand(
+                   [] { return units::revolutions_per_minute_t{frc::SmartDashboard::GetNumber("Debug RPM", 0.0)}; });
+             },
+             [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
+      .WithName("Debug Shot");
 }
 
 inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,

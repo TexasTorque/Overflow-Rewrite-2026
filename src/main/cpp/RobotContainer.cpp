@@ -118,7 +118,7 @@ void RobotContainer::ConfigureShooterBindings() {
       CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
 
   m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(
-      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
+      CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
 
   m_operatorController.Y().ToggleOnTrue(WithShotSetup(
       CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
