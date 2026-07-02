@@ -26,8 +26,6 @@ void CommandSwerveDrivetrain::Periodic() {
       m_hasAppliedOperatorPerspective = true;
     }
   }
-
-  frc::SmartDashboard::PutNumber("Distance from Hub", GetDistanceToHub().value());
 }
 
 void CommandSwerveDrivetrain::StartSimThread() {

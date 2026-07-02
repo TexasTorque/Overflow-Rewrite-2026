@@ -73,7 +73,7 @@ inline constexpr units::revolutions_per_minute_t kLayupRPM = 2900_rpm;
 inline constexpr units::revolutions_per_minute_t kLaserRPM = 5000_rpm;
 inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
-inline constexpr units::revolutions_per_minute_t kIdleRPM = 0_rpm;
+inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
 }  // namespace ShooterConstants
 
 namespace DebugConstants {
