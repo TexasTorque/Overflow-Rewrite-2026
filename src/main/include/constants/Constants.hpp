@@ -6,6 +6,7 @@
 #include "frc/LEDPattern.h"
 #include "frc/geometry/Transform3d.h"
 #include "frc/util/Color.h"
+#include "units/time.h"
 #include "units/voltage.h"
 #include "units/velocity.h"
 #include "units/angular_velocity.h"
@@ -74,6 +75,10 @@ inline constexpr units::revolutions_per_minute_t kLaserRPM = 5000_rpm;
 inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
+
+inline constexpr units::second_t kStartTime = 2.1_s;
+inline constexpr units::second_t kHoldTime = 0.3_s;
+inline constexpr units::second_t kWaitTime = 0.4_s;
 }  // namespace ShooterConstants
 
 namespace DebugConstants {

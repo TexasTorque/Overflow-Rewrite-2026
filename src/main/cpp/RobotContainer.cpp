@@ -67,13 +67,13 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand(
       "RegressionShoot",
       CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }));
+                                            m_intakeSubsystem, [this] { return m_driveSubsystem.GetDistanceToHub(); }));
   pathplanner::NamedCommands::registerCommand(
-      "ClimbShoot",
-      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+      "ClimbShoot", CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
+                                                     m_gateSubsystem, m_intakeSubsystem));
   pathplanner::NamedCommands::registerCommand(
       "VomitShot", CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
-                                                    m_gateSubsystem, 1600_rpm));
+                                                    m_gateSubsystem, m_intakeSubsystem, 1600_rpm));
 
   pathplanner::NamedCommands::registerCommand("DisableVision",
                                               frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
@@ -113,18 +113,18 @@ void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().OnTrue(
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
-  m_operatorController.LeftTrigger().ToggleOnTrue(WithShotSetup(
-      CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            [this] { return m_driveSubsystem.GetDistanceToHub(); })));
+  m_operatorController.LeftTrigger().ToggleOnTrue(WithShotSetup(CommandFactory::RegressionShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem,
+      [this] { return m_driveSubsystem.GetDistanceToHub(); })));
 
-  m_operatorController.X().ToggleOnTrue(WithShotSetup(
-      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
+  m_operatorController.X().ToggleOnTrue(WithShotSetup(CommandFactory::TrenchShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 
-  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(
-      CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
+  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(CommandFactory::DebugShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 
-  m_operatorController.Y().ToggleOnTrue(WithShotSetup(
-      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem)));
+  m_operatorController.Y().ToggleOnTrue(WithShotSetup(CommandFactory::ClimbShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 }
 
 void RobotContainer::ConfigureSysIDBindings() {
@@ -136,6 +136,7 @@ void RobotContainer::ConfigureSysIDBindings() {
 
 frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
   auto wasIntaking = std::make_shared<bool>(false);
+  auto name = shotCommand.get()->GetName();
 
   return std::move(shotCommand)
       .AlongWith(m_driveSubsystem.BrakeInPlace())
@@ -147,7 +148,8 @@ frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
         if (*wasIntaking) {
           frc2::CommandScheduler::GetInstance().Schedule(m_intakeSubsystem.RunIntakeCommand());
         }
-      });
+      })
+      .WithName(name);
 }
 
 void RobotContainer::ConfigureLEDBindings() {

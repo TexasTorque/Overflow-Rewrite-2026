@@ -34,7 +34,7 @@ class GateRealIO : public GateIO {
   void ConfigureLeftGateMotor() {
     rev::spark::SparkMaxConfig config;
 
-    config.SmartCurrentLimit(40);
+    config.SmartCurrentLimit(50);
     config.VoltageCompensation(12);
     config.Follow(GateConstants::kGateRightMotorPort, false);
 
@@ -48,7 +48,7 @@ class GateRealIO : public GateIO {
   void ConfigureRightGateMotor() {
     rev::spark::SparkMaxConfig config;
 
-    config.SmartCurrentLimit(40);
+    config.SmartCurrentLimit(50);
     config.VoltageCompensation(12);
     config.Inverted(true);
 
