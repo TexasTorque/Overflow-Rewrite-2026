@@ -313,8 +313,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                                                        : AutoAlignState::None;
         }))
         .Until([this] { return std::abs(m_thetaController.GetError()) < 0.041; })
-        .AndThen(ApplyRequest([this] { return m_brake; }))
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
+        .AndThen(ApplyRequest([this] { return m_brake; }))
         .FinallyDo([this] { m_autoAlignState = AutoAlignState::None; })
         .WithName("Turn To Angle");
   }
