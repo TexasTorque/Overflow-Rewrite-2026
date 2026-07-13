@@ -146,7 +146,7 @@ frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
       })
       .FinallyDo([this, wasIntaking](bool) {
         if (*wasIntaking) {
-          frc2::CommandScheduler::GetInstance().Schedule(m_intakeSubsystem.RunIntakeCommand());
+          m_intakeSubsystem.SetState(IntakeStateEnum::Intake);
         }
       })
       .WithName(name);
