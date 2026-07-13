@@ -14,7 +14,6 @@ Robot::Robot() {
   frc::DriverStation::StartDataLog(frc::DataLogManager::GetLog());
 
   frc::SmartDashboard::PutData("Command Scheduler", &frc2::CommandScheduler::GetInstance());
-
 }
 
 void Robot::RobotPeriodic() {

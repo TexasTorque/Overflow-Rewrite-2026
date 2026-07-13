@@ -3,16 +3,17 @@
 
 #pragma once
 
+#include "frc/LEDPattern.h"
 #include "frc/geometry/Transform3d.h"
+#include "frc/util/Color.h"
+#include "units/time.h"
 #include "units/voltage.h"
 #include "units/velocity.h"
 #include "units/angular_velocity.h"
 
 namespace DriveConstants {
-inline constexpr bool kIsCalebMode = false;
-
-inline constexpr units::meters_per_second_t kMaxSpeed = 3.75_mps * (kIsCalebMode == true ? 0.9 : 1.0);
-inline constexpr units::radians_per_second_t kMaxAngularRate = 0.75_tps;
+inline constexpr units::meters_per_second_t kMaxSpeed = 3.6_mps;
+inline constexpr units::radians_per_second_t kMaxAngularRate = 1.00_tps;
 }  // namespace DriveConstants
 
 namespace PerceptionConstants {
@@ -22,6 +23,8 @@ inline constexpr frc::Transform3d kHopperLeftCamTransform{
     2.50874_in, 12.29184_in, 6.912581_in, {0_deg, -25_deg, 90_deg}};
 inline constexpr frc::Transform3d kHopperRightCamTransform{
     2.50874_in, -12.29184_in, 6.912581_in, {0_deg, -25_deg, -90_deg}};
+inline constexpr frc::Transform3d kShooterLeftCamTransform{
+    -10.88111_in, 8.002581_in, 10.326243_in, {0_deg, -22.5_deg, 180_deg}};
 
 inline constexpr frc::Pose2d kRedHubPose{11.92_m, 4_m, 0_rad};
 inline constexpr frc::Pose2d kBlueHubPose{4.625_m, 4_m, 0_rad};
@@ -72,6 +75,10 @@ inline constexpr units::revolutions_per_minute_t kLaserRPM = 5000_rpm;
 inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
+
+inline constexpr units::second_t kStartTime = 2.1_s;
+inline constexpr units::second_t kHoldTime = 0.3_s;
+inline constexpr units::second_t kWaitTime = 0.4_s;
 }  // namespace ShooterConstants
 
 namespace DebugConstants {
@@ -85,3 +92,48 @@ inline constexpr int kServoRightPort = 8;
 inline constexpr double kServoIdlePos = 0.35;
 inline constexpr double kServoLaserPos = 0.1;
 }  // namespace ServoConstants
+
+namespace LEDConstants {
+inline constexpr int kLEDPort = 9;
+inline constexpr int kLEDLength = 34;
+
+inline constexpr int kFrontLength = 18;
+inline constexpr int kBackLength = kLEDLength - kFrontLength;
+
+// IDLE
+inline const std::array<frc::Color, 2> kIdleColors = {frc::Color{1.0, 0.0, 0.1}, frc::Color{0.1, 0.0, 1.0}};
+inline frc::LEDPattern kIdle =
+    frc::LEDPattern::Gradient(frc::LEDPattern::kContinuous, kIdleColors).ScrollAtRelativeSpeed(units::hertz_t{0.5});
+
+// RUNNING
+inline frc::LEDPattern kRunning = frc::LEDPattern::Solid(frc::Color::kRed);
+
+// INTAKING
+inline const std::array<std::pair<double, frc::Color>, 4> kIntakeFrontSteps = {
+    std::pair{0.0, frc::Color::kYellow}, std::pair{0.22, frc::Color::kBlack}, std::pair{0.5, frc::Color::kOrange},
+    std::pair{0.72, frc::Color::kBlack}};
+inline const std::array<std::pair<double, frc::Color>, 6> kIntakeBackSteps = {
+    std::pair{0.0, frc::Color::kYellow}, std::pair{0.12, frc::Color::kBlack},  std::pair{0.33, frc::Color::kOrange},
+    std::pair{0.45, frc::Color::kBlack}, std::pair{0.67, frc::Color::kYellow}, std::pair{0.79, frc::Color::kBlack}};
+inline frc::LEDPattern kIntakeFront =
+    frc::LEDPattern::Steps(kIntakeFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{1.2});
+inline frc::LEDPattern kIntakeBack =
+    frc::LEDPattern::Steps(kIntakeBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
+
+// SHOOTER SPINNING UP
+inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.3_s);
+
+// ACTIVELY SHOOTING
+inline frc::LEDPattern kShooting = frc::LEDPattern::Solid(frc::Color::kGreen).Blink(0.1_s);
+
+// AUTO ALIGN
+inline const std::array<std::pair<double, frc::Color>, 4> kAutoAlignSteps = {
+    std::pair{0.0, frc::Color::kBlue}, std::pair{0.25, frc::Color::kBlack}, std::pair{0.5, frc::Color::kBlue},
+    std::pair{0.75, frc::Color::kBlack}};
+
+inline frc::LEDPattern kAutoAlignRight =
+    frc::LEDPattern::Steps(kAutoAlignSteps).ScrollAtRelativeSpeed(units::hertz_t{-1.5});
+
+inline frc::LEDPattern kAutoAlignLeft =
+    frc::LEDPattern::Steps(kAutoAlignSteps).ScrollAtRelativeSpeed(units::hertz_t{1.5});
+}  // namespace LEDConstants

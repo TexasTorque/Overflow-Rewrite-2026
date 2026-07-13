@@ -5,6 +5,7 @@
 #include <frc/RobotController.h>
 #include <memory>
 #include <utility>
+#include "frc/smartdashboard/SmartDashboard.h"
 
 using namespace subsystems;
 

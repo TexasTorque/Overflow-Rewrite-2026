@@ -6,20 +6,21 @@
 
 #include "Telemetry.h"
 #include "constants/Constants.hpp"
-#include "frc2/command/Command.h"
 #include "generated/TunerConstants.h"
 #include "subsystems/CommandSwerveDrivetrain.h"
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
+#include "subsystems/LEDSubsystem.hpp"
 #include "subsystems/PerceptionSubsystem.hpp"
 #include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 #include "utils/AutoChooser.hpp"
+#include <ctre/phoenix6/swerve/SwerveRequest.hpp>
+#include <frc2/command/Command.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
-#include <ctre/phoenix6/swerve/SwerveRequest.hpp>
 #include <optional>
 
 using namespace ctre::phoenix6;
@@ -39,20 +40,20 @@ class RobotContainer {
   frc2::Command* GetAutonomousCommand();
 
  private:
+  void ConfigurePlannerCommands();
   void ConfigureBindings();
   void ConfigureIntakeBindings();
   void ConfigureShooterBindings();
-  void ConfigurePlannerCommands();
+  void ConfigureLEDBindings();
+  void ConfigureSysIDBindings();
+
+  frc2::CommandPtr WithShotSetup(frc2::CommandPtr shotCommand);
 
   frc2::CommandXboxController m_driverController{0};
   frc2::CommandXboxController m_operatorController{1};
 
-  swerve::requests::FieldCentric m_drive =
-      swerve::requests::FieldCentric{}
-          .WithDeadband(DriveConstants::kMaxSpeed * 0.05)
-          .WithRotationalDeadband(DriveConstants::kMaxAngularRate * 0.05)
-          .WithDriveRequestType(ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
-
+  swerve::requests::FieldCentric m_drive = swerve::requests::FieldCentric{}.WithDriveRequestType(
+      ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
   swerve::requests::PointWheelsAt m_point{};
 
@@ -66,6 +67,7 @@ class RobotContainer {
   GateSubsystem m_gateSubsystem;
   ServoSubsystem m_servoSubsystem;
   HubSubsystem m_hubSubsystem;
+  LEDSubsystem m_ledSubsystem;
 
   std::optional<AutoChooser> m_autoChooser;
 };

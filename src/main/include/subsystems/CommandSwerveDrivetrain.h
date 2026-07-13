@@ -16,6 +16,7 @@
 #include "frc/controller/PIDController.h"
 #include "frc/geometry/Pose2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
+#include "frc2/command/Commands.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
@@ -23,6 +24,12 @@
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
 #include <pathplanner/lib/controllers/PPHolonomicDriveController.h>
+
+enum class AutoAlignState {
+  None,
+  Right,
+  Left,
+};
 
 using namespace ctre::phoenix6;
 
@@ -108,7 +115,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                              this}};
 
   /* The SysId routine to test */
-  frc2::sysid::SysIdRoutine* m_sysIdRoutineToApply = &m_sysIdRoutineTranslation;
+  frc2::sysid::SysIdRoutine* m_sysIdRoutineToApply = &m_sysIdRoutineRotation;
 
  public:
   /**
@@ -285,6 +292,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     return _drivetrain.SamplePoseAt(utils::FPGAToCurrentTime(timestamp));
   }
 
+  AutoAlignState GetAutoAlignState() const { return m_autoAlignState; }
+
   void DriveRobotRelative(const frc::ChassisSpeeds& speeds) {
     SetControl(driveSpeeds.WithVelocityX(speeds.vx).WithVelocityY(speeds.vy).WithRotationalRate(speeds.omega));
   }
@@ -295,12 +304,17 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
              units::radians_per_second_t thetaFeedback =
                  m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
                  1_rad_per_s;
-
              return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
            })
-        .Until([this] {
-          return std::abs(m_thetaController.GetError()) < 0.125;
-        }).AndThen(ApplyRequest([this] {return m_brake; }))
+        .AlongWith(frc2::cmd::Run([this, targetAngle] {
+          frc::Rotation2d error = targetAngle() - GetState().Pose.Rotation();
+          m_autoAlignState = error.Radians() < 0_rad   ? AutoAlignState::Right
+                             : error.Radians() > 0_rad ? AutoAlignState::Left
+                                                       : AutoAlignState::None;
+        }))
+        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.041; })
+        .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
+        .AndThen(ApplyRequest([this] { return m_brake; }))
         .WithName("Turn To Angle");
   }
 
@@ -315,6 +329,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                                                                hubPose.X().value() - robotPose.X().value())}}
                  .RotateBy(180_deg);
            })
+        .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .WithName("Rotate To Hub");
   }
 
@@ -337,7 +352,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
 
-  frc::PIDController m_thetaController{2.02, 0, 0.001};
+  frc::PIDController m_thetaController{5.25, 0, 0.4};
+  AutoAlignState m_autoAlignState = AutoAlignState::None;
 
   void StartSimThread();
   void ConfigurePathPlanner();

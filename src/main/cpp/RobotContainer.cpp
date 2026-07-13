@@ -1,7 +1,14 @@
-// Texas Torque 1477
-// Overflow 2026
-
 #include "RobotContainer.h"
+
+#include <frc/smartdashboard/SmartDashboard.h>
+#include <frc2/command/Command.h>
+#include <frc2/command/CommandScheduler.h>
+#include <frc2/command/Commands.h>
+#include <frc2/command/button/RobotModeTriggers.h>
+
+#include <pathplanner/lib/auto/NamedCommands.h>
+#include <pathplanner/lib/events/EventTrigger.h>
+
 #include "abstractions/io/gate/GateIO.hpp"
 #include "abstractions/io/gate/GateRealIO.hpp"
 #include "abstractions/io/gate/GateSimIO.hpp"
@@ -16,20 +23,19 @@
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
+#include "abstractions/state/GateState.hpp"
 #include "abstractions/state/IntakeState.hpp"
+#include "abstractions/state/ShooterState.hpp"
+
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
-#include "frc/smartdashboard/SmartDashboard.h"
-#include "frc2/command/Command.h"
-#include "pathplanner/lib/auto/NamedCommands.h"
+#include "frc2/command/button/Trigger.h"
+#include "frc2/command/sysid/SysIdRoutine.h"
 #include "subsystems/HubSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
 #include "turbolib/util/MakeIO.hpp"
 #include "utils/AutoChooser.hpp"
-#include <frc2/command/button/RobotModeTriggers.h>
-#include <pathplanner/lib/events/EventTrigger.h>
 
-#include <frc2/command/Commands.h>
 #include <string>
 
 RobotContainer::RobotContainer()
@@ -38,24 +44,44 @@ RobotContainer::RobotContainer()
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
       m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()),
       m_servoSubsystem(turbolib::utils::MakeIO<ServoIO, ServoRealIO, ServoSimIO>()),
-      m_hubSubsystem() {
+      m_hubSubsystem(),
+      m_ledSubsystem() {
   ConfigurePlannerCommands();
   ConfigureBindings();
   ConfigureIntakeBindings();
   ConfigureShooterBindings();
+  ConfigureLEDBindings();
+  // ConfigureSysIDBindings();
 
   m_autoChooser = AutoChooser{};
-
   frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
 }
 
+void RobotContainer::ConfigurePlannerCommands() {
+  pathplanner::NamedCommands::registerCommand("IntakeDown", m_intakeSubsystem.RunIntakeCommand());
+  pathplanner::NamedCommands::registerCommand("IntakeStop", m_intakeSubsystem.StopIntakeCommand());
+  pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
+
+  pathplanner::NamedCommands::registerCommand("AutoAlign",
+                                              m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(0.7_s)));
+  pathplanner::NamedCommands::registerCommand(
+      "RegressionShoot",
+      CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
+                                            m_intakeSubsystem, [this] { return m_driveSubsystem.GetDistanceToHub(); }));
+  pathplanner::NamedCommands::registerCommand(
+      "ClimbShoot", CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
+                                                     m_gateSubsystem, m_intakeSubsystem));
+  pathplanner::NamedCommands::registerCommand(
+      "VomitShot", CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
+                                                    m_gateSubsystem, m_intakeSubsystem, 1600_rpm));
+
+  pathplanner::NamedCommands::registerCommand("DisableVision",
+                                              frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
+  pathplanner::NamedCommands::registerCommand("EnableVision",
+                                              frc2::cmd::RunOnce([this] { m_perceptionSubsystem.EnableVision(); }));
+}
+
 void RobotContainer::ConfigureBindings() {
-  m_operatorController.POVUp().WhileTrue(
-      CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
-
-  m_driverController.A().ToggleOnTrue(m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
-  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
-
   m_driveSubsystem.SetDefaultCommand(
       m_driveSubsystem
           .ApplyRequest([this]() -> auto&& {
@@ -66,9 +92,15 @@ void RobotContainer::ConfigureBindings() {
           .WithName("Default Drive"));
 
   m_driverController.LeftBumper().OnTrue(frc2::cmd::RunOnce([this] { m_driveSubsystem.SeedFieldCentric(); }));
+  m_driverController.RightTrigger().WhileTrue(m_driveSubsystem.RotateToHub());
 
-  frc2::RobotModeTriggers::Disabled().WhileTrue(
-      m_driveSubsystem.ApplyRequest([] { return swerve::requests::Idle{}; }).IgnoringDisable(true));
+  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
+  m_operatorController.POVUp().WhileTrue(
+      CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
+
+  frc2::RobotModeTriggers::Disabled().WhileTrue(m_driveSubsystem.ApplyRequest([] { return swerve::requests::Idle{}; })
+                                                    .IgnoringDisable(true)
+                                                    .WithName("Idle Drive"));
 
   m_driveSubsystem.RegisterTelemetry([this](auto const& state) { logger.Telemeterize(state); });
 }
@@ -80,38 +112,67 @@ void RobotContainer::ConfigureIntakeBindings() {
 void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().OnTrue(
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  m_operatorController.POVLeft().ToggleOnTrue(
-      CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            [this] { return m_driveSubsystem.GetDistanceToHub(); }).AlongWith(frc2::cmd::RunOnce([this] {
-                                              m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-                                            })).AlongWith(m_driveSubsystem.BrakeInPlace()));
-  m_operatorController.X().ToggleOnTrue(
-      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
-  m_operatorController.POVRight().ToggleOnTrue(
-      CommandFactory::LaserShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
-  m_operatorController.Y().ToggleOnTrue(
-      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem).AlongWith(frc2::cmd::RunOnce([this] {
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })).AlongWith(m_driveSubsystem.BrakeInPlace()));
+
+  m_operatorController.LeftTrigger().ToggleOnTrue(WithShotSetup(CommandFactory::RegressionShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem,
+      [this] { return m_driveSubsystem.GetDistanceToHub(); })));
+
+  m_operatorController.X().ToggleOnTrue(WithShotSetup(CommandFactory::TrenchShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
+
+  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(CommandFactory::DebugShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
+
+  m_operatorController.Y().ToggleOnTrue(WithShotSetup(CommandFactory::ClimbShotCommand(
+      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 }
 
-void RobotContainer::ConfigurePlannerCommands() {
-  pathplanner::NamedCommands::registerCommand("IntakeDown", m_intakeSubsystem.RunIntakeCommand());
-  pathplanner::NamedCommands::registerCommand("IntakeStop", m_intakeSubsystem.StopIntakeCommand());
-  pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
+void RobotContainer::ConfigureSysIDBindings() {
+  m_driverController.A().WhileTrue(m_driveSubsystem.SysIdDynamic(frc2::sysid::kForward));
+  m_driverController.B().WhileTrue(m_driveSubsystem.SysIdDynamic(frc2::sysid::kReverse));
+  m_driverController.X().WhileTrue(m_driveSubsystem.SysIdQuasistatic(frc2::sysid::kForward));
+  m_driverController.Y().WhileTrue(m_driveSubsystem.SysIdQuasistatic(frc2::sysid::kReverse));
+}
 
-  pathplanner::NamedCommands::registerCommand("AutoAlign", m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(1.5_s)));
-  pathplanner::NamedCommands::registerCommand("RegressionShoot", CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                        [this] { return m_driveSubsystem.GetDistanceToHub(); }));
-  pathplanner::NamedCommands::registerCommand("ClimbShoot", CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
-  pathplanner::NamedCommands::registerCommand("DisableVision",
-                                              frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
-  pathplanner::NamedCommands::registerCommand("EnableVision",
-                                              frc2::cmd::RunOnce([this] { m_perceptionSubsystem.EnableVision(); }));
+frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
+  auto wasIntaking = std::make_shared<bool>(false);
+  auto name = shotCommand.get()->GetName();
+
+  return std::move(shotCommand)
+      .AlongWith(m_driveSubsystem.BrakeInPlace())
+      .BeforeStarting([this, wasIntaking] {
+        *wasIntaking = (m_intakeSubsystem.GetState() == IntakeStateEnum::Intake);
+        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+      })
+      .FinallyDo([this, wasIntaking](bool) {
+        if (*wasIntaking) {
+          frc2::CommandScheduler::GetInstance().Schedule(m_intakeSubsystem.RunIntakeCommand());
+        }
+      })
+      .WithName(name);
+}
+
+void RobotContainer::ConfigureLEDBindings() {
+  m_ledSubsystem.SetDefaultCommand(m_ledSubsystem.ShowRunningCommand());
+
+  frc2::RobotModeTriggers::Disabled().WhileTrue(m_ledSubsystem.ShowIdleCommand().IgnoringDisable(true));
+
+  frc2::Trigger([this] {
+    auto state = m_shooterSubsystem.GetState();
+    return state != ShooterStateEnum::Off && state != ShooterStateEnum::Idle;
+  }).WhileTrue(m_ledSubsystem.ShowSpinUpCommand());
+
+  frc2::Trigger([this] {
+    return m_gateSubsystem.GetState() == GateStateEnum::On;
+  }).WhileTrue(m_ledSubsystem.ShowShootingCommand());
+
+  frc2::Trigger([this] {
+    return m_driveSubsystem.GetAutoAlignState() != AutoAlignState::None;
+  }).WhileTrue(m_ledSubsystem.ShowAutoAlignCommand([this] { return m_driveSubsystem.GetAutoAlignState(); }));
+
+  frc2::Trigger([this] {
+    return m_intakeSubsystem.GetState() == IntakeStateEnum::Intake;
+  }).WhileTrue(m_ledSubsystem.ShowIntakingCommand());
 }
 
 frc2::Command* RobotContainer::GetAutonomousCommand() {

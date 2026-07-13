@@ -6,7 +6,6 @@
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "constants/constants.hpp"
 #include "frc/controller/PIDController.h"
-#include "rev/ClosedLoopTypes.h"
 #include "rev/ConfigureTypes.h"
 #include "rev/SparkBase.h"
 #include "rev/SparkLowLevel.h"
@@ -32,12 +31,10 @@ class IntakeRealIO : public IntakeIO {
 
   void Process() override {
     auto pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
+    auto divisor = m_slow ? 2.5 : 1.9;
 
-    if (!m_slow) {
-      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 1.90});
-    } else {
-      m_rotaryMotor.SetVoltage(units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / 2.50});
-    }
+    m_rotaryMotor.SetVoltage(
+        units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / divisor});
   }
 
   void SetIntakeVoltage(units::volt_t voltage) override { m_rollerMotorRight.SetVoltage(voltage); }
@@ -66,17 +63,8 @@ class IntakeRealIO : public IntakeIO {
 
     config.SmartCurrentLimit(40);
     config.SetIdleMode(rev::spark::SparkBaseConfig::kBrake);
-    config.Inverted(true);
+    config.Inverted(false);
     config.VoltageCompensation(12);
-
-    config.closedLoop.Pid(1.5, 0, 0, rev::spark::kSlot0);
-    config.closedLoop.Pid(1.5, 0, 0, rev::spark::kSlot1);
-
-    config.closedLoop.maxMotion.CruiseVelocity(30);
-    config.closedLoop.maxMotion.MaxAcceleration(10);
-
-    config.closedLoop.maxMotion.CruiseVelocity(15, rev::spark::kSlot1);
-    config.closedLoop.maxMotion.MaxAcceleration(5, rev::spark::kSlot1);
 
     config.signals.PrimaryEncoderPositionPeriodMs(20);
     config.signals.PrimaryEncoderVelocityPeriodMs(100);
