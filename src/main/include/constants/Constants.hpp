@@ -12,7 +12,7 @@
 #include "units/angular_velocity.h"
 
 namespace DriveConstants {
-inline constexpr units::meters_per_second_t kMaxSpeed = 3.6_mps;
+inline units::meters_per_second_t kMaxSpeed = 3.6_mps;
 inline constexpr units::radians_per_second_t kMaxAngularRate = 1.00_tps;
 }  // namespace DriveConstants
 

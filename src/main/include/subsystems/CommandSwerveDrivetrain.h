@@ -313,8 +313,9 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                                                        : AutoAlignState::None;
         }))
         .Until([this] { return std::abs(m_thetaController.GetError()) < 0.041; })
-        .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .AndThen(ApplyRequest([this] { return m_brake; }))
+        .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
+        .FinallyDo([this] { m_autoAlignState = AutoAlignState::None; })
         .WithName("Turn To Angle");
   }
 
@@ -352,7 +353,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
 
-  frc::PIDController m_thetaController{5.25, 0, 0.4};
+  frc::PIDController m_thetaController{5.25, 0.004, 0.4};
   AutoAlignState m_autoAlignState = AutoAlignState::None;
 
   void StartSimThread();

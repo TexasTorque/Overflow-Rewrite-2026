@@ -62,6 +62,8 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand("IntakeStop", m_intakeSubsystem.StopIntakeCommand());
   pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
 
+  pathplanner::NamedCommands::registerCommand("BrakeInPlace", m_driveSubsystem.BrakeInPlace());
+
   pathplanner::NamedCommands::registerCommand("AutoAlign",
                                               m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(0.7_s)));
   pathplanner::NamedCommands::registerCommand(
