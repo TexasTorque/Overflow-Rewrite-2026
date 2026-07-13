@@ -62,6 +62,8 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand("IntakeStop", m_intakeSubsystem.StopIntakeCommand());
   pathplanner::NamedCommands::registerCommand("IntakePullUp", m_intakeSubsystem.SlowZeroCommand());
 
+  pathplanner::NamedCommands::registerCommand("BrakeInPlace", m_driveSubsystem.BrakeInPlace());
+
   pathplanner::NamedCommands::registerCommand("AutoAlign",
                                               m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(0.7_s)));
   pathplanner::NamedCommands::registerCommand(
@@ -146,7 +148,7 @@ frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
       })
       .FinallyDo([this, wasIntaking](bool) {
         if (*wasIntaking) {
-          frc2::CommandScheduler::GetInstance().Schedule(m_intakeSubsystem.RunIntakeCommand());
+          m_intakeSubsystem.SetState(IntakeStateEnum::Intake);
         }
       })
       .WithName(name);

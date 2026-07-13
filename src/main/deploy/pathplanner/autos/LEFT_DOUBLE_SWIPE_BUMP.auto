@@ -33,22 +33,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakePullUp"
-                      }
-                    }
-                  ]
+                  "name": "BrakeInPlace"
                 }
               }
             ]
@@ -83,22 +70,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "IntakePullUp"
-                      }
-                    }
-                  ]
+                  "name": "BrakeInPlace"
                 }
               }
             ]
