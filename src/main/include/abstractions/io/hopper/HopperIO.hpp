@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include "ctre/phoenix6/TalonFX.hpp"
 #include "units/current.h"
 #include "units/voltage.h"
 
@@ -16,6 +17,8 @@ class HopperIO {
   virtual void UpdateInputs(HopperIOInputs& inputs) = 0;
 
   virtual void SetHopperVoltage(units::volt_t voltage) = 0;
+
+  virtual ctre::phoenix6::hardware::TalonFX& GetHopperMotor() = 0;
 
   virtual ~HopperIO() = default;
 };

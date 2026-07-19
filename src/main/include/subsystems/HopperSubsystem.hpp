@@ -21,6 +21,8 @@ class HopperSubsystem : public frc2::SubsystemBase {
   void SetState(const HopperStateEnum& newState);
   void Clean();
 
+  HopperIO* GetIO() { return m_io.get(); }
+
   HopperStateEnum GetState() const { return m_state.Get(); }
 
  private:

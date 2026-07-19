@@ -15,6 +15,8 @@ class HopperSimIO : public HopperIO {
 
   void SetHopperVoltage(units::volt_t voltage) override { m_voltage = voltage; }
 
+  ctre::phoenix6::hardware::TalonFX& GetHopperMotor() override;
+
  private:
   units::volt_t m_voltage;
 };

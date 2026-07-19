@@ -4,9 +4,12 @@
 #pragma once
 
 #include <functional>
+#include <string>
+#include <string_view>
 
 #include "abstractions/state/IntakeState.hpp"
 #include "constants/Constants.hpp"
+#include "ctre/phoenix6/Orchestra.hpp"
 #include "frc/smartdashboard/SmartDashboard.h"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
@@ -145,5 +148,9 @@ inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsyste
              },
              {&shooter, &servo, &hopper, &gate})
       .WithName("Stop Shot");
+}
+
+inline frc2::CommandPtr PlaySong(ctre::phoenix6::Orchestra& orchestra) {
+  return frc2::cmd::RunOnce([&] { orchestra.Play(); });
 }
 }  // namespace CommandFactory

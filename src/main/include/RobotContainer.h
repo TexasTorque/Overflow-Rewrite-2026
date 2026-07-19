@@ -22,6 +22,8 @@
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/button/CommandXboxController.h>
 #include <optional>
+#include <ctre/phoenix6/Orchestra.hpp>
+#include <string>
 
 using namespace ctre::phoenix6;
 
@@ -68,6 +70,10 @@ class RobotContainer {
   ServoSubsystem m_servoSubsystem;
   HubSubsystem m_hubSubsystem;
   LEDSubsystem m_ledSubsystem;
+
+  Orchestra m_orchestra{};
+  std::optional<frc2::CommandPtr> m_playCommand = std::nullopt;
+  std::string m_song;
 
   std::optional<AutoChooser> m_autoChooser;
 };

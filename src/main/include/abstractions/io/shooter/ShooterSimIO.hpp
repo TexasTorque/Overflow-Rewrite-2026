@@ -24,6 +24,9 @@ class ShooterSimIO : public ShooterIO {
 
   void SetFlywheelRPM(units::revolutions_per_minute_t rpm) override { m_targetRPM = rpm; }
 
+  ctre::phoenix6::hardware::TalonFX& GetShooterLeftMotor() override;
+  ctre::phoenix6::hardware::TalonFX& GetShooterRightMotor() override;
+
  private:
   units::revolutions_per_minute_t m_targetRPM{0_rpm};
   units::revolutions_per_minute_t m_currentRPM{0_rpm};

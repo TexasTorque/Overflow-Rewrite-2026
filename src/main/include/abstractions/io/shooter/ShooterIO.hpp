@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <optional>
+#include "ctre/phoenix6/TalonFX.hpp"
 #include "units/current.h"
 #include "units/angular_velocity.h"
 
@@ -19,6 +21,9 @@ class ShooterIO {
   virtual void UpdateInputs(ShooterIOInputs& inputs) = 0;
 
   virtual void SetFlywheelRPM(units::revolutions_per_minute_t rpm) = 0;
+
+  virtual ctre::phoenix6::hardware::TalonFX& GetShooterLeftMotor() = 0;
+  virtual ctre::phoenix6::hardware::TalonFX& GetShooterRightMotor() = 0;
 
   virtual ~ShooterIO() = default;
 };

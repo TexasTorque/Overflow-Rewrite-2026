@@ -29,6 +29,7 @@
 
 #include "constants/Constants.hpp"
 #include "factory/CommandFactory.hpp"
+#include "frc/DataLogManager.h"
 #include "frc2/command/button/Trigger.h"
 #include "frc2/command/sysid/SysIdRoutine.h"
 #include "subsystems/HubSubsystem.hpp"
@@ -55,6 +56,45 @@ RobotContainer::RobotContainer()
 
   m_autoChooser = AutoChooser{};
   frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
+
+  for (int i = 0; i < 4; ++i) {
+    auto& motor_to_add = m_driveSubsystem.GetModule(i).GetDriveMotor();
+    auto status = m_orchestra.AddInstrument(motor_to_add, 0);
+
+    frc::SmartDashboard::PutString("DM_Status_" + std::to_string(i), status.GetName());
+    frc::SmartDashboard::PutString("DM_Desc_" + std::to_string(i), status.GetDescription());
+  }
+
+  for (int i = 0; i < 4; ++i) {
+    auto& motor_to_add = m_driveSubsystem.GetModule(i).GetSteerMotor();
+    auto status = m_orchestra.AddInstrument(motor_to_add, 1);
+
+    frc::SmartDashboard::PutString("SM_Status_" + std::to_string(i), status.GetName());
+    frc::SmartDashboard::PutString("SM_Desc_" + std::to_string(i), status.GetDescription());
+  }
+
+  auto& shooterLeft = m_shooterSubsystem.GetIO()->GetShooterLeftMotor();
+  auto& shooterRight = m_shooterSubsystem.GetIO()->GetShooterRightMotor();
+
+  auto shooterLeftStatus = m_orchestra.AddInstrument(shooterLeft, 0);
+  auto shooterRightStatus = m_orchestra.AddInstrument(shooterRight, 0);
+
+  frc::SmartDashboard::PutString("SL_Status", shooterLeftStatus.GetName());
+  frc::SmartDashboard::PutString("SL_Desc", shooterLeftStatus.GetDescription());
+
+  frc::SmartDashboard::PutString("SR_Status", shooterRightStatus.GetName());
+  frc::SmartDashboard::PutString("SR_Desc", shooterRightStatus.GetDescription());
+
+  auto& hopper = m_hopperSubsystem.GetIO()->GetHopperMotor();
+
+  auto hopperStatus = m_orchestra.AddInstrument(hopper, 0);
+
+  frc::SmartDashboard::PutString("H_Status", hopperStatus.GetName());
+  frc::SmartDashboard::PutString("H_Desc", hopperStatus.GetDescription());
+
+  m_orchestra.LoadMusic("caludia.chrp");
+
+  m_orchestra.Play();
 }
 
 void RobotContainer::ConfigurePlannerCommands() {

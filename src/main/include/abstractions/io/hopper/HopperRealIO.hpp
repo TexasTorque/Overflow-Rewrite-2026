@@ -23,6 +23,8 @@ class HopperRealIO : public HopperIO {
     m_hopperMotor.SetControl(m_voltageRequest.WithOutput(voltage));
   }
 
+  ctre::phoenix6::hardware::TalonFX& GetHopperMotor() override { return m_hopperMotor; }
+
  private:
   ctre::phoenix6::hardware::TalonFX m_hopperMotor{HopperConstants::kHopperMotorPort};
 

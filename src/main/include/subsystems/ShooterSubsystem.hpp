@@ -31,6 +31,8 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   void Periodic() override;
 
+  ShooterIO* GetIO() { return m_io.get(); }
+
   ShooterStateEnum GetState() const { return m_state.Get(); }
 
   bool IsReadyToShoot() const {

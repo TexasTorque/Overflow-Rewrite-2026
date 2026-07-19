@@ -33,6 +33,9 @@ class ShooterRealIO : public ShooterIO {
     m_flywheelMotorRight.SetControl(rpmRequest.WithVelocity(rpm));
   }
 
+  ctre::phoenix6::hardware::TalonFX& GetShooterLeftMotor() override { return m_flywheelMotorLeft; }
+  ctre::phoenix6::hardware::TalonFX& GetShooterRightMotor() override { return m_flywheelMotorRight; }
+
  private:
   ctre::phoenix6::hardware::TalonFX m_flywheelMotorRight{ShooterConstants::kFlywheelMotorRightPort};
   ctre::phoenix6::hardware::TalonFX m_flywheelMotorLeft{ShooterConstants::kFlywheelMotorLeftPort};
