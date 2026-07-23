@@ -23,4 +23,4 @@ class Regression {
   static std::vector<double> rpmCoefficients;
 };
 
-inline std::vector<double> Regression::rpmCoefficients = {1050.00, 695.00};
+inline std::vector<double> Regression::rpmCoefficients = {1050.00, 735.00};

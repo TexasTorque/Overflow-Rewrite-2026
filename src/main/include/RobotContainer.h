@@ -36,6 +36,7 @@ class RobotContainer {
   GateSubsystem& GetGateSubsystem() { return m_gateSubsystem; }
   ServoSubsystem& GetServoSubsystem() { return m_servoSubsystem; }
   PerceptionSubsystem& GetPerceptionSubsystem() { return m_perceptionSubsystem; }
+  LEDSubsystem& GetLEDSubsystem() { return m_ledSubsystem; }
 
   frc2::Command* GetAutonomousCommand();
 

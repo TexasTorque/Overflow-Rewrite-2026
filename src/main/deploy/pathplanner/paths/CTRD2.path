@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.2030538194444449,
-        "y": 5.983304759837963
+        "x": 0.12386190682870424,
+        "y": 5.983239149305556
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.45302680928749894,
-        "y": 5.97962993345779
+        "x": 0.3738348966717583,
+        "y": 5.979564322925383
       },
       "isLocked": false,
       "linkedName": "CTRD1E"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 2.494436053240741,
-        "y": 3.9640750144675927
+        "x": 1.9897598379629633,
+        "y": 3.934615885416667
       },
       "prevControl": {
-        "x": 2.42206797649516,
-        "y": 4.203371611744164
+        "x": 1.9173917612173823,
+        "y": 4.173912482693239
       },
       "nextControl": null,
       "isLocked": false,
@@ -56,7 +56,7 @@
       "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 0.6753003003003,
       "constraints": {
-        "maxVelocity": 1.0,
+        "maxVelocity": 1.2,
         "maxAcceleration": 3.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
