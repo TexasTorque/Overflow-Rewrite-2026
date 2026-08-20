@@ -10,13 +10,13 @@
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
 PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsumer) : m_visionConsumer(visionConsumer) {
-  AddLocalizationCamera("shooterRightCam", PerceptionConstants::kShooterRightCamTransform,
+  AddLocalizationCamera("shooterRight", PerceptionConstants::kShooterRightCamTransform,
                         frc::AprilTagField::k2026RebuiltAndyMark);
-  AddLocalizationCamera("hopperLeftCam", PerceptionConstants::kHopperLeftCamTransform,
+  AddLocalizationCamera("hopperLeft", PerceptionConstants::kHopperLeftCamTransform,
                         frc::AprilTagField::k2026RebuiltAndyMark);
-  AddLocalizationCamera("hopperRightCam", PerceptionConstants::kHopperRightCamTransform,
+  AddLocalizationCamera("hopperRight", PerceptionConstants::kHopperRightCamTransform,
                         frc::AprilTagField::k2026RebuiltAndyMark);
-  AddLocalizationCamera("shooterLeftCam", PerceptionConstants::kShooterLeftCamTransform,
+  AddLocalizationCamera("shooterLeft", PerceptionConstants::kShooterLeftCamTransform,
                         frc::AprilTagField::k2026RebuiltAndyMark);
 
   m_seesTagPublisher = nt::NetworkTableInstance::GetDefault().GetBooleanTopic("PerceptionSubsystem/seesTag").Publish();

@@ -4,7 +4,7 @@
 #include "subsystems/IntakeSubsystem.hpp"
 #include "abstractions/logging/IntakeLogging.hpp"
 #include "abstractions/state/IntakeState.hpp"
-#include "constants/constants.hpp"
+#include "constants/Constants.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
 #include <utility>
@@ -34,6 +34,12 @@ frc2::CommandPtr IntakeSubsystem::StopIntakeCommand() {
 frc2::CommandPtr IntakeSubsystem::SlowZeroCommand() {
   return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::SlowPullup); },
                              [this] { SetState(IntakeStateEnum::Stow); }, {this});
+}
+
+frc2::CommandPtr IntakeSubsystem::StowIntakeCommand() {
+  return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::PullIn); }, [this] { SetState(IntakeStateEnum::Stow); },
+                             {this})
+      .WithName("Pull In Intake");
 }
 
 void IntakeSubsystem::SetState(const IntakeStateEnum& newState) {
@@ -69,5 +75,8 @@ void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {
       m_io->SetIntakeVoltage(0_V);
       m_io->SetIntakePivotSetpoint(IntakeConstants::kRotarySlowZeroPosition, true);
       break;
+    case IntakeStateEnum::PullIn:
+      m_io->SetIntakeVoltage(0_V);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryUpPosition, true);
   }
 }

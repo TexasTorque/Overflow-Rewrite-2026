@@ -18,6 +18,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr RunIntakeCommand();
   frc2::CommandPtr RunOuttakeCommand();
   frc2::CommandPtr StopIntakeCommand();
+  frc2::CommandPtr StowIntakeCommand();
   frc2::CommandPtr SlowZeroCommand();
 
   void SetState(const IntakeStateEnum& newState);

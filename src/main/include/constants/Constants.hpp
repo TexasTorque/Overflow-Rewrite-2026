@@ -19,10 +19,8 @@ inline constexpr units::radians_per_second_t kMaxAngularRate = 1.00_tps;
 namespace PerceptionConstants {
 inline constexpr frc::Transform3d kShooterRightCamTransform{
     -10.88111_in, -7.985419_in, 10.326243_in, {0_deg, -22.5_deg, 180_deg}};
-inline constexpr frc::Transform3d kHopperLeftCamTransform{
-    2.50874_in, 12.29184_in, 6.912581_in, {0_deg, -25_deg, 90_deg}};
-inline constexpr frc::Transform3d kHopperRightCamTransform{
-    2.50874_in, -12.29184_in, 6.912581_in, {0_deg, -25_deg, -90_deg}};
+inline constexpr frc::Transform3d kHopperLeftCamTransform{1.87_in, 12.29184_in, 12.5_in, {0_deg, -25_deg, 90_deg}};
+inline constexpr frc::Transform3d kHopperRightCamTransform{1.87_in, -12.29184_in, 12.5_in, {0_deg, -25_deg, -90_deg}};
 inline constexpr frc::Transform3d kShooterLeftCamTransform{
     -10.88111_in, 8.002581_in, 10.326243_in, {0_deg, -22.5_deg, 180_deg}};
 
@@ -36,8 +34,8 @@ inline constexpr int kIntakeRollerMotorLeftPort = 14;
 inline constexpr int kIntakeRollerMotorRightPort = 15;
 
 inline constexpr double kRotaryUpPosition = 0.0;
-inline constexpr double kRotaryDownPosition = 24.6;
-inline constexpr double kRotarySlowZeroPosition = 10.5;
+inline constexpr double kRotaryDownPosition = 23.2;
+inline constexpr double kRotarySlowZeroPosition = 10.0000;
 
 inline constexpr units::volt_t kIntakeVoltage = -10_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
