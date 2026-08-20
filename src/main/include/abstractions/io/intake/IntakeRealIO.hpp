@@ -31,7 +31,7 @@ class IntakeRealIO : public IntakeIO {
 
   void Process() override {
     auto pivotPosition = m_rotaryMotor.GetEncoder().GetPosition();
-    auto divisor = m_slow ? 2.5 : 1.9;
+    auto divisor = m_slow ? 3.8 : 3.8;
 
     m_rotaryMotor.SetVoltage(
         units::volt_t{m_pivotController.Calculate(pivotPosition, m_pivotController.GetSetpoint()) / divisor});
