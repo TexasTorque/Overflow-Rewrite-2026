@@ -37,7 +37,7 @@ inline constexpr double kRotaryUpPosition = 0.0;
 inline constexpr double kRotaryDownPosition = 23.2;
 inline constexpr double kRotarySlowZeroPosition = 12.5000;
 
-inline constexpr units::volt_t kIntakeVoltage = -10_V;
+inline constexpr units::volt_t kIntakeVoltage = -10.5_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
 }  // namespace IntakeConstants
 
