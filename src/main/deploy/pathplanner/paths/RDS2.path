@@ -214,7 +214,7 @@
     },
     {
       "name": "IntakeStop",
-      "waypointRelativePos": 6.425236191860468,
+      "waypointRelativePos": 6.6324605855855845,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

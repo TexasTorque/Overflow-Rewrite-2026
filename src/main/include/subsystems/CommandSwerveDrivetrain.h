@@ -312,7 +312,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
                              : error.Radians() > 0_rad ? AutoAlignState::Left
                                                        : AutoAlignState::None;
         }))
-        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.041; })
+        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.036; })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .AndThen(ApplyRequest([this] { return m_brake; }))
         .FinallyDo([this] { m_autoAlignState = AutoAlignState::None; })

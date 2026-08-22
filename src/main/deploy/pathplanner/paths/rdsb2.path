@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.9897598379629633,
-        "y": 5.579603153935185
+        "x": 2.3291631221064817,
+        "y": 5.62959837962963
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.9897598379629633,
-        "y": 5.579603153935185
+        "x": 3.3291631221064817,
+        "y": 5.62959837962963
       },
       "isLocked": false,
       "linkedName": "RDSB1E"
@@ -96,12 +96,12 @@
     },
     {
       "anchor": {
-        "x": 1.9934996383101855,
-        "y": 5.577438006365741
+        "x": 2.213885416666667,
+        "y": 5.603354166666667
       },
       "prevControl": {
-        "x": 3.8887254774305555,
-        "y": 5.693109375000001
+        "x": 3.860775390625,
+        "y": 5.500280020254629
       },
       "nextControl": null,
       "isLocked": false,
@@ -190,7 +190,7 @@
     },
     {
       "name": "IntakeStop",
-      "waypointRelativePos": 5.066511824324326,
+      "waypointRelativePos": 5.59762105855856,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

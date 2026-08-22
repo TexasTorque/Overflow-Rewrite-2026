@@ -96,10 +96,10 @@ void RobotContainer::ConfigureBindings() {
   m_driverController.LeftBumper().OnTrue(frc2::cmd::RunOnce([this] { m_driveSubsystem.SeedFieldCentric(); }));
   m_driverController.RightTrigger().WhileTrue(m_driveSubsystem.RotateToHub());
 
-  m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
-  (m_operatorController.Back() && m_operatorController.A()).WhileTrue(m_intakeSubsystem.StowIntakeCommand());
+  m_driverController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
+  (m_driverController.Back() && m_driverController.A()).WhileTrue(m_intakeSubsystem.StowIntakeCommand());
 
-  m_operatorController.POVUp().WhileTrue(
+  m_driverController.POVUp().WhileTrue(
       CommandFactory::OuttakeCommand(m_intakeSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
   frc2::RobotModeTriggers::Disabled().WhileTrue(m_driveSubsystem.ApplyRequest([] { return swerve::requests::Idle{}; })
@@ -110,24 +110,24 @@ void RobotContainer::ConfigureBindings() {
 }
 
 void RobotContainer::ConfigureIntakeBindings() {
-  m_operatorController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
+  m_driverController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
 }
 
 void RobotContainer::ConfigureShooterBindings() {
-  m_operatorController.POVDown().OnTrue(
+  m_driverController.POVDown().OnTrue(
       CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
-  m_operatorController.LeftTrigger().ToggleOnTrue(WithShotSetup(CommandFactory::RegressionShotCommand(
+  m_driverController.LeftTrigger().ToggleOnTrue(WithShotSetup(CommandFactory::RegressionShotCommand(
       m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem,
       [this] { return m_driveSubsystem.GetDistanceToHub(); })));
 
-  m_operatorController.X().ToggleOnTrue(WithShotSetup(CommandFactory::TrenchShotCommand(
+  m_driverController.X().ToggleOnTrue(WithShotSetup(CommandFactory::TrenchShotCommand(
       m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 
-  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(CommandFactory::DebugShotCommand(
+  m_driverController.POVRight().ToggleOnTrue(WithShotSetup(CommandFactory::DebugShotCommand(
       m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 
-  m_operatorController.Y().ToggleOnTrue(WithShotSetup(CommandFactory::ClimbShotCommand(
+  m_driverController.Y().ToggleOnTrue(WithShotSetup(CommandFactory::ClimbShotCommand(
       m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 }
 

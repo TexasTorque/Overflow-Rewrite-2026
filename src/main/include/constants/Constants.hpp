@@ -35,7 +35,7 @@ inline constexpr int kIntakeRollerMotorRightPort = 15;
 
 inline constexpr double kRotaryUpPosition = 0.0;
 inline constexpr double kRotaryDownPosition = 23.2;
-inline constexpr double kRotarySlowZeroPosition = 10.0000;
+inline constexpr double kRotarySlowZeroPosition = 12.5000;
 
 inline constexpr units::volt_t kIntakeVoltage = -10_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
@@ -74,7 +74,7 @@ inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
 
-inline constexpr units::second_t kStartTime = 2.1_s;
+inline constexpr units::second_t kStartTime = 1.7_s;
 inline constexpr units::second_t kHoldTime = 0.3_s;
 inline constexpr units::second_t kWaitTime = 0.4_s;
 }  // namespace ShooterConstants
