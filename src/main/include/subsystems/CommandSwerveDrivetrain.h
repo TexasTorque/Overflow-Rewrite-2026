@@ -53,7 +53,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   static constexpr frc::Rotation2d kBlueAlliancePerspectiveRotation{0_deg};
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  static constexpr frc::Rotation2d kRedAlliancePerspectiveRotation{180_deg};
+  static constexpr frc::Rotation2d kRedAlliancePerspectiveRotation{M_PI};
   /* Keep track if we've ever applied the operator perspective before or not */
   bool m_hasAppliedOperatorPerspective = false;
 
@@ -137,7 +137,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       StartSimThread();
     }
 
-    m_thetaController.EnableContinuousInput(-180_deg, 180_deg);
+    m_thetaController.EnableContinuousInput(-M_PI, M_PI);
 
     ConfigurePathPlanner();
     OptimizeBusUtilization(4_Hz);
@@ -164,7 +164,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       StartSimThread();
     }
 
-    m_thetaController.EnableContinuousInput(-180_deg, 180_deg);
+    m_thetaController.EnableContinuousInput(-M_PI, M_PI);
 
     ConfigurePathPlanner();
     OptimizeBusUtilization(4_Hz);
@@ -198,7 +198,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
 
     ConfigurePathPlanner();
 
-    m_thetaController.EnableContinuousInput(-180_deg, 180_deg);
+    m_thetaController.EnableContinuousInput(-M_PI, M_PI);
     OptimizeBusUtilization(4_Hz);
   }
 
@@ -301,7 +301,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
 
   frc2::CommandPtr TurnToAngleCommand(std::function<frc::Rotation2d()> targetAngle) {
     return frc2::cmd::RunOnce([this] {
-             m_thetaController.EnableContinuousInput(-180_deg, 180_deg);
+             m_thetaController.EnableContinuousInput(-M_PI, M_PI);
              m_thetaController.Reset(GetState().Pose.Rotation().Radians());
            })
         .AndThen(ApplyRequest([this, targetAngle] {
@@ -332,7 +332,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
              frc::Pose2d robotPose = GetState().Pose;
              return frc::Rotation2d{units::radian_t{std::atan2(hubPose.Y().value() - robotPose.Y().value(),
                                                                hubPose.X().value() - robotPose.X().value())}}
-                 .RotateBy(180_deg);
+                 .RotateBy(M_PI);
            })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .WithName("Rotate To Hub");
