@@ -13,13 +13,14 @@
 #include <functional>
 
 #include "ctre/phoenix6/swerve/SwerveRequest.hpp"
-#include "frc/controller/PIDController.h"
+#include "frc/controller/ProfiledPIDController.h"
 #include "frc/geometry/Pose2d.h"
 #include "frc/kinematics/ChassisSpeeds.h"
 #include "frc2/command/Commands.h"
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
+#include "units/math.h"
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
@@ -52,7 +53,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
   static constexpr frc::Rotation2d kBlueAlliancePerspectiveRotation{0_deg};
   /* Red alliance sees forward as 180 degrees (toward blue alliance wall) */
-  static constexpr frc::Rotation2d kRedAlliancePerspectiveRotation{180_deg};
+  static constexpr frc::Rotation2d kRedAlliancePerspectiveRotation{M_PI};
   /* Keep track if we've ever applied the operator perspective before or not */
   bool m_hasAppliedOperatorPerspective = false;
 
@@ -299,20 +300,23 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   }
 
   frc2::CommandPtr TurnToAngleCommand(std::function<frc::Rotation2d()> targetAngle) {
-    return ApplyRequest([this, targetAngle] {
-             frc::Pose2d pose = GetState().Pose;
-             units::radians_per_second_t thetaFeedback =
-                 m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
-                 1_rad_per_s;
-             return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
+    return frc2::cmd::RunOnce([this] {
+             m_thetaController.EnableContinuousInput(-M_PI, M_PI);
+             m_thetaController.Reset(GetState().Pose.Rotation().Radians());
            })
+        .AndThen(ApplyRequest([this, targetAngle] {
+          frc::Pose2d pose = GetState().Pose;
+          units::radians_per_second_t thetaFeedback =
+              m_thetaController.Calculate(pose.Rotation().Radians(), targetAngle().Radians()) * 1_rad_per_s;
+          return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
+        }))
         .AlongWith(frc2::cmd::Run([this, targetAngle] {
           frc::Rotation2d error = targetAngle() - GetState().Pose.Rotation();
           m_autoAlignState = error.Radians() < 0_rad   ? AutoAlignState::Right
                              : error.Radians() > 0_rad ? AutoAlignState::Left
                                                        : AutoAlignState::None;
         }))
-        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.036; })
+        .Until([this] { return units::math::abs(m_thetaController.GetPositionError()) < 0.036_rad; })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .AndThen(ApplyRequest([this] { return m_brake; }))
         .FinallyDo([this] { m_autoAlignState = AutoAlignState::None; })
@@ -328,7 +332,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
              frc::Pose2d robotPose = GetState().Pose;
              return frc::Rotation2d{units::radian_t{std::atan2(hubPose.Y().value() - robotPose.Y().value(),
                                                                hubPose.X().value() - robotPose.X().value())}}
-                 .RotateBy(180_deg);
+                 .RotateBy(M_PI);
            })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .WithName("Rotate To Hub");
@@ -353,7 +357,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
 
-  frc::PIDController m_thetaController{5.25, 0.004, 0.4};
+  frc::ProfiledPIDController<units::radians> m_thetaController{
+      5.25, 0.004, 0.4, {3.5_rad_per_s, 4.5_rad_per_s_sq}};
   AutoAlignState m_autoAlignState = AutoAlignState::None;
 
   void StartSimThread();
