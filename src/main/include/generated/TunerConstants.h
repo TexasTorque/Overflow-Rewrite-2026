@@ -60,6 +60,8 @@ class TunerConstants {
               // Default supply current limit is 70 A, but it can be lowered to avoid brownouts.
               // Supply current limits can be larger than the breaker current rating.
               .WithSupplyCurrentLimit(70_A)
+              .WithStatorCurrentLimit(120_A)
+              .WithStatorCurrentLimitEnable(true)
               .WithSupplyCurrentLimitEnable(true));
   static constexpr configs::TalonFXConfiguration steerInitialConfigs =
       configs::TalonFXConfiguration{}.WithCurrentLimits(
