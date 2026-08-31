@@ -20,6 +20,7 @@
 #include "generated/TunerConstants.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "units/length.h"
+#include "units/velocity.h"
 
 #include <pathplanner/lib/auto/AutoBuilder.h>
 #include <pathplanner/lib/config/RobotConfig.h>
@@ -348,6 +349,9 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
         std::hypot(hubPose.X().value() - robotPose.X().value(), hubPose.Y().value() - robotPose.Y().value())};
   }
 
+  units::meters_per_second_t GetActiveSpeed() const { return m_activeSpeed; }
+  void SetActiveSpeed(units::meters_per_second_t newSpeed) { m_activeSpeed = newSpeed; }
+
  private:
   swerve::requests::RobotCentric driveSpeeds = swerve::requests::RobotCentric{}.WithDriveRequestType(
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
@@ -355,6 +359,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
 
   frc::PIDController m_thetaController{5.25, 0.004, 0.4};
   AutoAlignState m_autoAlignState = AutoAlignState::None;
+
+  units::meters_per_second_t m_activeSpeed = DriveConstants::kMaxSpeed;
 
   void StartSimThread();
   void ConfigurePathPlanner();

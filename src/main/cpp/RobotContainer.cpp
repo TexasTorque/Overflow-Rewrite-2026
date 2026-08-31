@@ -87,8 +87,8 @@ void RobotContainer::ConfigureBindings() {
   m_driveSubsystem.SetDefaultCommand(
       m_driveSubsystem
           .ApplyRequest([this]() -> auto&& {
-            return m_drive.WithVelocityX(-m_driverController.GetLeftY() * DriveConstants::kMaxSpeed)
-                .WithVelocityY(-m_driverController.GetLeftX() * DriveConstants::kMaxSpeed)
+            return m_drive.WithVelocityX(-m_driverController.GetLeftY() * m_driveSubsystem.GetActiveSpeed())
+                .WithVelocityY(-m_driverController.GetLeftX() * m_driveSubsystem.GetActiveSpeed())
                 .WithRotationalRate(-m_driverController.GetRightX() * DriveConstants::kMaxAngularRate);
           })
           .WithName("Default Drive"));
@@ -110,7 +110,9 @@ void RobotContainer::ConfigureBindings() {
 }
 
 void RobotContainer::ConfigureIntakeBindings() {
-  m_operatorController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand());
+  m_operatorController.RightBumper().ToggleOnTrue(m_intakeSubsystem.RunIntakeCommand().AlongWith(
+      frc2::cmd::StartEnd([this] { m_driveSubsystem.SetActiveSpeed(DriveConstants::kSlowSpeed); },
+                          [this] { m_driveSubsystem.SetActiveSpeed(DriveConstants::kMaxSpeed); })));
 }
 
 void RobotContainer::ConfigureShooterBindings() {
