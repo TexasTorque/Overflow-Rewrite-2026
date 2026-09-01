@@ -59,3 +59,8 @@ frc2::CommandPtr LEDSubsystem::ShowAutoAlignCommand(std::function<AutoAlignState
              [] {})
       .WithName("LED Auto Align");
 }
+
+frc2::CommandPtr LEDSubsystem::ShowStallingCommand() {
+  return StartRun([this] { SetLEDPatterns(LEDConstants::kStallFront, LEDConstants::kStallBack); }, [] {})
+      .WithName("LED Stalling");
+}

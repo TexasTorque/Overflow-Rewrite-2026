@@ -41,6 +41,7 @@ inline constexpr double kRotarySlowZeroPosition = 12.5000;
 
 inline constexpr units::volt_t kIntakeVoltage = -10.5_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
+inline constexpr units::volt_t kAgitationVoltage = -6_V;
 }  // namespace IntakeConstants
 
 namespace HopperConstants {
@@ -119,6 +120,17 @@ inline frc::LEDPattern kIntakeFront =
     frc::LEDPattern::Steps(kIntakeFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{1.2});
 inline frc::LEDPattern kIntakeBack =
     frc::LEDPattern::Steps(kIntakeBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
+
+// STALLING
+inline const std::array<std::pair<double, frc::Color>, 4> kStallFrontSteps = {
+    std::pair{0.0, frc::Color::kRed}, std::pair{0.22, frc::Color::kBlack}, std::pair{0.5, frc::Color::kDarkRed},
+    std::pair{0.72, frc::Color::kBlack}};
+inline const std::array<std::pair<double, frc::Color>, 6> kStallBackSteps = {
+    std::pair{0.0, frc::Color::kRed},    std::pair{0.12, frc::Color::kBlack}, std::pair{0.33, frc::Color::kDarkRed},
+    std::pair{0.45, frc::Color::kBlack}, std::pair{0.67, frc::Color::kRed},   std::pair{0.79, frc::Color::kBlack}};
+inline frc::LEDPattern kStallFront =
+    frc::LEDPattern::Steps(kStallFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{1.2});
+inline frc::LEDPattern kStallBack = frc::LEDPattern::Steps(kStallBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
 
 // SHOOTER SPINNING UP
 inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.3_s);

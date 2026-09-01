@@ -73,10 +73,15 @@ void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {
       break;
     case IntakeStateEnum::SlowPullup:
       m_io->SetIntakeVoltage(0_V);
-      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotarySlowZeroPosition, true);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryUpPosition, true);
       break;
     case IntakeStateEnum::PullIn:
       m_io->SetIntakeVoltage(0_V);
       m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryUpPosition, true);
+      break;
+    case IntakeStateEnum::Agitation:
+      m_io->SetIntakeVoltage(IntakeConstants::kAgitationVoltage);
+      m_io->SetIntakePivotSetpoint(IntakeConstants::kRotaryUpPosition, true);
+      break;
   }
 }

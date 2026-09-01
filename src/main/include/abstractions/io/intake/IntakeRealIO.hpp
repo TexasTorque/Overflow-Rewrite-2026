@@ -55,7 +55,7 @@ class IntakeRealIO : public IntakeIO {
   rev::spark::SparkMax m_rollerMotorLeft{IntakeConstants::kIntakeRollerMotorLeftPort,
                                          rev::spark::SparkLowLevel::MotorType::kBrushless};
 
-  frc::PIDController m_pivotController{1.5, 0, 0};
+  frc::PIDController m_pivotController{1.85, 0, 0};
   bool m_slow = false;
 
   void ConfigureRotaryMotor() {

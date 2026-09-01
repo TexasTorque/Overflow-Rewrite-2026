@@ -6,6 +6,7 @@
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "abstractions/state/IntakeState.hpp"
 #include "frc2/command/CommandPtr.h"
+#include "units/current.h"
 #include <frc2/command/SubsystemBase.h>
 #include <memory>
 
@@ -25,6 +26,8 @@ class IntakeSubsystem : public frc2::SubsystemBase {
   void Clean();
 
   IntakeStateEnum GetState() const { return m_state.Get(); }
+
+  units::ampere_t GetRollerCurrent() const { return m_inputs.rollerCurrent; }
 
  private:
   std::unique_ptr<IntakeIO> m_io;

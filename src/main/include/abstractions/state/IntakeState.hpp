@@ -5,7 +5,7 @@
 
 #include "turbolib/state/TurboState.hpp"
 
-enum class IntakeStateEnum { Intake, Stow, Outtake, SlowPullup, PullIn };
+enum class IntakeStateEnum { Intake, Stow, Outtake, SlowPullup, PullIn, Agitation };
 
 class IntakeState : public TurboState<IntakeStateEnum> {
  public:

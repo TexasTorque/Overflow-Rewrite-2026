@@ -42,7 +42,7 @@ inline frc2::CommandPtr ShotCommand(std::function<frc2::CommandPtr()> makeShoote
 inline frc2::CommandPtr WithAutoPullup(std::function<frc2::CommandPtr()> makeShotCmd, IntakeSubsystem& intake) {
   return makeShotCmd()
       .AlongWith(frc2::cmd::Wait(ShooterConstants::kStartTime)
-                     .AndThen(frc2::cmd::StartEnd([&] { intake.SetState(IntakeStateEnum::PullIn); },
+                     .AndThen(frc2::cmd::StartEnd([&] { intake.SetState(IntakeStateEnum::Agitation); },
                                                   [&] { intake.SetState(IntakeStateEnum::Stow); })))
       .FinallyDo([&] { intake.SetState(IntakeStateEnum::Stow); });
 }
