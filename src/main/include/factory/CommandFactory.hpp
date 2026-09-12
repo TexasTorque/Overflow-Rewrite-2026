@@ -134,6 +134,18 @@ inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSu
   }
 }
 
+inline frc2::CommandPtr PullupRegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo,
+                                                    HopperSubsystem& hopper, GateSubsystem& gate,
+                                                    IntakeSubsystem& intake, std::function<units::meter_t()> distance) {
+  return WithAutoPullup(
+             [&] {
+               return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); },
+                                  [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
+             },
+             intake)
+      .WithName("Pullup Regression Shot");
+}
+
 inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
                                          GateSubsystem& gate, IntakeSubsystem& intake) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {

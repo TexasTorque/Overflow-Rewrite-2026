@@ -67,9 +67,9 @@ void RobotContainer::ConfigurePlannerCommands() {
   pathplanner::NamedCommands::registerCommand("AutoAlign",
                                               m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(0.55_s)));
   pathplanner::NamedCommands::registerCommand(
-      "RegressionShoot",
-      CommandFactory::RegressionShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                                            m_intakeSubsystem, [this] { return m_driveSubsystem.GetDistanceToHub(); }));
+      "RegressionShoot", CommandFactory::PullupRegressionShotCommand(
+                             m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
+                             m_intakeSubsystem, [this] { return m_driveSubsystem.GetDistanceToHub(); }));
   pathplanner::NamedCommands::registerCommand(
       "ClimbShoot", CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
                                                      m_gateSubsystem, m_intakeSubsystem));
