@@ -35,8 +35,8 @@ inline constexpr int kIntakeRotaryMotorPort = 13;
 inline constexpr int kIntakeRollerMotorLeftPort = 14;
 inline constexpr int kIntakeRollerMotorRightPort = 15;
 
-inline constexpr double kRotaryUpPosition = 0.0;
-inline constexpr double kRotaryDownPosition = 23.2;
+inline constexpr double kRotaryUpPosition = 0.0;     // -23.2
+inline constexpr double kRotaryDownPosition = 23.2;  // 0
 inline constexpr double kRotarySlowZeroPosition = 12.5000;
 
 inline constexpr units::volt_t kIntakeVoltage = -10.5_V;
