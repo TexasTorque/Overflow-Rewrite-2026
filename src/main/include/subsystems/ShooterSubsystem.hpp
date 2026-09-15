@@ -19,6 +19,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
 
   void SetFlywheelVelocity(units::revolutions_per_minute_t rpm) { m_io->SetFlywheelRPM(rpm); }
 
+  frc2::CommandPtr RunPrespinCommand();
   frc2::CommandPtr RunLayupCommand();
   frc2::CommandPtr RunLaserCommand();
   frc2::CommandPtr RunClimbCommand();

@@ -27,6 +27,10 @@ void ShooterSubsystem::Periodic() {
   ShooterLogging::UpdateTelemetry(m_inputs, GetState());
 }
 
+frc2::CommandPtr ShooterSubsystem::RunPrespinCommand() {
+  return frc2::cmd::RunOnce([this] { SetState(ShooterStateEnum::Prespin); }, {this}).WithName("Shooter Prespin");
+}
+
 frc2::CommandPtr ShooterSubsystem::RunLayupCommand() {
   return frc2::cmd::StartEnd([this] { SetState(ShooterStateEnum::Layup); },
                              [this] { SetState(ShooterStateEnum::Idle); }, {this})
@@ -91,10 +95,13 @@ void ShooterSubsystem::Clean() {
 void ShooterSubsystem::ApplyState(const ShooterStateEnum& newState) {
   switch (newState) {
     case ShooterStateEnum::Off:
-      m_io->SetFlywheelRPM(0_rpm);
+      m_io->CoastOut();
       break;
     case ShooterStateEnum::Idle:
       m_io->SetFlywheelRPM(ShooterConstants::kIdleRPM);
+      break;
+    case ShooterStateEnum::Prespin:
+      m_io->SetFlywheelRPM(ShooterConstants::kPrespinRPM);
       break;
     case ShooterStateEnum::Layup:
       m_io->SetFlywheelRPM(ShooterConstants::kLayupRPM);

@@ -64,3 +64,7 @@ frc2::CommandPtr LEDSubsystem::ShowStallingCommand() {
   return StartRun([this] { SetLEDPatterns(LEDConstants::kStallFront, LEDConstants::kStallBack); }, [] {})
       .WithName("LED Stalling");
 }
+
+frc2::CommandPtr LEDSubsystem::ShowPrespinCommand() {
+  return StartRun([this] { SetLEDPattern(LEDConstants::kPreSpinUp); }, [] {}).WithName("LED Pre Spin Up");
+}

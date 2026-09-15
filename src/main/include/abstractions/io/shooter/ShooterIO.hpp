@@ -19,6 +19,7 @@ class ShooterIO {
   virtual void UpdateInputs(ShooterIOInputs& inputs) = 0;
 
   virtual void SetFlywheelRPM(units::revolutions_per_minute_t rpm) = 0;
+  virtual void CoastOut() = 0;
 
   virtual ~ShooterIO() = default;
 };

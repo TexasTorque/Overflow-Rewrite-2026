@@ -23,6 +23,7 @@ class ShooterSimIO : public ShooterIO {
   }
 
   void SetFlywheelRPM(units::revolutions_per_minute_t rpm) override { m_targetRPM = rpm; }
+  void CoastOut() override { m_targetRPM = 0_rpm; }
 
  private:
   units::revolutions_per_minute_t m_targetRPM{0_rpm};

@@ -76,6 +76,7 @@ inline constexpr units::revolutions_per_minute_t kLaserRPM = 5000_rpm;
 inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
+inline constexpr units::revolutions_per_minute_t kPrespinRPM = 3000_rpm;
 
 inline constexpr units::second_t kStartTime = 1.95_s;
 inline constexpr units::second_t kHoldTime = 0.3_s;
@@ -131,6 +132,9 @@ inline const std::array<std::pair<double, frc::Color>, 6> kStallBackSteps = {
 inline frc::LEDPattern kStallFront =
     frc::LEDPattern::Steps(kStallFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{1.2});
 inline frc::LEDPattern kStallBack = frc::LEDPattern::Steps(kStallBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
+
+// PRE-SPIN
+inline frc::LEDPattern kPreSpinUp = frc::LEDPattern::Solid(frc::Color{0.0, 1.0, 1.0}).Breathe(1_s);
 
 // SHOOTER SPINNING UP
 inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.3_s);
