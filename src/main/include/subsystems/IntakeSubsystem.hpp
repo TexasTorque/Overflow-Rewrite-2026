@@ -4,6 +4,7 @@
 #pragma once
 
 #include "abstractions/io/intake/IntakeIO.hpp"
+#include "abstractions/logging/IntakeLogging.hpp"
 #include "abstractions/state/IntakeState.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "units/current.h"
@@ -33,6 +34,7 @@ class IntakeSubsystem : public frc2::SubsystemBase {
   std::unique_ptr<IntakeIO> m_io;
   IntakeIOInputs m_inputs;
   IntakeState m_state;
+  IntakeLogging m_logging;
 
   void ApplyState(const IntakeStateEnum& newState);
 };

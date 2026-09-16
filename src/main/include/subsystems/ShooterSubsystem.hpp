@@ -4,6 +4,7 @@
 #pragma once
 
 #include "abstractions/io/shooter/ShooterIO.hpp"
+#include "abstractions/logging/ShooterLogging.hpp"
 #include "abstractions/state/ShooterState.hpp"
 #include "constants/Constants.hpp"
 #include "frc2/command/CommandPtr.h"
@@ -46,6 +47,7 @@ class ShooterSubsystem : public frc2::SubsystemBase {
   std::unique_ptr<ShooterIO> m_io;
   ShooterIOInputs m_inputs;
   ShooterState m_state;
+  ShooterLogging m_logging;
 
   units::meter_t m_distance = 0.0_m;
   units::revolutions_per_minute_t m_debugRPM = 0.0_rpm;

@@ -10,13 +10,14 @@
 
 HopperSubsystem::HopperSubsystem(std::unique_ptr<HopperIO> io)
     : m_io(std::move(io)),
-      m_state(HopperStateEnum::Off, [this](const HopperStateEnum& newState) { ApplyState(newState); }) {
+      m_state(HopperStateEnum::Off, [this](const HopperStateEnum& newState) { ApplyState(newState); }),
+      m_logging{} {
   SetName("HopperSubsystem");
 }
 
 void HopperSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  HopperLogging::UpdateTelemetry(m_inputs, GetState());
+  m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr HopperSubsystem::RunHopperCommand() {

@@ -12,17 +12,16 @@
 
 class ServoLogging {
  public:
-  static void UpdateTelemetry(const ServoIOInputs& inputs, ServoStateEnum state) {
+  ServoLogging()
+      : positionPublisher{nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ServoSubsystem/Position").Publish()},
+        statePublisher{nt::NetworkTableInstance::GetDefault().GetStringTopic("ServoSubsystem/State").Publish()} {}
+
+  void UpdateTelemetry(const ServoIOInputs& inputs, ServoStateEnum state) {
     positionPublisher.Set(inputs.servoSetpoint);
     statePublisher.Set(stateToString(state));
   }
 
  private:
-  static nt::DoublePublisher positionPublisher;
-  static nt::StringPublisher statePublisher;
+  nt::DoublePublisher positionPublisher;
+  nt::StringPublisher statePublisher;
 };
-
-inline nt::DoublePublisher ServoLogging::positionPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ServoSubsystem/Position").Publish();
-inline nt::StringPublisher ServoLogging::statePublisher =
-    nt::NetworkTableInstance::GetDefault().GetStringTopic("ServoSubsystem/State").Publish();

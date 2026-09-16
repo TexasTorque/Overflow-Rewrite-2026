@@ -12,21 +12,19 @@
 
 class HopperLogging {
  public:
-  static void UpdateTelemetry(const HopperIOInputs& inputs, HopperStateEnum state) {
+  HopperLogging()
+      : voltagePublisher{nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Voltage").Publish()},
+        currentPublisher{nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Current").Publish()},
+        statePublisher{nt::NetworkTableInstance::GetDefault().GetStringTopic("HopperSubsystem/State").Publish()} {}
+
+  void UpdateTelemetry(const HopperIOInputs& inputs, HopperStateEnum state) {
     voltagePublisher.Set(inputs.hopperVoltage.value());
     currentPublisher.Set(inputs.hopperCurrent.value());
     statePublisher.Set(stateToString(state));
   }
 
  private:
-  static nt::DoublePublisher voltagePublisher;
-  static nt::DoublePublisher currentPublisher;
-  static nt::StringPublisher statePublisher;
+  nt::DoublePublisher voltagePublisher;
+  nt::DoublePublisher currentPublisher;
+  nt::StringPublisher statePublisher;
 };
-
-inline nt::DoublePublisher HopperLogging::voltagePublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Voltage").Publish();
-inline nt::DoublePublisher HopperLogging::currentPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("HopperSubsystem/Current").Publish();
-inline nt::StringPublisher HopperLogging::statePublisher =
-    nt::NetworkTableInstance::GetDefault().GetStringTopic("HopperSubsystem/State").Publish();

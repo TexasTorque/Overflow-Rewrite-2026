@@ -16,7 +16,8 @@
 
 ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
     : m_io(std::move(io)),
-      m_state(ShooterStateEnum::Off, [this](const ShooterStateEnum& newState) { ApplyState(newState); }) {
+      m_state(ShooterStateEnum::Off, [this](const ShooterStateEnum& newState) { ApplyState(newState); }),
+      m_logging{} {
   SetName("ShooterSubsystem");
 
   frc::SmartDashboard::PutNumber("Debug RPM", 0.0);
@@ -24,7 +25,7 @@ ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
 
 void ShooterSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  ShooterLogging::UpdateTelemetry(m_inputs, GetState());
+  m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr ShooterSubsystem::RunPrespinCommand() {
