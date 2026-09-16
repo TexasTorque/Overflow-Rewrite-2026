@@ -5,9 +5,11 @@
 
 #include <frc/DriverStation.h>
 #include <frc/Notifier.h>
+#include <frc/smartdashboard/SmartDashboard.h>
 #include <frc2/command/CommandPtr.h>
 #include <frc2/command/SubsystemBase.h>
 #include <frc2/command/sysid/SysIdRoutine.h>
+#include <algorithm>
 #include <cmath>
 #include <cstdlib>
 #include <functional>
@@ -300,23 +302,69 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   }
 
   frc2::CommandPtr TurnToAngleCommand(std::function<frc::Rotation2d()> targetAngle) {
-    return ApplyRequest([this, targetAngle] {
-             frc::Pose2d pose = GetState().Pose;
-             units::radians_per_second_t thetaFeedback =
-                 m_thetaController.Calculate(pose.Rotation().Radians().value(), targetAngle().Radians().value()) *
-                 1_rad_per_s;
-             return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
+    return frc2::cmd::RunOnce([this] {
+             // clean state
+             m_filterInitialized = false;
+             m_thetaController.Reset();
            })
-        .AlongWith(frc2::cmd::Run([this, targetAngle] {
-          frc::Rotation2d error = targetAngle() - GetState().Pose.Rotation();
+        .AndThen(ApplyRequest([this, targetAngle] {
+          // begin turn towards target (whether accurate or not)
+          frc::Pose2d pose = GetState().Pose;
+          frc::Rotation2d rawTarget = targetAngle();
+
+          if (!m_filterInitialized) {
+            m_filteredTarget = rawTarget;
+            m_filterInitialized = true;
+          } else {
+            units::radian_t delta = (rawTarget - m_filteredTarget).Radians();
+
+            if (std::abs(delta.value()) > AutoAlignConstants::kDeadband.value()) {
+              if (std::abs(delta.value()) > AutoAlignConstants::kResetThreshold.value()) {
+                m_thetaController.Reset();
+              }
+
+              units::radian_t step = delta * AutoAlignConstants::kFilterAlpha;
+              step = units::radian_t{std::clamp(step.value(), -AutoAlignConstants::kMaxDeltaPerCycle.value(),
+                                                AutoAlignConstants::kMaxDeltaPerCycle.value())};
+
+              m_filteredTarget = m_filteredTarget.RotateBy(frc::Rotation2d{step});
+            }
+          }
+
+          units::radians_per_second_t thetaFeedback =
+              m_thetaController.Calculate(pose.Rotation().Radians().value(), m_filteredTarget.Radians().value()) *
+              1_rad_per_s;
+
+          frc::SmartDashboard::PutNumber("AutoAlign/RawTargetDeg", rawTarget.Degrees().value());
+          frc::SmartDashboard::PutNumber("AutoAlign/FilteredTargetDeg", m_filteredTarget.Degrees().value());
+          frc::SmartDashboard::PutNumber("AutoAlign/ErrorDeg", (m_filteredTarget - pose.Rotation()).Degrees().value());
+
+          return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
+        }))
+        .AlongWith(frc2::cmd::Run([this] {
+          frc::Rotation2d target = m_filterInitialized ? m_filteredTarget : GetState().Pose.Rotation();
+          frc::Rotation2d error = target - GetState().Pose.Rotation();
           m_autoAlignState = error.Radians() < 0_rad   ? AutoAlignState::Right
                              : error.Radians() > 0_rad ? AutoAlignState::Left
                                                        : AutoAlignState::None;
         }))
-        .Until([this] { return std::abs(m_thetaController.GetError()) < 0.036; })
+        .Until([this, targetAngle] {
+          if (!m_filterInitialized)
+            return false;
+
+          bool pidDone = std::abs(m_thetaController.GetError()) < AutoAlignConstants::kDoneThreshold.value();
+
+          units::radian_t rawFilteredErr = (targetAngle() - m_filteredTarget).Radians();
+          bool filteredConverged = std::abs(rawFilteredErr.value()) < AutoAlignConstants::kDeadband.value();
+
+          return pidDone && filteredConverged;
+        })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .AndThen(ApplyRequest([this] { return m_brake; }))
-        .FinallyDo([this] { m_autoAlignState = AutoAlignState::None; })
+        .FinallyDo([this] {
+          m_autoAlignState = AutoAlignState::None;
+          m_filterInitialized = false;
+        })
         .WithName("Turn To Angle");
   }
 
@@ -359,6 +407,10 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
 
   frc::PIDController m_thetaController{5.25, 0.004, 0.4};
   AutoAlignState m_autoAlignState = AutoAlignState::None;
+
+  // Option C filter state
+  frc::Rotation2d m_filteredTarget{0_deg};
+  bool m_filterInitialized = false;
 
   units::meters_per_second_t m_activeSpeed = DriveConstants::kMaxSpeed;
 

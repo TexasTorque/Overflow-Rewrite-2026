@@ -154,6 +154,14 @@ inline frc::LEDPattern kAutoAlignLeft =
     frc::LEDPattern::Steps(kAutoAlignSteps).ScrollAtRelativeSpeed(units::hertz_t{1.5});
 }  // namespace LEDConstants
 
+namespace AutoAlignConstants {
+inline constexpr double kFilterAlpha = 0.15;                 // 0 -> doesn't track 1 -> doesn't filter
+inline constexpr units::radian_t kMaxDeltaPerCycle = 2_deg;  // max adjust by 2 degrees per 20 ms
+inline constexpr units::radian_t kResetThreshold = 4_deg;  // prevent windup; reset at high error between raw and filter
+inline constexpr units::radian_t kDeadband = 1.4_deg;      // consider filtered and raw converged
+inline constexpr units::radian_t kDoneThreshold = 2.063_deg;  // threashold for aligned
+}  // namespace AutoAlignConstants
+
 namespace CommandFeatureFlags {
 inline constexpr bool kEnableAutoPullup = false;
 }
