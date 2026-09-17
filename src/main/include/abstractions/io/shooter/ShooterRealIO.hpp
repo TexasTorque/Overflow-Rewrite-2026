@@ -6,6 +6,7 @@
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "constants/Constants.hpp"
 #include "ctre/phoenix6/TalonFX.hpp"
+#include "ctre/phoenix6/controls/CoastOut.hpp"
 #include "ctre/phoenix6/controls/Follower.hpp"
 #include "ctre/phoenix6/controls/VelocityVoltage.hpp"
 #include "ctre/phoenix6/core/CoreTalonFX.hpp"
@@ -32,6 +33,8 @@ class ShooterRealIO : public ShooterIO {
   void SetFlywheelRPM(units::revolutions_per_minute_t rpm) override {
     m_flywheelMotorRight.SetControl(rpmRequest.WithVelocity(rpm));
   }
+
+  void CoastOut() override { m_flywheelMotorRight.SetControl(ctre::phoenix6::controls::CoastOut{}); }
 
  private:
   ctre::phoenix6::hardware::TalonFX m_flywheelMotorRight{ShooterConstants::kFlywheelMotorRightPort};

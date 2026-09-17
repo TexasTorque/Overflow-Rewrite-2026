@@ -18,10 +18,16 @@ class AutoChooser {
   AutoChooser() {
     std::vector<std::filesystem::path> autoPathFilepaths = pathplanner::AutoBuilder::getAllAutoPaths();
     for (std::filesystem::path path : autoPathFilepaths) {
-      m_autoCommands.insert_or_assign(path.stem().string(),
-                                      pathplanner::PathPlannerAuto(path.replace_extension("").string()).ToPtr());
-      m_autoCommands.insert_or_assign(path.stem().string() + "_mirror",
-                                      pathplanner::PathPlannerAuto(path.replace_extension("").string(), true).ToPtr());
+      std::string baseName = path.stem().string();
+      std::string basePathStr = path.replace_extension("").string();
+      m_autoCommands.insert_or_assign(baseName, pathplanner::PathPlannerAuto(basePathStr).ToPtr());
+      if (baseName.rfind("LEFT_", 0) == 0) {
+        std::string mirroredName = "RIGHT_" + baseName.substr(5);
+        m_autoCommands.insert_or_assign(mirroredName, pathplanner::PathPlannerAuto(basePathStr, true).ToPtr());
+      } else if (baseName.rfind("RIGHT_", 0) == 0) {
+        std::string mirroredName = "LEFT_" + baseName.substr(6);
+        m_autoCommands.insert_or_assign(mirroredName, pathplanner::PathPlannerAuto(basePathStr, true).ToPtr());
+      }
     }
 
     for (const std::pair<const std::string, frc2::CommandPtr>& entry : m_autoCommands) {

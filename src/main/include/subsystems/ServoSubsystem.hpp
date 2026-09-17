@@ -4,6 +4,7 @@
 #pragma once
 
 #include "abstractions/io/servo/ServoIO.hpp"
+#include "abstractions/logging/ServoLogging.hpp"
 #include "abstractions/state/ServoState.hpp"
 #include "frc2/command/CommandPtr.h"
 #include <frc2/command/SubsystemBase.h>
@@ -29,6 +30,7 @@ class ServoSubsystem : public frc2::SubsystemBase {
   std::unique_ptr<ServoIO> m_io;
   ServoIOInputs m_inputs;
   ServoState m_state;
+  ServoLogging m_logging;
 
   void ApplyState(const ServoStateEnum& newState);
 };

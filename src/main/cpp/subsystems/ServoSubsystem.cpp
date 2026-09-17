@@ -12,13 +12,14 @@
 
 ServoSubsystem::ServoSubsystem(std::unique_ptr<ServoIO> io)
     : m_io(std::move(io)),
-      m_state(ServoStateEnum::Laser, [this](const ServoStateEnum& newState) { ApplyState(newState); }) {
+      m_state(ServoStateEnum::Laser, [this](const ServoStateEnum& newState) { ApplyState(newState); }),
+      m_logging{} {
   SetName("ServoSubsystem");
 }
 
 void ServoSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  ServoLogging::UpdateTelemetry(m_inputs, GetState());
+  m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr ServoSubsystem::SetServoUpCommand() {

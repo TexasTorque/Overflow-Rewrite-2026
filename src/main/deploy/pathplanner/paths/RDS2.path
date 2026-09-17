@@ -213,6 +213,12 @@
       }
     },
     {
+      "name": "Prespin",
+      "waypointRelativePos": 6.467166385135133,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
       "name": "IntakeStop",
       "waypointRelativePos": 6.87288851351351,
       "endWaypointRelativePos": null,

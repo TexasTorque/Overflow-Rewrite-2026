@@ -76,6 +76,7 @@ inline constexpr units::revolutions_per_minute_t kLaserRPM = 5000_rpm;
 inline constexpr units::revolutions_per_minute_t kClimbRPM = 3600_rpm;
 inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
+inline constexpr units::revolutions_per_minute_t kPrespinRPM = 3000_rpm;
 
 inline constexpr units::second_t kStartTime = 1.95_s;
 inline constexpr units::second_t kHoldTime = 0.3_s;
@@ -132,6 +133,9 @@ inline frc::LEDPattern kStallFront =
     frc::LEDPattern::Steps(kStallFrontSteps).ScrollAtRelativeSpeed(units::hertz_t{1.2});
 inline frc::LEDPattern kStallBack = frc::LEDPattern::Steps(kStallBackSteps).ScrollAtRelativeSpeed(units::hertz_t{1.6});
 
+// PRE-SPIN
+inline frc::LEDPattern kPreSpinUp = frc::LEDPattern::Solid(frc::Color{0.0, 1.0, 1.0}).Breathe(1_s);
+
 // SHOOTER SPINNING UP
 inline frc::LEDPattern kSpinUp = frc::LEDPattern::Solid(frc::Color::kOrange).Blink(0.3_s);
 
@@ -149,6 +153,14 @@ inline frc::LEDPattern kAutoAlignRight =
 inline frc::LEDPattern kAutoAlignLeft =
     frc::LEDPattern::Steps(kAutoAlignSteps).ScrollAtRelativeSpeed(units::hertz_t{1.5});
 }  // namespace LEDConstants
+
+namespace AutoAlignConstants {
+inline constexpr double kFilterAlpha = 0.15;                 // 0 -> doesn't track 1 -> doesn't filter
+inline constexpr units::radian_t kMaxDeltaPerCycle = 2_deg;  // max adjust by 2 degrees per 20 ms
+inline constexpr units::radian_t kResetThreshold = 4_deg;  // prevent windup; reset at high error between raw and filter
+inline constexpr units::radian_t kDeadband = 1.4_deg;      // consider filtered and raw converged
+inline constexpr units::radian_t kDoneThreshold = 2.063_deg;  // threashold for aligned
+}  // namespace AutoAlignConstants
 
 namespace CommandFeatureFlags {
 inline constexpr bool kEnableAutoPullup = false;

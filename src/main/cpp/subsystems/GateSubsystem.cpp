@@ -10,13 +10,14 @@
 
 GateSubsystem::GateSubsystem(std::unique_ptr<GateIO> io)
     : m_io(std::move(io)),
-      m_state(GateStateEnum::Off, [this](const GateStateEnum& newState) { ApplyState(newState); }) {
+      m_state(GateStateEnum::Off, [this](const GateStateEnum& newState) { ApplyState(newState); }),
+      m_logging{} {
   SetName("GateSubsystem");
 }
 
 void GateSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  GateLogging::UpdateTelemetry(m_inputs, GetState());
+  m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
 frc2::CommandPtr GateSubsystem::RunGateCommand() {

@@ -77,6 +77,8 @@ void RobotContainer::ConfigurePlannerCommands() {
       "VomitShot", CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
                                                     m_gateSubsystem, m_intakeSubsystem, 1600_rpm));
 
+  pathplanner::NamedCommands::registerCommand("Prespin", m_shooterSubsystem.RunPrespinCommand());
+
   pathplanner::NamedCommands::registerCommand("DisableVision",
                                               frc2::cmd::RunOnce([this] { m_perceptionSubsystem.DisableVision(); }));
   pathplanner::NamedCommands::registerCommand("EnableVision",
@@ -171,6 +173,10 @@ void RobotContainer::ConfigureLEDBindings() {
   frc2::Trigger([this] {
     return m_gateSubsystem.GetState() == GateStateEnum::On;
   }).WhileTrue(m_ledSubsystem.ShowShootingCommand());
+
+  frc2::Trigger([this] {
+    return m_shooterSubsystem.GetState() == ShooterStateEnum::Prespin;
+  }).WhileTrue(m_ledSubsystem.ShowPrespinCommand());
 
   frc2::Trigger([this] {
     return m_driveSubsystem.GetAutoAlignState() != AutoAlignState::None;

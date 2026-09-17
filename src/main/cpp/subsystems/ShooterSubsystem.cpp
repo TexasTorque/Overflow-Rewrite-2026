@@ -16,7 +16,8 @@
 
 ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
     : m_io(std::move(io)),
-      m_state(ShooterStateEnum::Off, [this](const ShooterStateEnum& newState) { ApplyState(newState); }) {
+      m_state(ShooterStateEnum::Off, [this](const ShooterStateEnum& newState) { ApplyState(newState); }),
+      m_logging{} {
   SetName("ShooterSubsystem");
 
   frc::SmartDashboard::PutNumber("Debug RPM", 0.0);
@@ -24,7 +25,11 @@ ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
 
 void ShooterSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
-  ShooterLogging::UpdateTelemetry(m_inputs, GetState());
+  m_logging.UpdateTelemetry(m_inputs, GetState());
+}
+
+frc2::CommandPtr ShooterSubsystem::RunPrespinCommand() {
+  return frc2::cmd::RunOnce([this] { SetState(ShooterStateEnum::Prespin); }, {this}).WithName("Shooter Prespin");
 }
 
 frc2::CommandPtr ShooterSubsystem::RunLayupCommand() {
@@ -91,10 +96,13 @@ void ShooterSubsystem::Clean() {
 void ShooterSubsystem::ApplyState(const ShooterStateEnum& newState) {
   switch (newState) {
     case ShooterStateEnum::Off:
-      m_io->SetFlywheelRPM(0_rpm);
+      m_io->CoastOut();
       break;
     case ShooterStateEnum::Idle:
       m_io->SetFlywheelRPM(ShooterConstants::kIdleRPM);
+      break;
+    case ShooterStateEnum::Prespin:
+      m_io->SetFlywheelRPM(ShooterConstants::kPrespinRPM);
       break;
     case ShooterStateEnum::Layup:
       m_io->SetFlywheelRPM(ShooterConstants::kLayupRPM);

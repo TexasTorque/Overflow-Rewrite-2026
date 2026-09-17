@@ -12,7 +12,19 @@
 
 class IntakeLogging {
  public:
-  static void UpdateTelemetry(const IntakeIOInputs& inputs, IntakeStateEnum state) {
+  IntakeLogging()
+      : rollerCurrentPublisher{nt::NetworkTableInstance::GetDefault()
+                                   .GetDoubleTopic("IntakeSubsystem/RollerCurrent")
+                                   .Publish()},
+        rollerVoltagePublisher{
+            nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerVoltage").Publish()},
+        pivotPositionPublisher{
+            nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotPosition").Publish()},
+        pivotSetpointPublisher{
+            nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotSetpoint").Publish()},
+        statePublisher{nt::NetworkTableInstance::GetDefault().GetStringTopic("IntakeSubsystem/State").Publish()} {}
+
+  void UpdateTelemetry(const IntakeIOInputs& inputs, IntakeStateEnum state) {
     rollerCurrentPublisher.Set(inputs.rollerCurrent.value());
     rollerVoltagePublisher.Set(inputs.rollerVoltage.value());
     pivotPositionPublisher.Set(inputs.pivotPosition);
@@ -22,20 +34,9 @@ class IntakeLogging {
   }
 
  private:
-  static nt::DoublePublisher rollerCurrentPublisher;
-  static nt::DoublePublisher rollerVoltagePublisher;
-  static nt::DoublePublisher pivotPositionPublisher;
-  static nt::DoublePublisher pivotSetpointPublisher;
-  static nt::StringPublisher statePublisher;
+  nt::DoublePublisher rollerCurrentPublisher;
+  nt::DoublePublisher rollerVoltagePublisher;
+  nt::DoublePublisher pivotPositionPublisher;
+  nt::DoublePublisher pivotSetpointPublisher;
+  nt::StringPublisher statePublisher;
 };
-
-inline nt::DoublePublisher IntakeLogging::rollerCurrentPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerCurrent").Publish();
-inline nt::DoublePublisher IntakeLogging::rollerVoltagePublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/RollerVoltage").Publish();
-inline nt::DoublePublisher IntakeLogging::pivotPositionPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotPosition").Publish();
-inline nt::DoublePublisher IntakeLogging::pivotSetpointPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("IntakeSubsystem/PivotSetpoint").Publish();
-inline nt::StringPublisher IntakeLogging::statePublisher =
-    nt::NetworkTableInstance::GetDefault().GetStringTopic("IntakeSubsystem/State").Publish();

@@ -24,6 +24,7 @@ class LEDSubsystem : public frc2::SubsystemBase {
   frc2::CommandPtr ShowShootingCommand();
   frc2::CommandPtr ShowAutoAlignCommand(std::function<AutoAlignState()>&& stateFunc);
   frc2::CommandPtr ShowStallingCommand();
+  frc2::CommandPtr ShowPrespinCommand();
 
   void Periodic() override;
 

@@ -11,7 +11,8 @@
 
 IntakeSubsystem::IntakeSubsystem(std::unique_ptr<IntakeIO> io)
     : m_io(std::move(io)),
-      m_state(IntakeStateEnum::Stow, [this](const IntakeStateEnum& newState) { ApplyState(newState); }) {
+      m_state(IntakeStateEnum::Stow, [this](const IntakeStateEnum& newState) { ApplyState(newState); }),
+      m_logging{} {
   SetName("IntakeSubsystem");
 }
 
@@ -54,7 +55,7 @@ void IntakeSubsystem::Clean() {
 void IntakeSubsystem::Periodic() {
   m_io->UpdateInputs(m_inputs);
   m_io->Process();
-  IntakeLogging::UpdateTelemetry(m_inputs, GetState());
+  m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
 void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {

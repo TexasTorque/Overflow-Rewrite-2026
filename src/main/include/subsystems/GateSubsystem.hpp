@@ -5,6 +5,7 @@
 
 #include <memory>
 #include "abstractions/io/gate/GateIO.hpp"
+#include "abstractions/logging/GateLogging.hpp"
 #include "abstractions/state/GateState.hpp"
 #include "frc2/command/CommandPtr.h"
 #include "frc2/command/SubsystemBase.h"
@@ -27,6 +28,7 @@ class GateSubsystem : public frc2::SubsystemBase {
   std::unique_ptr<GateIO> m_io;
   GateIOInputs m_inputs;
   GateState m_state;
+  GateLogging m_logging;
 
   void ApplyState(const GateStateEnum& newState);
 };

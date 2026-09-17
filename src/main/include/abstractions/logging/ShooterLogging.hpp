@@ -13,7 +13,19 @@
 
 class ShooterLogging {
  public:
-  static void UpdateTelemetry(ShooterIOInputs inputs, ShooterStateEnum state) {
+  ShooterLogging()
+      : flywheelNearDesiredPublisher{nt::NetworkTableInstance::GetDefault()
+                                         .GetBooleanTopic("ShooterSubsystem/FlywheelNearDesired")
+                                         .Publish()},
+        flywheelRPMPublisher{
+            nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ShooterSubsystem/FlywheelRPM").Publish()},
+        flywheelRPMSetpointPublisher{
+            nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ShooterSubsystem/FlywheelRPMSetpoint").Publish()},
+        flywheelCurrentPublisher{
+            nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ShooterSubsystem/FlywheelCurrent").Publish()},
+        statePublisher{nt::NetworkTableInstance::GetDefault().GetStringTopic("ShooterSubsystem/State").Publish()} {}
+
+  void UpdateTelemetry(ShooterIOInputs inputs, ShooterStateEnum state) {
     flywheelNearDesiredPublisher.Set(inputs.flywheelNearDesired);
     flywheelRPMPublisher.Set(inputs.flywheelRPM.value());
     flywheelRPMSetpointPublisher.Set(inputs.flywheelRPMSetpoint.value());
@@ -22,20 +34,9 @@ class ShooterLogging {
   }
 
  private:
-  static nt::BooleanPublisher flywheelNearDesiredPublisher;
-  static nt::DoublePublisher flywheelRPMPublisher;
-  static nt::DoublePublisher flywheelRPMSetpointPublisher;
-  static nt::DoublePublisher flywheelCurrentPublisher;
-  static nt::StringPublisher statePublisher;
+  nt::BooleanPublisher flywheelNearDesiredPublisher;
+  nt::DoublePublisher flywheelRPMPublisher;
+  nt::DoublePublisher flywheelRPMSetpointPublisher;
+  nt::DoublePublisher flywheelCurrentPublisher;
+  nt::StringPublisher statePublisher;
 };
-
-inline nt::BooleanPublisher ShooterLogging::flywheelNearDesiredPublisher =
-    nt::NetworkTableInstance::GetDefault().GetBooleanTopic("ShooterSubsystem/FlywheelNearDesired").Publish();
-inline nt::DoublePublisher ShooterLogging::flywheelRPMPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ShooterSubsystem/FlywheelRPM").Publish();
-inline nt::DoublePublisher ShooterLogging::flywheelRPMSetpointPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ShooterSubsystem/FlywheelRPMSetpoint").Publish();
-inline nt::DoublePublisher ShooterLogging::flywheelCurrentPublisher =
-    nt::NetworkTableInstance::GetDefault().GetDoubleTopic("ShooterSubsystem/FlywheelCurrent").Publish();
-inline nt::StringPublisher ShooterLogging::statePublisher =
-    nt::NetworkTableInstance::GetDefault().GetStringTopic("ShooterSubsystem/State").Publish();
