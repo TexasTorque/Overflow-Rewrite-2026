@@ -146,18 +146,25 @@ frc2::CommandPtr RobotContainer::WithShotSetup(frc2::CommandPtr shotCommand) {
   auto wasIntaking = std::make_shared<bool>(false);
   auto name = shotCommand.get()->GetName();
 
+  // temporary command to remove intake retainment
   return std::move(shotCommand)
       .AlongWith(m_driveSubsystem.BrakeInPlace())
-      .BeforeStarting([this, wasIntaking] {
-        *wasIntaking = (m_intakeSubsystem.GetState() == IntakeStateEnum::Intake);
-        m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
-      })
-      .FinallyDo([this, wasIntaking](bool) {
-        if (*wasIntaking) {
-          m_intakeSubsystem.SetState(IntakeStateEnum::Intake);
-        }
-      })
+      .BeforeStarting([this] { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); })
+      .FinallyDo([this](bool) { m_intakeSubsystem.SetState(IntakeStateEnum::Stow); })
       .WithName(name);
+
+  // return std::move(shotCommand)
+  //     .AlongWith(m_driveSubsystem.BrakeInPlace())
+  //     .BeforeStarting([this, wasIntaking] {
+  //       *wasIntaking = (m_intakeSubsystem.GetState() == IntakeStateEnum::Intake);
+  //       m_intakeSubsystem.SetState(IntakeStateEnum::Stow);
+  //     })
+  //     .FinallyDo([this, wasIntaking](bool) {
+  //       if (*wasIntaking) {
+  //         m_intakeSubsystem.SetState(IntakeStateEnum::Intake);
+  //       }
+  //     })
+  //     .WithName(name);
 }
 
 void RobotContainer::ConfigureLEDBindings() {
