@@ -39,7 +39,7 @@ inline constexpr double kRotaryUpPosition = 0.0;     // -23.2
 inline constexpr double kRotaryDownPosition = 23.2;  // 0
 inline constexpr double kRotarySlowZeroPosition = 12.5000;
 
-inline constexpr units::volt_t kIntakeVoltage = -10.5_V;
+inline constexpr units::volt_t kIntakeVoltage = -9_V;
 inline constexpr units::volt_t kOuttakeVoltage = 12_V;
 inline constexpr units::volt_t kAgitationVoltage = -6_V;
 }  // namespace IntakeConstants
@@ -78,7 +78,7 @@ inline constexpr units::revolutions_per_minute_t kTrenchRPM = 3950_rpm;
 inline constexpr units::revolutions_per_minute_t kIdleRPM = 2000_rpm;
 inline constexpr units::revolutions_per_minute_t kPrespinRPM = 3000_rpm;
 
-inline constexpr units::second_t kStartTime = 1.95_s;
+inline constexpr units::second_t kStartTime = 0.7_s;  // 1.95
 inline constexpr units::second_t kHoldTime = 0.3_s;
 inline constexpr units::second_t kWaitTime = 0.4_s;
 }  // namespace ShooterConstants
@@ -108,7 +108,7 @@ inline frc::LEDPattern kIdle =
     frc::LEDPattern::Gradient(frc::LEDPattern::kContinuous, kIdleColors).ScrollAtRelativeSpeed(units::hertz_t{0.5});
 
 // RUNNING
-inline frc::LEDPattern kRunning = frc::LEDPattern::Solid(frc::Color::kRed);
+inline frc::LEDPattern kRunning = frc::LEDPattern::Solid(frc::Color{0.9019607843, 0.0, 0.3607843137});
 
 // INTAKING
 inline const std::array<std::pair<double, frc::Color>, 4> kIntakeFrontSteps = {

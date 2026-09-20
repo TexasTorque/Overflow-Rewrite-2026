@@ -78,7 +78,7 @@ class IntakeRealIO : public IntakeIO {
   void ConfigureRollerRightMotor() {
     rev::spark::SparkMaxConfig config;
 
-    config.SmartCurrentLimit(40);
+    config.SmartCurrentLimit(55);
     config.VoltageCompensation(12);
 
     config.signals.AppliedOutputPeriodMs(45);
@@ -92,7 +92,7 @@ class IntakeRealIO : public IntakeIO {
   void ConfigureRollerLeftMotor() {
     rev::spark::SparkMaxConfig config;
 
-    config.SmartCurrentLimit(40);
+    config.SmartCurrentLimit(55);
     config.Follow(IntakeConstants::kIntakeRollerMotorRightPort, true);
     config.VoltageCompensation(12);
 

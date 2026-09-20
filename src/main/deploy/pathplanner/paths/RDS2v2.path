@@ -1,0 +1,127 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.032227430555556,
+        "y": 3.674535734953704
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 8.035901620370371,
+        "y": 3.0928327546296295
+      },
+      "isLocked": false,
+      "linkedName": "RDS1V2E"
+    },
+    {
+      "anchor": {
+        "x": 6.552053819451049,
+        "y": 2.7040247395772328
+      },
+      "prevControl": {
+        "x": 7.389769097228828,
+        "y": 2.855978732632788
+      },
+      "nextControl": {
+        "x": 5.851189220809913,
+        "y": 2.5768942249740947
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.0264361255787042,
+        "y": 2.159850983796297
+      },
+      "prevControl": {
+        "x": 3.088929022653567,
+        "y": 2.620134107498802
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RDS2V2E"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8991580703883499,
+      "rotationDegrees": 10.271
+    },
+    {
+      "waypointRelativePos": 1.70555218446602,
+      "rotationDegrees": 10.271
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.1950309684684681,
+      "maxWaypointRelativePos": 1.8152683933933922,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "IntakeDown",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeDown"
+        }
+      }
+    },
+    {
+      "name": "Prespin",
+      "waypointRelativePos": 1.4541103603603593,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Prespin"
+        }
+      }
+    },
+    {
+      "name": "IntakeStop",
+      "waypointRelativePos": 1.719758821321322,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "IntakeStop"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -144.394
+  },
+  "reversed": false,
+  "folder": "RIGHT_DOUBLE_SWIPE",
+  "idealStartingState": {
+    "velocity": 0.8,
+    "rotation": 90.06438328165248
+  },
+  "useDefaultConstraints": true
+}
