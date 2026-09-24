@@ -8,5 +8,6 @@
 class VisionMeasurementConsumer {
  public:
   virtual ~VisionMeasurementConsumer() = default;
-  virtual void AddVisionMeasurement(frc::Pose2d visionRobotPose, units::second_t timestamp) = 0;
+  virtual void AddVisionMeasurement(frc::Pose2d visionRobotPose, units::second_t timestamp,
+                                    std::array<double, 3> visionMeasurementStdDevs) = 0;
 };

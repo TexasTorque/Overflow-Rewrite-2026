@@ -28,10 +28,10 @@ void PerceptionSubsystem::Update() {
   }
 
   for (auto& camera : m_localizationCameras) {
-    const std::vector<turbolib::structure::PoseTimestampPair> visionPoses = camera->FetchPose();
+    const auto visionPoses = camera->FetchPose();
 
     for (const auto& pair : visionPoses) {
-      m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency());
+      m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency(), pair.getStdDevs());
     }
   }
 }
