@@ -4,6 +4,7 @@
 #pragma once
 
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include "frc2/command/SubsystemBase.h"
@@ -24,6 +25,8 @@ class PerceptionSubsystem : frc2::SubsystemBase {
 
   void DisableVision() { m_isEnabled = false; }
   void EnableVision() { m_isEnabled = true; }
+
+  std::optional<double> GetShooterCameraTx() const;
 
   void Log();
   void Periodic() override;

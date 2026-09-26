@@ -55,6 +55,8 @@ RobotContainer::RobotContainer()
 
   m_autoChooser = AutoChooser{};
   frc::SmartDashboard::PutData("Auto Chooser", m_autoChooser->GetChooser());
+
+  m_driveSubsystem.SetPerceptionSubsystem(m_perceptionSubsystem);
 }
 
 void RobotContainer::ConfigurePlannerCommands() {

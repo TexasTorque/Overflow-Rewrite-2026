@@ -13,6 +13,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <functional>
+#include "subsystems/PerceptionSubsystem.hpp"
 
 #include "ctre/phoenix6/swerve/SwerveRequest.hpp"
 #include "frc/controller/PIDController.h"
@@ -370,18 +371,22 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
 
   frc2::CommandPtr RotateToHub() {
     return TurnToAngleCommand([this] {
-             auto alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue);
-             auto hubPose = (alliance == frc::DriverStation::kRed) ? PerceptionConstants::kRedHubPose
-                                                                   : PerceptionConstants::kBlueHubPose;
+             if (!m_perceptionSubsystem)
+               return GetState().Pose.Rotation();
 
-             frc::Pose2d robotPose = GetState().Pose;
-             return frc::Rotation2d{units::radian_t{std::atan2(hubPose.Y().value() - robotPose.Y().value(),
-                                                               hubPose.X().value() - robotPose.X().value())}}
-                 .RotateBy(180_deg);
+             auto txOpt = m_perceptionSubsystem->GetShooterCameraTx();
+             if (!txOpt.has_value())
+               return GetState().Pose.Rotation();
+
+             units::degree_t txDeg{*txOpt};
+             units::radian_t txRad = units::radian_t{txDeg.value() * M_PI / 180.0};
+             return GetState().Pose.Rotation() + frc::Rotation2d{txRad};
            })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .WithName("Rotate To Hub");
   }
+
+  void SetPerceptionSubsystem(PerceptionSubsystem& perception) { m_perceptionSubsystem = &perception; }
 
   frc2::CommandPtr BrakeInPlace() {
     return StartEnd([this] { SetControl(m_brake); }, [] {});
@@ -413,6 +418,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   bool m_filterInitialized = false;
 
   units::meters_per_second_t m_activeSpeed = DriveConstants::kMaxSpeed;
+
+  PerceptionSubsystem* m_perceptionSubsystem = nullptr;
 
   void StartSimThread();
   void ConfigurePathPlanner();

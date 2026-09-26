@@ -49,3 +49,26 @@ void PerceptionSubsystem::Periodic() {
 
   Log();
 }
+
+std::optional<double> PerceptionSubsystem::GetShooterCameraTx() const {
+  double sum = 0.0;
+  int count = 0;
+
+  for (const auto& camPtr : m_localizationCameras) {
+    const auto& name = camPtr->GetCameraName();
+
+    if (name == "shooterLeft" || name == "shooterRight") {
+      auto txOpt = camPtr->GetTx();
+
+      if (txOpt.has_value()) {
+        sum += txOpt.value();
+        count++;
+      }
+    }
+  }
+
+  if (count == 0)
+    return std::nullopt;
+
+  return sum / count;
+}
