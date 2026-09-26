@@ -3,6 +3,7 @@
 
 #include "subsystems/PerceptionSubsystem.hpp"
 #include <algorithm>
+#include <map>
 #include <memory>
 #include <vector>
 #include "constants/Constants.hpp"
@@ -22,6 +23,12 @@ PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsum
   m_seesTagPublisher = nt::NetworkTableInstance::GetDefault().GetBooleanTopic("PerceptionSubsystem/seesTag").Publish();
 }
 
+void PerceptionSubsystem::UpdateHeading(frc::Rotation2d gyroAngle) {
+  for (auto& camera : m_localizationCameras) {
+    camera->UpdateHeading(gyroAngle);
+  }
+}
+
 void PerceptionSubsystem::Update() {
   if (m_localizationCameras.empty() || !m_isEnabled) {
     return;
@@ -31,8 +38,26 @@ void PerceptionSubsystem::Update() {
     const auto visionPoses = camera->FetchPose();
 
     for (const auto& pair : visionPoses) {
-      m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency(), pair.getStdDevs());
+      // dedupe if we've encountered this pose before
+      bool isDuplicate = false;
+      for (const auto& existing : m_lastProcessedPerCamera[camera->GetCameraName()]) {
+        if (std::abs((existing.getPose().X().value() - pair.getPose().X().value())) < 0.01 &&
+            std::abs((existing.getPose().Y().value() - pair.getPose().Y().value())) < 0.01 &&
+            std::abs((existing.getLatency().value() - pair.getLatency().value())) < 0.05) {
+          isDuplicate = true;
+          break;
+        }
+      }
+
+      if (!isDuplicate) {
+        m_lastProcessedPerCamera[camera->GetCameraName()].push_back(pair);
+        m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency(), pair.getStdDevs());
+      }
     }
+  }
+
+  for (auto& [name, entries] : m_lastProcessedPerCamera) {
+    entries.clear();
   }
 }
 

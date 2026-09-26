@@ -28,6 +28,8 @@ class PerceptionSubsystem : frc2::SubsystemBase {
 
   std::optional<double> GetShooterCameraTx() const;
 
+  void UpdateHeading(frc::Rotation2d gyroAngle);
+
   void Log();
   void Periodic() override;
 
@@ -39,4 +41,6 @@ class PerceptionSubsystem : frc2::SubsystemBase {
   bool m_seesTag = false;
 
   nt::BooleanPublisher m_seesTagPublisher;
+
+  std::map<std::string, std::vector<turbolib::structure::PoseTimestampPair>> m_lastProcessedPerCamera;
 };
