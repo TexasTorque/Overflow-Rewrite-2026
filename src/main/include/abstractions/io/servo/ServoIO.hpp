@@ -3,9 +3,6 @@
 
 #pragma once
 
-#include "units/current.h"
-#include "units/voltage.h"
-
 struct ServoIOInputs {
   double servoSetpoint{0.0};
 };

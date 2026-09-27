@@ -413,7 +413,6 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   frc::PIDController m_thetaController{5.25, 0.005, 0.3};
   AutoAlignState m_autoAlignState = AutoAlignState::None;
 
-  // Option C filter state
   frc::Rotation2d m_filteredTarget{0_deg};
   bool m_filterInitialized = false;
 
