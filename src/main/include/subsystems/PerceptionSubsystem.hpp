@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include "frc/RobotBase.h"
 #include "frc2/command/SubsystemBase.h"
 #include "abstractions/perception/VisionMeasurementConsumer.hpp"
 #include "networktables/BooleanTopic.h"
@@ -18,7 +19,7 @@ class PerceptionSubsystem : frc2::SubsystemBase {
 
   void Update();
   void AddLocalizationCamera(const std::string& cameraName, const frc::Transform3d& cameraInBotSpace,
-                             frc::AprilTagField field, bool enableSim = false) {
+                             frc::AprilTagField field, bool enableSim = frc::RobotBase::IsSimulation()) {
     m_localizationCameras.push_back(
         std::make_unique<turbolib::perception::TurboPhotonCamera>(cameraName, cameraInBotSpace, field, enableSim));
   }
@@ -26,12 +27,25 @@ class PerceptionSubsystem : frc2::SubsystemBase {
   void DisableVision() { m_isEnabled = false; }
   void EnableVision() { m_isEnabled = true; }
 
-  std::optional<double> GetShooterCameraTx() const;
+  struct HubTarget {
+    int id;
+    units::degree_t yaw;
+    units::meter_t distance;
+    double ambiguity;
+    frc::Pose2d tagPose;
+    units::second_t age;
+  };
+
+  std::optional<HubTarget> GetNearestHubTarget() const;
 
   void UpdateHeading(frc::Rotation2d gyroAngle);
 
   void Log();
   void Periodic() override;
+
+  void UpdateSim(frc::Pose2d robotPose);
+
+  static bool IsHubTag(int id, bool redAlliance);
 
  private:
   VisionMeasurementConsumer& m_visionConsumer;
@@ -41,6 +55,4 @@ class PerceptionSubsystem : frc2::SubsystemBase {
   bool m_seesTag = false;
 
   nt::BooleanPublisher m_seesTagPublisher;
-
-  std::map<std::string, std::vector<turbolib::structure::PoseTimestampPair>> m_lastProcessedPerCamera;
 };

@@ -28,6 +28,11 @@ inline constexpr frc::Transform3d kShooterLeftCamTransform{
 
 inline constexpr frc::Pose2d kRedHubPose{11.92_m, 4_m, 0_rad};
 inline constexpr frc::Pose2d kBlueHubPose{4.625_m, 4_m, 0_rad};
+
+inline constexpr std::array<int, 8> kBlueHubTags = {21, 24, 25, 26, 27, 18};
+inline constexpr std::array<int, 14> kRedHubTags = {5, 8, 9, 10, 11, 2};
+
+inline constexpr units::second_t kMaxTargetAge = 0.25_s;
 }  // namespace PerceptionConstants
 
 namespace IntakeConstants {

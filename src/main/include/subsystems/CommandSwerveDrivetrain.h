@@ -13,6 +13,15 @@
 #include <cmath>
 #include <cstdlib>
 #include <functional>
+#include <networktables/BooleanTopic.h>
+#include <networktables/DoubleTopic.h>
+#include <networktables/IntegerTopic.h>
+#include <networktables/NetworkTable.h>
+#include <networktables/NetworkTableInstance.h>
+#include <networktables/StringTopic.h>
+#include <units/angle.h>
+#include <units/angular_velocity.h>
+#include <units/time.h>
 #include "subsystems/PerceptionSubsystem.hpp"
 
 #include "ctre/phoenix6/swerve/SwerveRequest.hpp"
@@ -312,6 +321,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
           // begin turn towards target (whether accurate or not)
           frc::Pose2d pose = GetState().Pose;
           frc::Rotation2d rawTarget = targetAngle();
+          units::radian_t filterStep{0_rad};
 
           if (!m_filterInitialized) {
             m_filteredTarget = rawTarget;
@@ -325,10 +335,10 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
               }
 
               units::radian_t step = delta * AutoAlignConstants::kFilterAlpha;
-              step = units::radian_t{std::clamp(step.value(), -AutoAlignConstants::kMaxDeltaPerCycle.value(),
-                                                AutoAlignConstants::kMaxDeltaPerCycle.value())};
+              filterStep = units::radian_t{std::clamp(step.value(), -AutoAlignConstants::kMaxDeltaPerCycle.value(),
+                                                      AutoAlignConstants::kMaxDeltaPerCycle.value())};
 
-              m_filteredTarget = m_filteredTarget.RotateBy(frc::Rotation2d{step});
+              m_filteredTarget = m_filteredTarget.RotateBy(frc::Rotation2d{filterStep});
             }
           }
 
@@ -336,9 +346,8 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
               m_thetaController.Calculate(pose.Rotation().Radians().value(), m_filteredTarget.Radians().value()) *
               1_rad_per_s;
 
-          frc::SmartDashboard::PutNumber("AutoAlign/RawTargetDeg", rawTarget.Degrees().value());
-          frc::SmartDashboard::PutNumber("AutoAlign/FilteredTargetDeg", m_filteredTarget.Degrees().value());
-          frc::SmartDashboard::PutNumber("AutoAlign/ErrorDeg", (m_filteredTarget - pose.Rotation()).Degrees().value());
+          units::degree_t rawFilteredErr{(targetAngle() - m_filteredTarget).Degrees().value()};
+          PublishAutoAlign(rawTarget, thetaFeedback, filterStep, rawFilteredErr);
 
           return m_pathApplyRobotSpeeds.WithSpeeds(frc::ChassisSpeeds{0_mps, 0_mps, thetaFeedback});
         }))
@@ -374,13 +383,18 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
              if (!m_perceptionSubsystem)
                return GetState().Pose.Rotation();
 
-             auto txOpt = m_perceptionSubsystem->GetShooterCameraTx();
-             if (!txOpt.has_value())
+             auto target = m_perceptionSubsystem->GetNearestHubTarget();
+             if (!target.has_value())
                return GetState().Pose.Rotation();
 
-             units::degree_t txDeg{*txOpt};
-             units::radian_t txRad = units::radian_t{txDeg.value() * M_PI / 180.0};
-             return GetState().Pose.Rotation() + frc::Rotation2d{txRad};
+             const frc::Pose2d robotPose = GetState().Pose;
+             const frc::Pose2d hubPose = GetHubPose();
+
+             const frc::Rotation2d bearingToTag = (target->tagPose.Translation() - robotPose.Translation()).Angle();
+             const frc::Rotation2d bearingToHub = (hubPose.Translation() - robotPose.Translation()).Angle();
+
+             return robotPose.Rotation() + frc::Rotation2d{units::degree_t{-target->yaw.value()}} +
+                    (bearingToHub - bearingToTag);
            })
         .AndThen(frc2::cmd::RunOnce([this] { m_autoAlignState = AutoAlignState::None; }))
         .WithName("Rotate To Hub");
@@ -392,14 +406,14 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
     return StartEnd([this] { SetControl(m_brake); }, [] {});
   }
 
-  units::meter_t GetDistanceToHub() const {
+  static frc::Pose2d GetHubPose() {
     auto alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::kBlue);
-    auto hubPose =
-        (alliance == frc::DriverStation::kRed) ? PerceptionConstants::kRedHubPose : PerceptionConstants::kBlueHubPose;
+    return (alliance == frc::DriverStation::kRed) ? PerceptionConstants::kRedHubPose
+                                                  : PerceptionConstants::kBlueHubPose;
+  }
 
-    frc::Pose2d robotPose = GetState().Pose;
-    return units::meter_t{
-        std::hypot(hubPose.X().value() - robotPose.X().value(), hubPose.Y().value() - robotPose.Y().value())};
+  units::meter_t GetDistanceToHub() const {
+    return (GetHubPose().Translation() - GetState().Pose.Translation()).Norm();
   }
 
   units::meters_per_second_t GetActiveSpeed() const { return m_activeSpeed; }
@@ -419,6 +433,29 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   units::meters_per_second_t m_activeSpeed = DriveConstants::kMaxSpeed;
 
   PerceptionSubsystem* m_perceptionSubsystem = nullptr;
+
+  nt::NetworkTableInstance m_ntInst = nt::NetworkTableInstance::GetDefault();
+  std::shared_ptr<nt::NetworkTable> m_autoAlignTable = m_ntInst.GetTable("AutoAlign");
+
+  nt::DoublePublisher m_rawTargetPub = m_autoAlignTable->GetDoubleTopic("RawTargetDeg").Publish();
+  nt::DoublePublisher m_filteredTargetPub = m_autoAlignTable->GetDoubleTopic("FilteredTargetDeg").Publish();
+  nt::DoublePublisher m_errorPub = m_autoAlignTable->GetDoubleTopic("ErrorDeg").Publish();
+  nt::DoublePublisher m_pidErrorPub = m_autoAlignTable->GetDoubleTopic("PidErrorDeg").Publish();
+  nt::DoublePublisher m_omegaPub = m_autoAlignTable->GetDoubleTopic("OmegaRadPerSec").Publish();
+  nt::DoublePublisher m_headingDegPub = m_autoAlignTable->GetDoubleTopic("HeadingDeg").Publish();
+  nt::DoublePublisher m_filterStepDegPub = m_autoAlignTable->GetDoubleTopic("FilterStepDeg").Publish();
+  nt::DoublePublisher m_rawFilteredErrDegPub = m_autoAlignTable->GetDoubleTopic("RawFilteredErrorDeg").Publish();
+  nt::DoublePublisher m_tagYawDegPub = m_autoAlignTable->GetDoubleTopic("TagYawDeg").Publish();
+  nt::DoublePublisher m_tagDistanceMetersPub = m_autoAlignTable->GetDoubleTopic("TagDistanceMeters").Publish();
+  nt::DoublePublisher m_tagAmbiguityPub = m_autoAlignTable->GetDoubleTopic("TagAmbiguity").Publish();
+  nt::DoublePublisher m_targetAgeMsPub = m_autoAlignTable->GetDoubleTopic("TargetAgeMs").Publish();
+  nt::IntegerPublisher m_tagIdPub = m_autoAlignTable->GetIntegerTopic("TagId").Publish();
+  nt::BooleanPublisher m_hasTargetPub = m_autoAlignTable->GetBooleanTopic("HasTarget").Publish();
+  nt::BooleanPublisher m_filterInitializedPub = m_autoAlignTable->GetBooleanTopic("FilterInitialized").Publish();
+  nt::StringPublisher m_statePub = m_autoAlignTable->GetStringTopic("State").Publish();
+
+  void PublishAutoAlign(const frc::Rotation2d& rawTarget, units::radians_per_second_t omega, units::radian_t filterStep,
+                        units::degree_t rawFilteredErr);
 
   void StartSimThread();
   void ConfigurePathPlanner();

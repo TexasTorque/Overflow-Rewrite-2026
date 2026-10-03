@@ -3,22 +3,22 @@
 
 #include "subsystems/PerceptionSubsystem.hpp"
 #include <algorithm>
-#include <map>
 #include <memory>
 #include <vector>
 #include "constants/Constants.hpp"
+#include "frc/DriverStation.h"
 #include "frc/apriltag/AprilTagFields.h"
 #include "turbolib/perception/TurboPhotonCamera.hpp"
 
 PerceptionSubsystem::PerceptionSubsystem(VisionMeasurementConsumer& visionConsumer) : m_visionConsumer(visionConsumer) {
   AddLocalizationCamera("shooterRight", PerceptionConstants::kShooterRightCamTransform,
-                        frc::AprilTagField::k2026RebuiltAndyMark);
+                        frc::AprilTagField::k2026RebuiltAndyMark, true);
   AddLocalizationCamera("hopperLeft", PerceptionConstants::kHopperLeftCamTransform,
-                        frc::AprilTagField::k2026RebuiltAndyMark);
+                        frc::AprilTagField::k2026RebuiltAndyMark, true);
   AddLocalizationCamera("hopperRight", PerceptionConstants::kHopperRightCamTransform,
-                        frc::AprilTagField::k2026RebuiltAndyMark);
+                        frc::AprilTagField::k2026RebuiltAndyMark, true);
   AddLocalizationCamera("shooterLeft", PerceptionConstants::kShooterLeftCamTransform,
-                        frc::AprilTagField::k2026RebuiltAndyMark);
+                        frc::AprilTagField::k2026RebuiltAndyMark, true);
 
   m_seesTagPublisher = nt::NetworkTableInstance::GetDefault().GetBooleanTopic("PerceptionSubsystem/seesTag").Publish();
 }
@@ -29,35 +29,23 @@ void PerceptionSubsystem::UpdateHeading(frc::Rotation2d gyroAngle) {
   }
 }
 
+void PerceptionSubsystem::UpdateSim(frc::Pose2d robotPose) {
+  for (auto& camera : m_localizationCameras) {
+    camera->UpdateSim(robotPose);
+  }
+}
+
 void PerceptionSubsystem::Update() {
   if (m_localizationCameras.empty() || !m_isEnabled) {
     return;
   }
 
   for (auto& camera : m_localizationCameras) {
-    const auto visionPoses = camera->FetchPose();
+    const std::vector<turbolib::structure::PoseTimestampPair> visionPoses = camera->FetchPose();
 
     for (const auto& pair : visionPoses) {
-      // dedupe if we've encountered this pose before
-      bool isDuplicate = false;
-      for (const auto& existing : m_lastProcessedPerCamera[camera->GetCameraName()]) {
-        if (std::abs((existing.getPose().X().value() - pair.getPose().X().value())) < 0.01 &&
-            std::abs((existing.getPose().Y().value() - pair.getPose().Y().value())) < 0.01 &&
-            std::abs((existing.getLatency().value() - pair.getLatency().value())) < 0.05) {
-          isDuplicate = true;
-          break;
-        }
-      }
-
-      if (!isDuplicate) {
-        m_lastProcessedPerCamera[camera->GetCameraName()].push_back(pair);
-        m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency(), pair.getStdDevs());
-      }
+      m_visionConsumer.AddVisionMeasurement(pair.getPose(), pair.getLatency(), pair.getStdDevs());
     }
-  }
-
-  for (auto& [name, entries] : m_lastProcessedPerCamera) {
-    entries.clear();
   }
 }
 
@@ -75,25 +63,59 @@ void PerceptionSubsystem::Periodic() {
   Log();
 }
 
-std::optional<double> PerceptionSubsystem::GetShooterCameraTx() const {
-  double sum = 0.0;
-  int count = 0;
+bool PerceptionSubsystem::IsHubTag(int id, bool redAlliance) {
+  const auto* hubTags =
+      redAlliance ? PerceptionConstants::kRedHubTags.data() : PerceptionConstants::kBlueHubTags.data();
+  const size_t count = redAlliance ? PerceptionConstants::kRedHubTags.size() : PerceptionConstants::kBlueHubTags.size();
 
-  for (const auto& camPtr : m_localizationCameras) {
-    const auto& name = camPtr->GetCameraName();
+  for (size_t i = 0; i < count; i++) {
+    if (hubTags[i] == id)
+      return true;
+  }
 
-    if (name == "shooterLeft" || name == "shooterRight") {
-      auto txOpt = camPtr->GetTx();
+  return false;
+}
 
-      if (txOpt.has_value()) {
-        sum += txOpt.value();
-        count++;
-      }
+std::optional<PerceptionSubsystem::HubTarget> PerceptionSubsystem::GetNearestHubTarget() const {
+  const auto alliance = frc::DriverStation::GetAlliance().value_or(frc::DriverStation::Alliance::kBlue);
+  const bool redAlliance = alliance == frc::DriverStation::Alliance::kRed;
+
+  const turbolib::perception::TurboPhotonCamera* nearestCamera = nullptr;
+
+  const turbolib::perception::TurboPhotonCamera::CachedTarget* nearestTarget = nullptr;
+  units::meter_t nearestDistance{0_m};
+  units::second_t nearestAge{0_s};
+
+  for (const auto& camera : m_localizationCameras) {
+    const auto& name = camera->GetCameraName();
+    if (name != "shooterLeft" && name != "shooterRight")
+      continue;
+
+    const auto age = camera->GetCachedTargetsAge();
+    if (!age.has_value() || age.value() > PerceptionConstants::kMaxTargetAge)
+      continue;
+
+    for (const auto& target : camera->GetCachedTargets()) {
+      if (nearestTarget != nullptr && target.distance >= nearestDistance)
+        continue;
+
+      if (!IsHubTag(target.id, redAlliance))
+        continue;
+
+      nearestCamera = camera.get();
+      nearestTarget = &target;
+      nearestDistance = target.distance;
+      nearestAge = age.value();
     }
   }
 
-  if (count == 0)
+  if (nearestTarget == nullptr)
     return std::nullopt;
 
-  return sum / count;
+  auto tagPose = nearestCamera->GetTagFieldPose(nearestTarget->id);
+  if (!tagPose.has_value())
+    return std::nullopt;
+
+  return HubTarget{nearestTarget->id,        nearestTarget->yaw, nearestDistance,
+                   nearestTarget->ambiguity, tagPose.value(),    nearestAge};
 }
