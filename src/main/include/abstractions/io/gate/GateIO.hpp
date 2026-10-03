@@ -13,8 +13,9 @@ struct GateIOInputs {
 
 class GateIO {
  public:
-  virtual void UpdateInputs(GateIOInputs& inputs) = 0;
+  using Inputs = GateIOInputs;
 
+  virtual void UpdateInputs(GateIOInputs& inputs) = 0;
   virtual void SetGateVoltage(units::volt_t voltage) = 0;
 
   virtual ~GateIO() = default;

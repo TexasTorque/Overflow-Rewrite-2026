@@ -14,7 +14,7 @@
 #include "subsystems/IntakeSubsystem.hpp"
 #include "subsystems/LEDSubsystem.hpp"
 #include "subsystems/PerceptionSubsystem.hpp"
-#include "subsystems/ServoSubsystem.hpp"
+
 #include "subsystems/ShooterSubsystem.hpp"
 #include "utils/AutoChooser.hpp"
 #include <ctre/phoenix6/swerve/SwerveRequest.hpp>
@@ -34,8 +34,8 @@ class RobotContainer {
   HopperSubsystem& GetHopperSubsystem() { return m_hopperSubsystem; }
   ShooterSubsystem& GetShooterSubsystem() { return m_shooterSubsystem; }
   GateSubsystem& GetGateSubsystem() { return m_gateSubsystem; }
-  ServoSubsystem& GetServoSubsystem() { return m_servoSubsystem; }
   PerceptionSubsystem& GetPerceptionSubsystem() { return m_perceptionSubsystem; }
+
   LEDSubsystem& GetLEDSubsystem() { return m_ledSubsystem; }
 
   frc2::Command* GetAutonomousCommand();
@@ -66,7 +66,6 @@ class RobotContainer {
   ShooterSubsystem m_shooterSubsystem;
   HopperSubsystem m_hopperSubsystem;
   GateSubsystem m_gateSubsystem;
-  ServoSubsystem m_servoSubsystem;
   HubSubsystem m_hubSubsystem;
   LEDSubsystem m_ledSubsystem;
 

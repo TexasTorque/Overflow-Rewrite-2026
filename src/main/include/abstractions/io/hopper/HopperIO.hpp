@@ -13,8 +13,9 @@ struct HopperIOInputs {
 
 class HopperIO {
  public:
-  virtual void UpdateInputs(HopperIOInputs& inputs) = 0;
+  using Inputs = HopperIOInputs;
 
+  virtual void UpdateInputs(HopperIOInputs& inputs) = 0;
   virtual void SetHopperVoltage(units::volt_t voltage) = 0;
 
   virtual ~HopperIO() = default;

@@ -1,22 +1,14 @@
 // Texas Torque 1477
 // Overflow 2026
-
 #include "subsystems/GateSubsystem.hpp"
-#include "abstractions/logging/GateLogging.hpp"
-#include "abstractions/state/GateState.hpp"
 #include "constants/Constants.hpp"
 #include "frc2/command/Commands.h"
-#include <utility>
+
 
 GateSubsystem::GateSubsystem(std::unique_ptr<GateIO> io)
-    : m_io(std::move(io)),
-      m_state(GateStateEnum::Off, [this](const GateStateEnum& newState) { ApplyState(newState); }),
-      m_logging{} {
-  SetName("GateSubsystem");
-}
+    : TurboSubsystem(std::move(io), GateStateEnum::Off, "GateSubsystem") {}
 
-void GateSubsystem::Periodic() {
-  m_io->UpdateInputs(m_inputs);
+void GateSubsystem::UpdateTelemetry() {
   m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
@@ -29,15 +21,6 @@ frc2::CommandPtr GateSubsystem::RunOuttakeCommand() {
   return frc2::cmd::StartEnd([this] { SetState(GateStateEnum::Outtake); }, [this] { SetState(GateStateEnum::Off); },
                              {this})
       .WithName("Gate Outtake");
-}
-
-void GateSubsystem::SetState(const GateStateEnum& newState) {
-  m_state.Set(newState);
-  m_state.Apply();
-}
-
-void GateSubsystem::Clean() {
-  SetState(GateStateEnum::Off);
 }
 
 void GateSubsystem::ApplyState(const GateStateEnum& newState) {

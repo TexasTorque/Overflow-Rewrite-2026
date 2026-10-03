@@ -13,15 +13,14 @@
 #include "frc2/command/Commands.h"
 #include "abstractions/state/GateState.hpp"
 #include "abstractions/state/HopperState.hpp"
-#include "abstractions/state/ServoState.hpp"
 #include "abstractions/state/ShooterState.hpp"
 #include "subsystems/GateSubsystem.hpp"
 #include "subsystems/HopperSubsystem.hpp"
 #include "subsystems/IntakeSubsystem.hpp"
-#include "subsystems/ServoSubsystem.hpp"
 #include "subsystems/ShooterSubsystem.hpp"
 #include "units/angular_velocity.h"
 #include "units/length.h"
+
 
 namespace CommandFactory {
 inline frc2::CommandPtr OuttakeCommand(IntakeSubsystem& intake, HopperSubsystem& hopper, GateSubsystem& gate) {
@@ -33,11 +32,10 @@ inline frc2::CommandPtr PassThroughCommand(HopperSubsystem& hopper, GateSubsyste
   return frc2::cmd::Parallel(hopper.RunHopperCommand(), gate.RunGateCommand());
 }
 
-inline frc2::CommandPtr ShotCommand(std::function<frc2::CommandPtr()> makeShooterCmd,
-                                    std::function<frc2::CommandPtr()> makeServoCmd, ShooterSubsystem& shooter,
+inline frc2::CommandPtr ShotCommand(std::function<frc2::CommandPtr()> makeShooterCmd, ShooterSubsystem& shooter,
                                     HopperSubsystem& hopper, GateSubsystem& gate) {
-  return (frc2::cmd::Parallel(makeShooterCmd(), makeServoCmd()).Until([&] { return shooter.IsReadyToShoot(); }))
-      .AndThen(PassThroughCommand(hopper, gate).AlongWith(frc2::cmd::Parallel(makeShooterCmd(), makeServoCmd())));
+  return (frc2::cmd::Parallel(makeShooterCmd()).Until([&] { return shooter.IsReadyToShoot(); }))
+      .AndThen(PassThroughCommand(hopper, gate).AlongWith(frc2::cmd::Parallel(makeShooterCmd())));
 }
 
 inline frc2::CommandPtr WithAutoPullup(std::function<frc2::CommandPtr()> makeShotCmd, IntakeSubsystem& intake) {
@@ -48,116 +46,91 @@ inline frc2::CommandPtr WithAutoPullup(std::function<frc2::CommandPtr()> makeSho
       .FinallyDo([&] { intake.SetState(IntakeStateEnum::Stow); });
 }
 
-inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                         GateSubsystem& gate, IntakeSubsystem& intake) {
+inline frc2::CommandPtr LayupShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate,
+                                         IntakeSubsystem& intake) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
-               [&] {
-                 return ShotCommand([&] { return shooter.RunLayupCommand(); },
-                                    [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
-               },
-               intake)
+               [&] { return ShotCommand([&] { return shooter.RunLayupCommand(); }, shooter, hopper, gate); }, intake)
         .WithName("Layup Shot");
   } else {
-    return ShotCommand([&] { return shooter.RunLayupCommand(); }, [&] { return servo.SetServoUpCommand(); }, shooter,
-                       hopper, gate)
-        .WithName("Layup Shot");
+    return ShotCommand([&] { return shooter.RunLayupCommand(); }, shooter, hopper, gate).WithName("Layup Shot");
   }
 }
 
-inline frc2::CommandPtr LaserShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                         GateSubsystem& gate, IntakeSubsystem& intake) {
+inline frc2::CommandPtr LaserShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate,
+                                         IntakeSubsystem& intake) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
-               [&] {
-                 return ShotCommand([&] { return shooter.RunClimbCommand(); },
-                                    [&] { return servo.SetServoLaserCommand(); }, shooter, hopper, gate);
-               },
-               intake)
+               [&] { return ShotCommand([&] { return shooter.RunClimbCommand(); }, shooter, hopper, gate); }, intake)
         .WithName("Laser Shot");
   } else {
-    return ShotCommand([&] { return shooter.RunClimbCommand(); }, [&] { return servo.SetServoLaserCommand(); }, shooter,
-                       hopper, gate)
-        .WithName("Laser Shot");
+    return ShotCommand([&] { return shooter.RunClimbCommand(); }, shooter, hopper, gate).WithName("Laser Shot");
   }
 }
 
-inline frc2::CommandPtr ClimbShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                         GateSubsystem& gate, IntakeSubsystem& intake) {
+inline frc2::CommandPtr ClimbShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate,
+                                         IntakeSubsystem& intake) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
-               [&] {
-                 return ShotCommand([&] { return shooter.RunClimbCommand(); },
-                                    [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
-               },
-               intake)
+               [&] { return ShotCommand([&] { return shooter.RunClimbCommand(); }, shooter, hopper, gate); }, intake)
         .WithName("Climb Shot");
   } else {
-    return ShotCommand([&] { return shooter.RunClimbCommand(); }, [&] { return servo.SetServoUpCommand(); }, shooter,
-                       hopper, gate)
-        .WithName("Climb Shot");
+    return ShotCommand([&] { return shooter.RunClimbCommand(); }, shooter, hopper, gate).WithName("Climb Shot");
   }
 }
 
-inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                          GateSubsystem& gate, IntakeSubsystem& intake) {
+inline frc2::CommandPtr TrenchShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate,
+                                          IntakeSubsystem& intake) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
-               [&] {
-                 return ShotCommand([&] { return shooter.RunTrenchCommand(); },
-                                    [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
-               },
-               intake)
+               [&] { return ShotCommand([&] { return shooter.RunTrenchCommand(); }, shooter, hopper, gate); }, intake)
         .WithName("Trench Shot");
   } else {
-    return ShotCommand([&] { return shooter.RunTrenchCommand(); }, [&] { return servo.SetServoUpCommand(); }, shooter,
-                       hopper, gate)
-        .WithName("Trench Shot");
+    return ShotCommand([&] { return shooter.RunTrenchCommand(); }, shooter, hopper, gate).WithName("Trench Shot");
   }
 }
 
-inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
+inline frc2::CommandPtr RegressionShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper,
                                               GateSubsystem& gate, IntakeSubsystem& intake,
                                               std::function<units::meter_t()> distance) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
                [&] {
-                 return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); },
-                                    [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
+                 return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); }, shooter,
+                                    hopper, gate);
                },
                intake)
         .WithName("Regression Shot");
   } else {
-    return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); },
-                       [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
+    return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); }, shooter, hopper, gate)
         .WithName("Regression Shot");
   }
 }
 
-inline frc2::CommandPtr PullupRegressionShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo,
-                                                    HopperSubsystem& hopper, GateSubsystem& gate,
-                                                    IntakeSubsystem& intake, std::function<units::meter_t()> distance) {
+inline frc2::CommandPtr PullupRegressionShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper,
+                                                    GateSubsystem& gate, IntakeSubsystem& intake,
+                                                    std::function<units::meter_t()> distance) {
   return WithAutoPullup(
              [&] {
-               return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); },
-                                  [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
+               return ShotCommand([&, distance] { return shooter.RunRegressionCommand(distance); }, shooter,
+                                  hopper, gate);
              },
              intake)
       .WithName("Pullup Regression Shot");
 }
 
-inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                         GateSubsystem& gate, IntakeSubsystem& intake) {
+inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate,
+                                         IntakeSubsystem& intake) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
                [&] {
                  return ShotCommand(
                      [&] {
-                       return shooter.RunDebugShotCommand([] {
-                         return units::revolutions_per_minute_t{frc::SmartDashboard::GetNumber("Debug RPM", 0.0)};
-                       });
+                       return shooter.RunDebugShotCommand(
+                           [] { return units::revolutions_per_minute_t{frc::SmartDashboard::GetNumber("Debug RPM",
+                                                                                                    0.0)}; });
                      },
-                     [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
+                     shooter, hopper, gate);
                },
                intake)
         .WithName("Debug Shot");
@@ -167,39 +140,35 @@ inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsyst
                  return shooter.RunDebugShotCommand(
                      [] { return units::revolutions_per_minute_t{frc::SmartDashboard::GetNumber("Debug RPM", 0.0)}; });
                },
-               [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
+               shooter, hopper, gate)
         .WithName("Debug Shot");
   }
 }
 
-inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                         GateSubsystem& gate, IntakeSubsystem& intake,
-                                         units::revolutions_per_minute_t rpm) {
+inline frc2::CommandPtr DebugShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate,
+                                         IntakeSubsystem& intake, units::revolutions_per_minute_t rpm) {
   if constexpr (CommandFeatureFlags::kEnableAutoPullup) {
     return WithAutoPullup(
                [&] {
-                 return ShotCommand([&] { return shooter.RunDebugShotCommand([rpm] { return rpm; }); },
-                                    [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate);
+                 return ShotCommand([&] { return shooter.RunDebugShotCommand([rpm] { return rpm; }); }, shooter,
+                                    hopper, gate);
                },
                intake)
         .WithName("Debug Shot");
   } else {
-    return ShotCommand([&] { return shooter.RunDebugShotCommand([rpm] { return rpm; }); },
-                       [&] { return servo.SetServoUpCommand(); }, shooter, hopper, gate)
+    return ShotCommand([&] { return shooter.RunDebugShotCommand([rpm] { return rpm; }); }, shooter, hopper, gate)
         .WithName("Debug Shot");
   }
 }
 
-inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, ServoSubsystem& servo, HopperSubsystem& hopper,
-                                        GateSubsystem& gate) {
+inline frc2::CommandPtr StopShotCommand(ShooterSubsystem& shooter, HopperSubsystem& hopper, GateSubsystem& gate) {
   return frc2::cmd::RunOnce(
              [&] {
                shooter.SetState(ShooterStateEnum::Idle);
-               servo.SetState(ServoStateEnum::Idle);
                hopper.SetState(HopperStateEnum::Off);
                gate.SetState(GateStateEnum::Off);
              },
-             {&shooter, &servo, &hopper, &gate})
+             {&shooter, &hopper, &gate})
       .WithName("Stop Shot");
 }
 }  // namespace CommandFactory

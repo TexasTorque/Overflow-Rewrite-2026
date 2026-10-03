@@ -2,21 +2,13 @@
 // Overflow 2026
 
 #include "subsystems/HopperSubsystem.hpp"
-#include "abstractions/logging/HopperLogging.hpp"
-#include "abstractions/state/HopperState.hpp"
-#include "constants/constants.hpp"
+#include "constants/Constants.hpp"
 #include "frc2/command/Commands.h"
-#include <utility>
 
 HopperSubsystem::HopperSubsystem(std::unique_ptr<HopperIO> io)
-    : m_io(std::move(io)),
-      m_state(HopperStateEnum::Off, [this](const HopperStateEnum& newState) { ApplyState(newState); }),
-      m_logging{} {
-  SetName("HopperSubsystem");
-}
+    : TurboSubsystem(std::move(io), HopperStateEnum::Off, "HopperSubsystem") {}
 
-void HopperSubsystem::Periodic() {
-  m_io->UpdateInputs(m_inputs);
+void HopperSubsystem::UpdateTelemetry() {
   m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
@@ -30,15 +22,6 @@ frc2::CommandPtr HopperSubsystem::RunOuttakeCommand() {
   return frc2::cmd::StartEnd([this] { SetState(HopperStateEnum::Outtake); }, [this] { SetState(HopperStateEnum::Off); },
                              {this})
       .WithName("Hopper Outtake");
-}
-
-void HopperSubsystem::SetState(const HopperStateEnum& newState) {
-  m_state.Set(newState);
-  m_state.Apply();
-}
-
-void HopperSubsystem::Clean() {
-  SetState(HopperStateEnum::Off);
 }
 
 void HopperSubsystem::ApplyState(const HopperStateEnum& newState) {

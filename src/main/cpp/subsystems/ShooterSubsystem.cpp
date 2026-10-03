@@ -2,29 +2,18 @@
 // Overflow 2026
 
 #include "subsystems/ShooterSubsystem.hpp"
-#include "abstractions/io/shooter/ShooterIO.hpp"
-#include "abstractions/logging/ShooterLogging.hpp"
-#include "abstractions/state/ShooterState.hpp"
-#include "constants/Constants.hpp"
 #include "frc/smartdashboard/SmartDashboard.h"
-#include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
 #include "regression/Regression.hpp"
 #include "units/angular_velocity.h"
 #include "units/length.h"
-#include <utility>
 
 ShooterSubsystem::ShooterSubsystem(std::unique_ptr<ShooterIO> io)
-    : m_io(std::move(io)),
-      m_state(ShooterStateEnum::Off, [this](const ShooterStateEnum& newState) { ApplyState(newState); }),
-      m_logging{} {
-  SetName("ShooterSubsystem");
-
+    : TurboSubsystem(std::move(io), ShooterStateEnum::Off, "ShooterSubsystem") {
   frc::SmartDashboard::PutNumber("Debug RPM", 0.0);
 }
 
-void ShooterSubsystem::Periodic() {
-  m_io->UpdateInputs(m_inputs);
+void ShooterSubsystem::UpdateTelemetry() {
   m_logging.UpdateTelemetry(m_inputs, GetState());
 }
 
@@ -82,15 +71,6 @@ frc2::CommandPtr ShooterSubsystem::RunDebugShotCommand(std::function<units::revo
              },
              {this})
       .WithName("Shooter Debug Shot");
-}
-
-void ShooterSubsystem::SetState(const ShooterStateEnum& newState) {
-  m_state.Set(newState);
-  m_state.Apply();
-}
-
-void ShooterSubsystem::Clean() {
-  SetState(ShooterStateEnum::Off);
 }
 
 void ShooterSubsystem::ApplyState(const ShooterStateEnum& newState) {

@@ -92,14 +92,6 @@ namespace DebugConstants {
 inline constexpr bool kDebugSignalLogging = true;
 }  // namespace DebugConstants
 
-namespace ServoConstants {
-inline constexpr int kServoLeftPort = 7;
-inline constexpr int kServoRightPort = 8;
-
-inline constexpr double kServoIdlePos = 0.35;
-inline constexpr double kServoLaserPos = 0.1;
-}  // namespace ServoConstants
-
 namespace LEDConstants {
 inline constexpr int kLEDPort = 9;
 inline constexpr int kLEDLength = 34;

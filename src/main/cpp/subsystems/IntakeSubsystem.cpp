@@ -2,19 +2,11 @@
 // Overflow 2026
 
 #include "subsystems/IntakeSubsystem.hpp"
-#include "abstractions/logging/IntakeLogging.hpp"
-#include "abstractions/state/IntakeState.hpp"
 #include "constants/Constants.hpp"
-#include "frc2/command/CommandPtr.h"
 #include "frc2/command/Commands.h"
-#include <utility>
 
 IntakeSubsystem::IntakeSubsystem(std::unique_ptr<IntakeIO> io)
-    : m_io(std::move(io)),
-      m_state(IntakeStateEnum::Stow, [this](const IntakeStateEnum& newState) { ApplyState(newState); }),
-      m_logging{} {
-  SetName("IntakeSubsystem");
-}
+    : TurboSubsystem(std::move(io), IntakeStateEnum::Stow, "IntakeSubsystem") {}
 
 frc2::CommandPtr IntakeSubsystem::RunIntakeCommand() {
   return frc2::cmd::StartEnd([this] { SetState(IntakeStateEnum::Intake); }, [this] { SetState(IntakeStateEnum::Stow); },
@@ -43,19 +35,12 @@ frc2::CommandPtr IntakeSubsystem::StowIntakeCommand() {
       .WithName("Pull In Intake");
 }
 
-void IntakeSubsystem::SetState(const IntakeStateEnum& newState) {
-  m_state.Set(newState);
-  m_state.Apply();
-}
-
-void IntakeSubsystem::Clean() {
-  SetState(IntakeStateEnum::Stow);
-}
-
-void IntakeSubsystem::Periodic() {
-  m_io->UpdateInputs(m_inputs);
-  m_io->Process();
+void IntakeSubsystem::UpdateTelemetry() {
   m_logging.UpdateTelemetry(m_inputs, GetState());
+}
+
+void IntakeSubsystem::PeriodicExtras() {
+  m_io->Process();
 }
 
 void IntakeSubsystem::ApplyState(const IntakeStateEnum& newState) {

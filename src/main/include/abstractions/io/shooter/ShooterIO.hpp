@@ -16,8 +16,9 @@ struct ShooterIOInputs {
 
 class ShooterIO {
  public:
-  virtual void UpdateInputs(ShooterIOInputs& inputs) = 0;
+  using Inputs = ShooterIOInputs;
 
+  virtual void UpdateInputs(ShooterIOInputs& inputs) = 0;
   virtual void SetFlywheelRPM(units::revolutions_per_minute_t rpm) = 0;
   virtual void CoastOut() = 0;
 

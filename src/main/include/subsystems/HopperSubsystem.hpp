@@ -3,32 +3,24 @@
 
 #pragma once
 
-#include <memory>
 #include "abstractions/io/hopper/HopperIO.hpp"
 #include "abstractions/logging/HopperLogging.hpp"
 #include "abstractions/state/HopperState.hpp"
 #include "frc2/command/CommandPtr.h"
-#include "frc2/command/SubsystemBase.h"
+#include "turbolib/subsystem/TurboSubsystem.hpp"
 
-class HopperSubsystem : public frc2::SubsystemBase {
+class HopperSubsystem : public turbolib::TurboSubsystem<HopperIO, HopperStateEnum> {
  public:
   explicit HopperSubsystem(std::unique_ptr<HopperIO> io);
-
-  void Periodic() override;
 
   frc2::CommandPtr RunHopperCommand();
   frc2::CommandPtr RunOuttakeCommand();
 
-  void SetState(const HopperStateEnum& newState);
-  void Clean();
-
-  HopperStateEnum GetState() const { return m_state.Get(); }
+ protected:
+  void ApplyState(const HopperStateEnum& newState) override;
+  HopperStateEnum GetCleanState() const override { return HopperStateEnum::Off; }
+  void UpdateTelemetry() override;
 
  private:
-  std::unique_ptr<HopperIO> m_io;
-  HopperIOInputs m_inputs;
-  HopperState m_state;
   HopperLogging m_logging;
-
-  void ApplyState(const HopperStateEnum& newState);
 };

@@ -18,8 +18,7 @@
 #include "abstractions/io/intake/IntakeIO.hpp"
 #include "abstractions/io/intake/IntakeRealIO.hpp"
 #include "abstractions/io/intake/IntakeSimIO.hpp"
-#include "abstractions/io/servo/ServoRealIO.hpp"
-#include "abstractions/io/servo/ServoSimIO.hpp"
+
 #include "abstractions/io/shooter/ShooterIO.hpp"
 #include "abstractions/io/shooter/ShooterRealIO.hpp"
 #include "abstractions/io/shooter/ShooterSimIO.hpp"
@@ -43,7 +42,6 @@ RobotContainer::RobotContainer()
       m_shooterSubsystem(turbolib::utils::MakeIO<ShooterIO, ShooterRealIO, ShooterSimIO>()),
       m_hopperSubsystem(turbolib::utils::MakeIO<HopperIO, HopperRealIO, HopperSimIO>()),
       m_gateSubsystem(turbolib::utils::MakeIO<GateIO, GateRealIO, GateSimIO>()),
-      m_servoSubsystem(turbolib::utils::MakeIO<ServoIO, ServoRealIO, ServoSimIO>()),
       m_hubSubsystem(),
       m_ledSubsystem() {
   ConfigurePlannerCommands();
@@ -70,14 +68,15 @@ void RobotContainer::ConfigurePlannerCommands() {
                                               m_driveSubsystem.RotateToHub().WithDeadline(frc2::cmd::Wait(0.55_s)));
   pathplanner::NamedCommands::registerCommand(
       "RegressionShoot", CommandFactory::PullupRegressionShotCommand(
-                             m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem,
-                             m_intakeSubsystem, [this] { return m_driveSubsystem.GetDistanceToHub(); }));
+                             m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem,
+                             [this] { return m_driveSubsystem.GetDistanceToHub(); }));
   pathplanner::NamedCommands::registerCommand(
-      "ClimbShoot", CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
-                                                     m_gateSubsystem, m_intakeSubsystem));
+      "ClimbShoot",
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem));
   pathplanner::NamedCommands::registerCommand(
-      "VomitShot", CommandFactory::DebugShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem,
-                                                    m_gateSubsystem, m_intakeSubsystem, 1600_rpm));
+      "VomitShot", CommandFactory::DebugShotCommand(m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem,
+                                                    m_intakeSubsystem, 1600_rpm));
+
 
   pathplanner::NamedCommands::registerCommand("Prespin", m_shooterSubsystem.RunPrespinCommand());
 
@@ -121,20 +120,20 @@ void RobotContainer::ConfigureIntakeBindings() {
 
 void RobotContainer::ConfigureShooterBindings() {
   m_operatorController.POVDown().OnTrue(
-      CommandFactory::StopShotCommand(m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem));
+      CommandFactory::StopShotCommand(m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem));
 
   m_operatorController.LeftTrigger().ToggleOnTrue(WithShotSetup(CommandFactory::RegressionShotCommand(
-      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem,
+      m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem,
       [this] { return m_driveSubsystem.GetDistanceToHub(); })));
 
-  m_operatorController.X().ToggleOnTrue(WithShotSetup(CommandFactory::TrenchShotCommand(
-      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
+  m_operatorController.X().ToggleOnTrue(WithShotSetup(
+      CommandFactory::TrenchShotCommand(m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 
-  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(CommandFactory::DebugShotCommand(
-      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
+  m_operatorController.POVRight().ToggleOnTrue(WithShotSetup(
+      CommandFactory::DebugShotCommand(m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 
-  m_operatorController.Y().ToggleOnTrue(WithShotSetup(CommandFactory::ClimbShotCommand(
-      m_shooterSubsystem, m_servoSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
+  m_operatorController.Y().ToggleOnTrue(WithShotSetup(
+      CommandFactory::ClimbShotCommand(m_shooterSubsystem, m_hopperSubsystem, m_gateSubsystem, m_intakeSubsystem)));
 }
 
 void RobotContainer::ConfigureSysIDBindings() {
