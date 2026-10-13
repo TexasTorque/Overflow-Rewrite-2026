@@ -405,7 +405,7 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
       ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   swerve::requests::SwerveDriveBrake m_brake{};
 
-  frc::PIDController m_thetaController{5.25, 0.005, 0.3};
+  frc::PIDController m_thetaController{5.25, 0.015, 0.3};
   AutoAlignState m_autoAlignState = AutoAlignState::None;
 
   // Option C filter state
