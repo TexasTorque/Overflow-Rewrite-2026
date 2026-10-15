@@ -86,6 +86,11 @@ void Robot::TestPeriodic() {}
 
 void Robot::TestExit() {}
 
+void Robot::SimulationPeriodic() {
+  const frc::Pose2d robotPose = m_container.GetDriveSubsystem().GetState().Pose;
+  m_container.GetPerceptionSubsystem().UpdateSim(robotPose, robotPose.Rotation());
+}
+
 #ifndef RUNNING_FRC_TESTS
 int main() {
   return frc::StartRobot<Robot>();

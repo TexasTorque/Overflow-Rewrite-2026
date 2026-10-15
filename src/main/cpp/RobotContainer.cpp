@@ -100,6 +100,17 @@ void RobotContainer::ConfigureBindings() {
   m_driverController.RightTrigger().WhileTrue(m_driveSubsystem.RotateToHub());
   m_driverController.LeftTrigger().WhileTrue(m_driveSubsystem.TurnToAngleCommand([] { return 185_deg; }));
 
+  // Demo tag tracking: shooter side faces tag 21, translation stays on the
+  // left stick. Vision pose is disabled while tracking so the moving tag
+  // can't corrupt odometry; yaw comes from dedicated tracker cameras.
+  m_driverController.X().WhileTrue(
+      m_driveSubsystem
+          .TrackTagCommand([this] { return m_perceptionSubsystem.GetTrackingYaw(TrackingConstants::kDemoTagId); },
+                           [this] { return -m_driverController.GetLeftY() * m_driveSubsystem.GetActiveSpeed(); },
+                           [this] { return -m_driverController.GetLeftX() * m_driveSubsystem.GetActiveSpeed(); })
+          .BeforeStarting([this] { m_perceptionSubsystem.DisableVision(); })
+          .FinallyDo([this](bool) { m_perceptionSubsystem.EnableVision(); }));
+
   m_operatorController.A().WhileTrue(m_intakeSubsystem.SlowZeroCommand());
   (m_operatorController.Back() && m_operatorController.A()).WhileTrue(m_intakeSubsystem.StowIntakeCommand());
 

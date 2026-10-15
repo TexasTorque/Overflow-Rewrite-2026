@@ -13,6 +13,8 @@
 #include <cmath>
 #include <cstdlib>
 #include <functional>
+#include <numbers>
+#include <optional>
 
 #include "ctre/phoenix6/swerve/SwerveRequest.hpp"
 #include "frc/controller/PIDController.h"
@@ -383,6 +385,57 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
         .WithName("Rotate To Hub");
   }
 
+  /**
+   * \brief Continuously face the shooter side of the robot toward a tag
+   * while the caller provides normal translational control.
+   *
+   * \param yawSupplier Camera-frame yaw to the tag in degrees
+   * (positive-left). Shooter cameras face the rear, so yaw is negated
+   * internally into robot-frame heading error.
+   * \param vxSupplier Field-relative X velocity (typically driver left Y).
+   * \param vySupplier Field-relative Y velocity (typically driver left X).
+   *
+   * Runs until interrupted. When the tag is not visible, rotation holds at
+   * zero and translation keeps working.
+   */
+  frc2::CommandPtr TrackTagCommand(std::function<std::optional<units::degree_t>()> yawSupplier,
+                                    std::function<units::meters_per_second_t()> vxSupplier,
+                                    std::function<units::meters_per_second_t()> vySupplier) {
+    return frc2::cmd::RunOnce([this] { m_trackThetaController.Reset(); })
+        .AndThen(ApplyRequest([this, yawSupplier = std::move(yawSupplier), vxSupplier = std::move(vxSupplier),
+                               vySupplier = std::move(vySupplier)] {
+          units::meters_per_second_t vx = vxSupplier();
+          units::meters_per_second_t vy = vySupplier();
+
+          units::radians_per_second_t omega{0};
+          std::optional<units::degree_t> yaw = yawSupplier();
+
+          if (yaw.has_value() && std::abs(yaw->value()) > TrackingConstants::kYawDeadband.value()) {
+            double errRad = TrackingConstants::kRearCameraSign * yaw->value() * (std::numbers::pi / 180.0);
+            double out = m_trackThetaController.Calculate(0.0, errRad);
+            out = std::clamp(out, -DriveConstants::kMaxAngularRate.value(), DriveConstants::kMaxAngularRate.value());
+            omega = units::radians_per_second_t{out};
+
+            m_autoAlignState = errRad < 0.0 ? AutoAlignState::Right
+                               : errRad > 0.0 ? AutoAlignState::Left
+                                              : AutoAlignState::None;
+          } else {
+            m_autoAlignState = AutoAlignState::None;
+            m_trackThetaController.Reset();
+          }
+
+          frc::SmartDashboard::PutNumber("TrackTag/YawDeg", yaw.has_value() ? yaw->value() : 999.0);
+          frc::SmartDashboard::PutNumber("TrackTag/OmegaRps", omega.value());
+
+          return m_trackFieldCentric.WithVelocityX(vx).WithVelocityY(vy).WithRotationalRate(omega);
+        }))
+        .FinallyDo([this](bool) {
+          m_autoAlignState = AutoAlignState::None;
+          m_trackThetaController.Reset();
+        })
+        .WithName("Track Tag");
+  }
+
   frc2::CommandPtr BrakeInPlace() {
     return StartEnd([this] { SetControl(m_brake); }, [] {});
   }
@@ -406,6 +459,9 @@ class CommandSwerveDrivetrain : public frc2::SubsystemBase,
   swerve::requests::SwerveDriveBrake m_brake{};
 
   frc::PIDController m_thetaController{5.25, 0.015, 0.3};
+  frc::PIDController m_trackThetaController{5.25, 0.015, 0.3};
+  swerve::requests::FieldCentric m_trackFieldCentric = swerve::requests::FieldCentric{}.WithDriveRequestType(
+      ctre::phoenix6::swerve::impl::DriveRequestType::OpenLoopVoltage);
   AutoAlignState m_autoAlignState = AutoAlignState::None;
 
   // Option C filter state

@@ -10,6 +10,7 @@
 #include "units/voltage.h"
 #include "units/velocity.h"
 #include "units/angular_velocity.h"
+#include "units/angle.h"
 
 namespace DriveConstants {
 inline constexpr units::meters_per_second_t kMaxSpeed = 3.6_mps;
@@ -29,6 +30,16 @@ inline constexpr frc::Transform3d kShooterLeftCamTransform{
 inline constexpr frc::Pose2d kRedHubPose{11.92_m, 4_m, 0_rad};
 inline constexpr frc::Pose2d kBlueHubPose{4.625_m, 4_m, 0_rad};
 }  // namespace PerceptionConstants
+
+namespace TrackingConstants {
+inline constexpr int kDemoTagId = 21;
+// Shooter cameras face the rear of the robot, so camera-left is robot-right.
+// Negate camera yaw to get robot-frame heading error (positive = tag is to
+// robot-left, needing CCW rotation).
+inline constexpr double kRearCameraSign = -1.0;
+inline constexpr units::degree_t kYawDeadband = 1.0_deg;
+inline constexpr units::second_t kYawStaleTimeout = 0.30_s;
+}  // namespace TrackingConstants
 
 namespace IntakeConstants {
 inline constexpr int kIntakeRotaryMotorPort = 13;
